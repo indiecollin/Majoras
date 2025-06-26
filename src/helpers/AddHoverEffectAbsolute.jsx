@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import styled from 'styled-components';
+import MenuContext from '../MenuContext.jsx';
 
 const HoverContainer = styled.div`
     ${props => props.positionRules }
@@ -8,7 +9,7 @@ const HoverContainer = styled.div`
     align-items: center;
     justify-content: center;
     
-    *:first-child{
+    *:first-child{        
         z-index: 1010;
     }
 `;
@@ -34,27 +35,31 @@ const Orbitter = styled.div`
     opacity: 0;
 `;
 
-const useHover = (onHoverHook, disabled, name, setInfoBar) => {
-  const [hovered, setHovered] = useState(false);  
-  
+const useHover = (props) => {
+  const [hovered, setHovered] = useState(false);
+  const { setInfoBar, setToEquip } = useContext(MenuContext);
   const eventHandlers = useMemo(() => ({
     onMouseOver() { 
-        if(disabled) return;
+        if(props.disabled) return;
         setHovered(true);
-        setInfoBar(name)
-        onHoverHook && onHoverHook();
+        setInfoBar(props.name)
+        props.onHover && props.onHover();
     },
     onMouseOut() { 
-        if(disabled) return;
+        if(props.disabled) return;
         setHovered(false); 
         setInfoBar('\u00A0');
+        props.onBlur && props.onBlur();
     }
   }), []);
   
   return [hovered, eventHandlers];
 }
 
-const AddHoverEffectAbsolute = (Component, parentWidth, absoluteOffset, setInfoBar) => {  
+const AddHoverEffectAbsolute = (props) => {
+    const { parentWidth, absoluteOffset, positions} = props.children.props;
+    const Component = props.children.type;
+
     const positionRules = [
         'top', 'right', 'left', 'bottom'
     ];
@@ -87,17 +92,19 @@ const AddHoverEffectAbsolute = (Component, parentWidth, absoluteOffset, setInfoB
         }
         return acc;
     }, '');
-    return (props) => {
-        const [hovered, eventHandlers] = useHover(props.onHover, props.disabled, props.name, setInfoBar);
 
-        return <HoverContainer positionRules = {props.positionRules} flexRules={ flexStyles }>
-            <Component {...props} {...eventHandlers}/>
-            <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} top left/>
-            <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} top right/>
-            <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} bottom left/>
-            <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} bottom right/>
-        </HoverContainer>
-    }
+    const [hovered, eventHandlers] = useHover(props.children.props);
+    return <HoverContainer positionRules = {positions} flexRules={ flexStyles }>            
+        <Component {...props.children.props} {...eventHandlers} />
+        {
+          hovered && <>
+          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} top left/>
+          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} top right/>
+          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} bottom left/>
+          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} bottom right/>
+        </>
+        }
+    </HoverContainer>
 }
 
 export default AddHoverEffectAbsolute;

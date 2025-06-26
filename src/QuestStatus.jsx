@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import MenuContext from './MenuContext.jsx';
 // import BombersNoteBook from './';
@@ -91,17 +91,6 @@ const QuestStatusContainer = styled.div`
         background-color: unset;
         border: none;
     }
-    
-    /* &>div{        
-        padding: 0 120px 60px;
-
-        &>div{
-            background-color: #0B0B0F;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-    }     */
 `;
 
 const QuestStatusGrid = styled.div`
@@ -178,37 +167,77 @@ const EquipmentSlot = styled.div`
     }
 `;
 
+const questItemWidth = 120;
+const bomberNotebookWidth = 160;
+
 const QuestStatus = () => {
-    const { setInfoBar, setDescription } = useContext(MenuContext);
-    // const QuestItemWithHover = AddHoverEffect(QuestItem, 120, setInfoBar);
-    // see if we can remake this so that we can just pass the parent width as a prop to the jsx, also fix hardcoded dimensions
-    // const BombersNotebookWithHover = AddHoverEffect(QuestItem, 160, setInfoBar);
+    const { setDescription } = useContext(MenuContext);        
     return <QuestStatusContainer>
         <h1>quest status</h1>
         <QuestStatusGrid>
-            {/* <GridCellNoteBook>
-                <QuestItemWrapper><BombersNotebookWithHover src={NoteBook} name = {"Bomber's Notebook"}/></QuestItemWrapper>
+            <GridCellNoteBook>
+                <QuestItemWrapper onClick = {() => {}}>
+                    <AddHoverEffect>
+                        <QuestItem src={NoteBook} name = {"Bomber's Notebook"} parentWidth={bomberNotebookWidth} />
+                        </AddHoverEffect>
+                    </QuestItemWrapper>
             </GridCellNoteBook>
             <GridCellHeartContainer/>
             <GridCellOcarinaSongs/>
             <GridCellBossMasks>
+                <div><QuestItemWrapper onClick = {() => setDescription(items.odalwa)}>
+                        <AddHoverEffect>
+                            <QuestItem src={Odalwa} name={"Odalwa's Remains"} parentWidth={questItemWidth} />
+                        </AddHoverEffect>
+                </QuestItemWrapper></div>
                 <div>
-                    <QuestItemWrapper onClick = {() => setDescription(items.odalwa)}><QuestItemWithHover src={Odalwa} name={"Odalwa's Remains"}/></QuestItemWrapper>
+                    <QuestItemWrapper onClick = {() => setDescription(items.gyorg)}>
+                        <AddHoverEffect>
+                            <QuestItem src={Gyorg} name={"Gyorg's Remains"} parentWidth={questItemWidth} />
+                        </AddHoverEffect>
+                    </QuestItemWrapper>
+                    <QuestItemWrapper onClick = {() => setDescription(items.goht)}>
+                        <AddHoverEffect>
+                            <QuestItem src={Goht} name={"Goht's Remains"} parentWidth={questItemWidth} />
+                        </AddHoverEffect>
+                    </QuestItemWrapper>
                 </div>
-                <div>
-                    <QuestItemWrapper onClick = {() => setDescription(items.gyorg)}><QuestItemWithHover src={Gyorg} name={"Gyorg's Remains"}/></QuestItemWrapper>
-                    <QuestItemWrapper onClick = {() => setDescription(items.goht)}><QuestItemWithHover src={Goht} name={"Goht's Remains"}/></QuestItemWrapper>
-                </div>
-                <div>
-                    <QuestItemWrapper onClick = {() => setDescription(items.twinmold)}><QuestItemWithHover src={Twinmold} name={"Twinmold's Remains"}/></QuestItemWrapper>
-                </div>                                
+                <div><QuestItemWrapper onClick = {() => setDescription(items.twinmold)}>
+                        <AddHoverEffect>
+                            <QuestItem src={Twinmold} name={"Twinmold's Remains"} parentWidth={questItemWidth} />
+                        </AddHoverEffect>
+                </QuestItemWrapper></div>                                
             </GridCellBossMasks>            
             <GridCellEquipment>
-                <EquipmentSlot><QuestItemWrapper onClick = {() => setDescription(items.sword)}><QuestItemWithHover src = {items.sword.img} name={items.sword.name}/></QuestItemWrapper></EquipmentSlot>
-                <EquipmentSlot><QuestItemWrapper onClick = {() => setDescription(items.shield)}><QuestItemWithHover src = {items.shield.img} name={items.shield.name}/></QuestItemWrapper></EquipmentSlot>
-                <EquipmentSlot><QuestItemWrapper onClick = {() => setDescription(items.quiver)}><QuestItemWithHover src = {items.quiver.img} name={items.quiver.alternate}/></QuestItemWrapper></EquipmentSlot>
-                <EquipmentSlot><QuestItemWrapper onClick = {() => setDescription(items.bombBag)}><QuestItemWithHover src = {items.bombBag.img} name={items.bombBag.alternate}/></QuestItemWrapper></EquipmentSlot>
-            </GridCellEquipment> */}
+                <EquipmentSlot>
+                    <QuestItemWrapper onClick = {() => setDescription(items.sword)}>
+                        <AddHoverEffect>
+                            <QuestItem src = {items.sword.img} name={items.sword.name} parentWidth={questItemWidth} />
+                        </AddHoverEffect>
+                    </QuestItemWrapper>
+                </EquipmentSlot>
+                <EquipmentSlot>
+                    <QuestItemWrapper onClick = {() => setDescription(items.shield)}>
+                        <AddHoverEffect>
+                            <QuestItem src = {items.shield.img} name={items.shield.name} parentWidth={questItemWidth} />
+                        </AddHoverEffect>
+                    </QuestItemWrapper>
+                </EquipmentSlot>
+                <EquipmentSlot>
+                    <QuestItemWrapper onClick = {() => setDescription(items.quiver)}>
+                        <AddHoverEffect>
+                            <QuestItem src = {items.quiver.img} name={items.quiver.alternate} parentWidth={questItemWidth} />
+                        </AddHoverEffect>
+                    </QuestItemWrapper>
+                </EquipmentSlot>
+                <EquipmentSlot>
+                    <QuestItemWrapper onClick = {() => setDescription(items.bombBag)}>
+                        <AddHoverEffect>
+                            <QuestItem src = {items.bombBag.img} name={items.bombBag.alternate} parentWidth={questItemWidth} />
+                        </AddHoverEffect>
+                    </QuestItemWrapper>
+                </EquipmentSlot>
+            </GridCellEquipment>
         </QuestStatusGrid>
     </QuestStatusContainer>
 }

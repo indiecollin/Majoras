@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styles from '../styles.css';
 import MajorasMenu from './MajorasMenu.jsx';
-import Sun from './svgs/Sun.jsx'
 
 
 class App extends Component{
@@ -10,8 +9,7 @@ class App extends Component{
         this.state = {};        
     }    
 
-    render(){
-        // return <Sun/>
+    render(){        
         return <MajorasMenu/>
     }
 }

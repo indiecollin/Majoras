@@ -1,7 +1,6 @@
 import React, { useContext, useRef, forwardRef } from 'react';
 import styled from 'styled-components';
 import AddHoverEffect from './helpers/AddHoverEffect.jsx';
-// import AddHoverEffect from './helpers/AddHoverEffectBeta.jsx';
 import MenuContext from './MenuContext.jsx';
 import Strong from './helpers/StrongText.jsx';
 import Ocarina from '../public/Items/ocarina-of-time.png';
@@ -261,6 +260,7 @@ const ItemWrapper = styled.button`
 `;
 
 const Item = styled.img`
+    position: relative;
     top: 0;
     left: 0;
 `;
@@ -282,10 +282,17 @@ const QuestBar = styled.span`
 `;
 
 const Items = () => {
-    const itemsRefs = useRef({});    
-    const { setInfoBar, setToEquip, setDescription } = useContext(MenuContext);    
+    const itemsRefs = items.reduce((acc, cur)=>{
+        cur.forEach(item => {
+            acc[item.name] = useRef(null);
+        })
+        return acc;
+    },{});
+
+
+    const { setDescription } = useContext(MenuContext);    
     const parentWidth = 156;    
-    const ItemWithHover = forwardRef(AddHoverEffect);
+    const AddHoverEffectWithRef = forwardRef(AddHoverEffect);
     return <ItemsContainer>
         <h1>select item</h1>
         <div>
@@ -293,9 +300,11 @@ const Items = () => {
                 items.map(row => {
                     return <ItemRow>{
                         row.map(item => {
-                            item.equippable = true;                                          
+                            item.equippable = true;                                                                   
                             return <ItemWrapper onClick = {() => setDescription(item)}>
-                                <ItemWithHover ref={itemsRefs}><Item src = {item.img} name = {item.name} parentWidth={parentWidth} setInfoBar={setInfoBar} setToEquip={setToEquip}/></ItemWithHover>                                 
+                                <AddHoverEffectWithRef ref={itemsRefs[item.name]}>
+                                    <Item src = {item.img} name = {item.name} parentWidth={parentWidth}/>
+                                </AddHoverEffectWithRef>                               
                             </ItemWrapper>
                         })
                     }

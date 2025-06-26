@@ -1,13 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
+import MenuContext from '../MenuContext.jsx';
 import styled from 'styled-components';
-// import useInfoBar  from '../hooks/useInfoBar.jsx';
 
 const HoverContainer = styled.div`
     ${props => props.positionRules }    
     ${props => props.flexRules }
     align-items: center;
     justify-content: center;
-    
+
     *:first-child{
         z-index: 1010;
     }
@@ -28,16 +28,18 @@ const Orbitter = styled.div`
     opacity: 0;
 `;
 
-const useHover = (props, setInfoBar, setToEquip, ref) => {
-  const [hovered, setHovered] = useState(false);  
-  const eventHandlers = useMemo(() => ({
-    // is it possible to pass a function to call here to grab current props instead of using whatever props when the addhovereffect was first invoked
+const useHover = (props, ref) => {
+  const [hovered, setHovered] = useState(false);
+  const { setInfoBar, setToEquip } = useContext(MenuContext);
+  const eventHandlers = useMemo(() => ({    
     onMouseOver() {
         setHovered(true); 
         setInfoBar(props.name);
         if(setToEquip){
             console.log("show me the morty");            
         }
+        let test = ref;
+        props.onHover && props.onHover();    
     },
     onMouseOut() { 
         setHovered(false);
@@ -45,6 +47,7 @@ const useHover = (props, setInfoBar, setToEquip, ref) => {
         if(setToEquip){            
             setToEquip();
         }
+        props.onBlur && props.onBlur();
     }
   }), []);
   
@@ -52,7 +55,7 @@ const useHover = (props, setInfoBar, setToEquip, ref) => {
 }
 
 const AddHoverEffect = ((props, ref) => {   
-  const { parentWidth, setInfoBar, setToEquip} = props.children.props;
+  const { parentWidth } = props.children.props;
   const Component = props.children.type;
   const orbitterRadius = 12;  
   const positionRules = [
@@ -104,21 +107,19 @@ const AddHoverEffect = ((props, ref) => {
       // try to get it directly from element
       transformOriginY = '50%'
   }
-//   return (props) => {
-      const [hovered, eventHandlers] = useHover(props.children.props, setInfoBar, setToEquip, ref);      
-    //   const getRef = (ref) => {
-    //     console.log(ref);
-    //   }
+      const [hovered, eventHandlers] = useHover(props.children.props, ref);
        return <HoverContainer positionRules = {mirrorStyles} flexRules={ flexStyles }>
-          <Component {...props.children.props} {...eventHandlers} ref={ref}/>
-          <Orbitter delay={'0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={hovered ? 'hover-orbitter' : ''} />
-          <Orbitter delay={'-0.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={hovered ? 'hover-orbitter' : ''} />
-          <Orbitter delay={'-1.0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={hovered ? 'hover-orbitter' : ''} />
-          <Orbitter delay={'-1.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={hovered ? 'hover-orbitter' : ''} />
+          <Component {...props.children.props} {...eventHandlers} {...((ref.current || ref.current === null) ? { ref: ref } : {})}/>
+          {
+            hovered && <>
+                <Orbitter delay={'0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={hovered ? 'hover-orbitter' : ''} />
+                <Orbitter delay={'-0.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={hovered ? 'hover-orbitter' : ''} />
+                <Orbitter delay={'-1.0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={hovered ? 'hover-orbitter' : ''} />
+                <Orbitter delay={'-1.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={hovered ? 'hover-orbitter' : ''} />
+            </>
+          }           
       </HoverContainer>
-//   }
 
-}
-);
+});
 
-export default AddHoverEffect;
+export default AddHoverEffect;  

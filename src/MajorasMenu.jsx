@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState} from 'react';
 import styled from 'styled-components';
 import MenuContext from './MenuContext.jsx';
 import Items from './Items.jsx';
@@ -210,6 +210,8 @@ const RotateButtonSVG = styled.svg`
     transform: ${props => props.left ? 'rotate(90deg)' : 'rotate(-90deg)'};
 `;
 
+const menuButtonWidth = 100;
+
 const RotateMenuLeftButton = styled.button`
     all: unset;
     position: absolute;
@@ -288,9 +290,6 @@ const MajorasMenu  = () => {
     const [infoBar, setInfoBar] = useState('\u00A0');
     const [toEquip, setToEquip] = useState();
     const [description, setDescription] = useState();    
-
-    // const RotateMenuLeftButtonWithHover = AddHoverEffect(RotateMenuLeftButton, 100, setInfoBar);
-    // const RotateMenuRightButtonWithHover = AddHoverEffect(RotateMenuRightButton, 100, setInfoBar);
     return <MenuContext.Provider value={{setInfoBar, setDescription, setToEquip}}>
     <MenuBox curMenu = {curMenu} menusWidth = {menusWidth} count = {count} menuGap = {menuGap} apothem = {apothem} onKeyDown={test} tabIndex={-1}>
         <HealthAndMagic>
@@ -309,12 +308,16 @@ const MajorasMenu  = () => {
             <span></span>
             <span></span>
         </ItemButtons>        
-        {/* <RotateMenuLeftButtonWithHover onClick = {() => setCurMenu(prevState =>  prevState+1)} name={rotateButtonInfo[mod(curMenu + 1, 4)]}>
-            <RotateButtonSVG left={true}>Z</RotateButtonSVG>           
-        </RotateMenuLeftButtonWithHover>
-        <RotateMenuRightButtonWithHover onClick = {() => setCurMenu(prevState =>  prevState-1)} name={rotateButtonInfo[mod(curMenu - 1, 4)]}>
-            <RotateButtonSVG left={false}/>
-        </RotateMenuRightButtonWithHover>           */}
+         <AddHoverEffect>
+            <RotateMenuLeftButton onClick = {() => setCurMenu(prevState => prevState+1)} name={rotateButtonInfo[mod(curMenu + 1, 4)]} parentWidth={menuButtonWidth}>
+                <RotateButtonSVG left={true}>Z</RotateButtonSVG>
+            </RotateMenuLeftButton>         
+        </AddHoverEffect>
+        <AddHoverEffect>
+            <RotateMenuRightButton onClick = {() => setCurMenu(prevState => prevState-1)} name={rotateButtonInfo[mod(curMenu - 1, 4)]} parentWidth={menuButtonWidth}>
+                <RotateButtonSVG left={false}/>
+            </RotateMenuRightButton>
+        </AddHoverEffect>        
         <Rupees>
             <img src={Rupee}/>500
         </Rupees>

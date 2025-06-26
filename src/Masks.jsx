@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, { useContext, useRef, forwardRef } from 'react';
 import styled from 'styled-components';
 import AddHoverEffect from './helpers/AddHoverEffect.jsx';
 import MenuContext from './MenuContext.jsx';
@@ -279,6 +279,7 @@ const MaskWrapper = styled.button`
     position: relative;
 `;
 const Mask = styled.img`
+    position: relative;
     top: 0;
     left: 0;
 `;
@@ -303,18 +304,28 @@ const QuestBar = styled.span`
 `;
 
 const Masks = () => {
-    const { setInfoBar, setToEquip, setDescription } = useContext(MenuContext);
-    // const MaskWithHover = AddHoverEffect(Mask, 156, setInfoBar, setToEquip);
+    const masksRefs = useRef({});
+    masksRefs.current = masks.reduce((acc, cur)=>{
+        cur.forEach(mask => {
+            acc[mask.name] = useRef(null);
+        })
+        return acc;
+    },{});
+    const { setDescription } = useContext(MenuContext);    
+    const parentWidth = 156;
+    const AddHoverEffectWithRef = forwardRef(AddHoverEffect);
     return <MasksContainer>
         <h1>masks</h1>
         <div>
-            {/* <div>{
+            <div>{
                 masks.map(row => {
                     return <MaskRow>{
                         row.map(mask => {
                             mask.equippable = true;
-                            return <MaskWrapper onClick = {() => setDescription(mask)}>
-                                 <MaskWithHover src = {mask.img} name={mask.name} />
+                            return <MaskWrapper onClick = {() => setDescription(mask)}>                                
+                                <AddHoverEffectWithRef ref={masksRefs.current[mask.name]}>
+                                    <Mask src = {mask.img} name={mask.name} parentWidth={parentWidth} />
+                                </AddHoverEffectWithRef>
                             </MaskWrapper>
                         })
                     }
@@ -323,7 +334,7 @@ const Masks = () => {
                 <ArrowBar/>
                 <BottleBar/>
                 <QuestBar/>
-            </div>             */}
+            </div>            
         </div>
     </MasksContainer>
 }

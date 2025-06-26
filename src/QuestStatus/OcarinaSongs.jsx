@@ -1,6 +1,5 @@
-import React, {useState, useEffect, useRef, useContext} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import MenuContext from '../MenuContext.jsx';
 import AddHoverEffectAbsolute from '../helpers/AddHoverEffectAbsolute.jsx';
 import WhiteNote from '../../public/QuestStatus/white-note.png';
 import GreenNote from '../../public/QuestStatus/green-note.png';
@@ -216,10 +215,7 @@ const OcarinaSongsContainer = () => {
     const [playMode, setPlayMode] = useState(false);
     const [playIndex, setPlayIndex] = useState();
     const [wrongNote, setWrongNote] = useState({});
-    const playModeRef = useRef(playMode);
-
-    const { setInfoBar } = useContext(MenuContext);
-    const SongNoteWithHover = AddHoverEffectAbsolute(SongNote, rotatorOffset, noteRowPadding, setInfoBar);    
+    const playModeRef = useRef(playMode);        
 
     useEffect(() => {         
         playModeRef.current = playMode; // <-- cache current value
@@ -325,13 +321,24 @@ const OcarinaSongsContainer = () => {
             }, 1500);            
         }     
     }
-
+    
     return <OcarinaSongs tabIndex={0} onKeyDown={playOcarina} onBlur={resetAll}>
         <SongList>
             {songs.map(s=>{
-                return <SongNoteWithHover key={s.name} onClick={() => setSong(s, playModeRef.current)} onHover={()=> ob(s.sequence, playModeRef.current)} disabled={playModeRef.current} name={s.name}>
-                    <img src = {songNotes[s.note]} />
-                </SongNoteWithHover>
+                return <AddHoverEffectAbsolute>
+                    <SongNote 
+                        key={s.name} 
+                        onClick={() => setSong(s, playModeRef.current)} 
+                        onHover={()=> ob(s.sequence, playModeRef.current)}
+                        onBlur={resetAll}
+                        disabled={playModeRef.current} 
+                        name={s.name}                        
+                        parentWidth={rotatorOffset}    
+                        absoluteOffset={noteRowPadding}
+                    >
+                        <img src = {songNotes[s.note]} />
+                    </SongNote>
+                </AddHoverEffectAbsolute>
             })}
         </SongList>
         <SongMeasure noteMap = {noteMap} playMap = {playMap} wrongNote={wrongNote}/>

@@ -45,7 +45,9 @@ const MapDisplay = styled.div`
 `;
 
 const MapPoint = styled.div`    
-
+    img{
+        position: relative;
+    }
 `;  
 
 const mapLegend = [
@@ -64,31 +66,25 @@ const mapLegend = [
 
 const Map = () => {
     const mapDisplayPadding = 4;
-    const rotatorOffset = 4;
-    // const [mapPoints, setMapPoints] = useState(mapLegend)
-    const { setInfoBar } = useContext(MenuContext);
-    const Test = (props) => {
-            const positionRules =  `
-                left: ${props.x};
-                top: ${props.y};
-            `;            
-            const MapPointWithHover = AddHoverEffectAbsolute(MapPoint, rotatorOffset, mapDisplayPadding, setInfoBar);
-            return <MapPointWithHover key = {props.name} src={Point} name = {props.name} x={props.x} y={props.y} positionRules={positionRules}>                    
-                    <img src = {Point} />
-            </MapPointWithHover>
-    };
+    const rotatorOffset = 4;        
     
     return <MapContainer>
         <h1>map</h1>
         <MapDisplay>
             <img src={MapImage}/>
-            {mapLegend.map((p,i) => {
-                // return <MapPointWithHover key = {p.name} src={Point} name = {p.name} x={p.x} y={p.y}>                    
-                //     <img src = {Point} />
-                // </MapPointWithHover>
-                return <Test name={p.name} x = {p.x} y={p.y}/>
-            })}
-            
+            {
+                mapLegend.map(p => {
+                    const positions = `
+                        left: ${p.x};
+                        top: ${p.y};
+                    `;  
+                    return <AddHoverEffectAbsolute>
+                        <MapPoint key={p.name} name={p.name} parentWidth={mapDisplayPadding} absoluteOffset={rotatorOffset} positions={positions}>                    
+                            <img src = {Point} />
+                        </MapPoint>
+                    </AddHoverEffectAbsolute>
+                })
+            }            
         </MapDisplay>
     </MapContainer>
 }

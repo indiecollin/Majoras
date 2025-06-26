@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import MenuContext from '../MenuContext.jsx';
 import AddHoverEffect from '../helpers/AddHoverEffect.jsx';
@@ -8,7 +8,6 @@ import Heart2 from '../../public/QuestStatus/heart2.png';
 import Heart3 from '../../public/QuestStatus/heart3.png';
 import Heart4 from '../../public/QuestStatus/heart4.png';
 import HeartPiece from '../../public/QuestStatus/heart-piece.png';
-
 
 const heartImages = {
     heart0: Heart0,
@@ -53,10 +52,9 @@ const heartItem = {
     ]  
 }
 
-
+const imgWidth = 160;
 const HeartContainerContainer = () => { //it's actually called a heart container T-T
-    const { setInfoBar, setDescription } = useContext(MenuContext);  
-    // const HeartImageWithHover = AddHoverEffect(HeartImage, 160, setInfoBar);
+    const { setDescription } = useContext(MenuContext);  
     const [_, setHeartPieces] = useState(0);
     const [heart, setHeart] = useState(Heart0);
 
@@ -69,7 +67,11 @@ const HeartContainerContainer = () => { //it's actually called a heart container
     };
 
     return <HeartContainer onClick = {obtainHeartPiece}>
-        <QuestItemWrapper onClick = {() => setDescription(heartItem)}><HeartImageWithHover src = {heart} name = {heartItem.name}/></QuestItemWrapper>
+        <QuestItemWrapper onClick = {() => setDescription(heartItem)}>
+            <AddHoverEffect>
+                <HeartImage src = {heart} name = {heartItem.name} parentWidth={imgWidth} />
+            </AddHoverEffect>
+        </QuestItemWrapper>
     </HeartContainer>
 }
 
