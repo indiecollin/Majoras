@@ -31,7 +31,7 @@ import A from '../public/Interface/promptA.png';
 import B from '../public/Interface/promptB.png';
 import C from '../public/Interface/promptC.png';
 import Stick from '../public/Interface/promptStick.png';
-import { strongTextRed } from './styles/colors.js';
+import { frame } from './styles/colors.js';
 
 const PromptImage = styled.img`
     height: 22px;
@@ -239,36 +239,33 @@ const masks = [
     ]
 ];
 
-const MasksContainer = styled.div`
-    background-color: wheat;
+const MasksContainer = styled.div`    
     display: flex;
     flex-direction: column;    
     h1{
-        margin: 0 auto;
-        text-transform: uppercase;
-        padding: 16px 20px;
+        display: flex;
+        justify-content: center;        
+        text-transform: uppercase;        
         font-size: 50px;
+        background-color: ${frame};        
     }
     &>div{        
-        padding: 0 120px 60px;
-
-        &>div{
-            background-color: #0B0B0F;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
+        display: flex;
     }    
+`;
+
+const MaskGrid = styled.div`
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
 `;
 
 const MaskRow = styled.div`
     display: flex;
     justify-content: space-between;              
       padding: 8px;
-      button{
-        background-color: unset;
-        border: unset;
-      }
+
     img{
         width: 148px;
         z-index: 200;
@@ -277,33 +274,56 @@ const MaskRow = styled.div`
 
 const MaskWrapper = styled.button`
     position: relative;
+    background-color: unset;
+    border: 1px solid transparent;
+    border-radius: 5px;
+
+    &.equipped{
+        border: 1px solid black;
+        &:before{
+            position: absolute;
+            display: block;
+            content: '';
+            border: 7px solid black;
+            border-radius: 5px;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+         }
+
+        &:after{
+            position: absolute;
+            display: block;
+            content: '';
+            border: 6px solid white;
+            border-radius: 5px;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+        }
+    } 
 `;
+
 const Mask = styled.img`
     position: relative;
     top: 0;
     left: 0;
 `;
 
-const ArrowBar = styled.div`
-    position: absolute;
-    background-color: darkgoldenrod;
-    width: 100px;
-    height: 32px;
-    top: 32px;
-    left: 380px;
-    z-index: 100;
-    span{
-        
-    }
-`;
-const BottleBar = styled.span`
-    position: absolute;
-`;
-const QuestBar = styled.span`
-    position: absolute;
+const Frame = styled.div`
+    background-color: ${frame};
+    width: 72px;
 `;
 
-const Masks = () => {
+const Base = styled.div`
+    background-color: ${frame};    
+    height: 36px; 
+    z-index: -1;
+`;
+
+const Masks = (props) => {
     const masksRefs = useRef({});
     masksRefs.current = masks.reduce((acc, cur)=>{
         cur.forEach(mask => {
@@ -311,31 +331,32 @@ const Masks = () => {
         })
         return acc;
     },{});
-    const { setDescription } = useContext(MenuContext);    
+    const {isEquipped} = props;
+    const { setDescription } = useContext(MenuContext);
     const parentWidth = 156;
     const AddHoverEffectWithRef = forwardRef(AddHoverEffect);
     return <MasksContainer>
         <h1>masks</h1>
         <div>
-            <div>{
+            <Frame/>
+            <MaskGrid>{
                 masks.map(row => {
                     return <MaskRow>{
                         row.map(mask => {
-                            mask.equippable = true;
-                            return <MaskWrapper onClick = {() => setDescription(mask)}>                                
+                            mask.equip = true;
+                            return <MaskWrapper className ={isEquipped(mask.name) ? 'equipped' : ''} onClick = {() => setDescription(mask)} disabled={!mask.name}>                                
                                 <AddHoverEffectWithRef ref={masksRefs.current[mask.name]}>
-                                    <Mask src = {mask.img} name={mask.name} parentWidth={parentWidth} />
+                                    <Mask src = {mask.img} name={mask.name} parentWidth={parentWidth} equip/>
                                 </AddHoverEffectWithRef>
                             </MaskWrapper>
                         })
                     }
                     </MaskRow>
                 })}               
-                <ArrowBar/>
-                <BottleBar/>
-                <QuestBar/>
-            </div>            
+            </MaskGrid>
+            <Frame/>          
         </div>
+        <Base/>
     </MasksContainer>
 }
 

@@ -13,12 +13,13 @@ import OcarinaLeft from '../../public/QuestStatus/left.png';
 import OcarinaUp from '../../public/QuestStatus/up.png';
 import OcarinaRight from '../../public/QuestStatus/right.png';
 import OcarinaDown from '../../public/QuestStatus/down.png';
+import InfoBarA from '../../public/Interface/info-bar-A.png';
 
-import soundA from '../../public/QuestStatus/soundA.wav';
-import soundDown from '../../public/QuestStatus/soundDown.wav';
-import soundRight from '../../public/QuestStatus/soundRight.wav';
-import soundLeft from '../../public/QuestStatus/soundLeft.wav';
-import soundUp from '../../public/QuestStatus/soundUp.wav';
+import soundA from '../../public/QuestStatus/sound-a.wav';
+import soundDown from '../../public/QuestStatus/sound-down.wav';
+import soundRight from '../../public/QuestStatus/sound-right.wav';
+import soundLeft from '../../public/QuestStatus/sound-left.wav';
+import soundUp from '../../public/QuestStatus/sound-up.wav';
 import soundSuccess from '../../public/QuestStatus/success.wav';
 import soundError from '../../public/QuestStatus/error.wav';
 
@@ -74,6 +75,8 @@ const inputToRowIndex = (input) => {
         case 'A': return 4;
     }
 };
+
+const instructions = <><img src={InfoBarA}/>to Play Melody</>
 
 const OcarinaSongs = styled.div`
     background-color: lightslategray;
@@ -332,7 +335,8 @@ const OcarinaSongsContainer = () => {
                         onHover={()=> ob(s.sequence, playModeRef.current)}
                         onBlur={resetAll}
                         disabled={playModeRef.current} 
-                        name={s.name}                        
+                        name={s.name}
+                        instructions={instructions}            
                         parentWidth={rotatorOffset}    
                         absoluteOffset={noteRowPadding}
                     >

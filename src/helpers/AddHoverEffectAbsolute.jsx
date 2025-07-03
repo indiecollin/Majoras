@@ -36,19 +36,21 @@ const Orbitter = styled.div`
 `;
 
 const useHover = (props) => {
+  const { setInfoBar, setInstructions } = useContext(MenuContext);
   const [hovered, setHovered] = useState(false);
-  const { setInfoBar, setToEquip } = useContext(MenuContext);
   const eventHandlers = useMemo(() => ({
     onMouseOver() { 
         if(props.disabled) return;
         setHovered(true);
-        setInfoBar(props.name)
+        setInfoBar(props.name);
+        setInstructions(props.instructions)
         props.onHover && props.onHover();
     },
     onMouseOut() { 
         if(props.disabled) return;
         setHovered(false); 
         setInfoBar('\u00A0');
+        setInstructions();
         props.onBlur && props.onBlur();
     }
   }), []);
@@ -57,6 +59,7 @@ const useHover = (props) => {
 }
 
 const AddHoverEffectAbsolute = (props) => {
+    const { selecting } = useContext(MenuContext);
     const { parentWidth, absoluteOffset, positions} = props.children.props;
     const Component = props.children.type;
 
@@ -97,7 +100,7 @@ const AddHoverEffectAbsolute = (props) => {
     return <HoverContainer positionRules = {positions} flexRules={ flexStyles }>            
         <Component {...props.children.props} {...eventHandlers} />
         {
-          hovered && <>
+          hovered && !selecting && <>
           <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} top left/>
           <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} top right/>
           <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} bottom left/>

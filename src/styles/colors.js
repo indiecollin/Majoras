@@ -1,3 +1,10 @@
+export const frame = '#A0A06B';
 export const nextPromptBlue = '#32CAF8';
 export const strongTextRed = '#D33A4E';
 export const questItemYellow = '#F5F346';
+export const fireArrowRedPrimary = '#EC110D';
+export const fireArrowRedSecondary = '#7E0000';
+export const iceArrowBluePrimary = '#1B5BDF';
+export const iceArrowBlueSecondary = '#012A7F';
+export const lightArrowYellowPrimary = '#EDEE88';
+export const lightArrowYellowSecondary = '#B8A307';

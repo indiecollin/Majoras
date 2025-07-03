@@ -15,12 +15,11 @@ const HoverContainer = styled.div`
 
 const Orbitter = styled.div`
     background-color: goldenrod;
-    
     width: 24px;
     height: 24px;
     border-radius: 50%;
     animation-delay: ${props => props.delay};
-    z-index: 1000;
+    z-index: 1010;
     position: absolute;
     ${props => props.positionRules}
     transition: transform 2s;
@@ -30,22 +29,28 @@ const Orbitter = styled.div`
 
 const useHover = (props, ref) => {
   const [hovered, setHovered] = useState(false);
-  const { setInfoBar, setToEquip } = useContext(MenuContext);
+  const { setInfoBar, setInstructions, setHoveredEquip } = useContext(MenuContext);
   const eventHandlers = useMemo(() => ({    
     onMouseOver() {
         setHovered(true); 
         setInfoBar(props.name);
-        if(setToEquip){
-            console.log("show me the morty");            
+        if(props.equip){
+            let equipInfo = {...ref.current.getBoundingClientRect().toJSON()};
+            equipInfo.image = props.src;
+            equipInfo.name = props.name;
+            equipInfo.bottle = props.bottle;
+            setHoveredEquip(equipInfo);         
+        } else {
+            setInstructions(props.instructions);
         }
-        let test = ref;
         props.onHover && props.onHover();    
     },
     onMouseOut() { 
         setHovered(false);
         setInfoBar('\u00A0');
-        if(setToEquip){            
-            setToEquip();
+        setInstructions();
+        if(props.equip){            
+            setHoveredEquip({});
         }
         props.onBlur && props.onBlur();
     }
@@ -54,7 +59,8 @@ const useHover = (props, ref) => {
   return [hovered, eventHandlers];
 }
 
-const AddHoverEffect = ((props, ref) => {   
+const AddHoverEffect = ((props, ref) => {
+  const { selecting } = useContext(MenuContext); 
   const { parentWidth } = props.children.props;
   const Component = props.children.type;
   const orbitterRadius = 12;  
@@ -111,7 +117,7 @@ const AddHoverEffect = ((props, ref) => {
        return <HoverContainer positionRules = {mirrorStyles} flexRules={ flexStyles }>
           <Component {...props.children.props} {...eventHandlers} {...((ref.current || ref.current === null) ? { ref: ref } : {})}/>
           {
-            hovered && <>
+            hovered && !selecting && <>
                 <Orbitter delay={'0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={hovered ? 'hover-orbitter' : ''} />
                 <Orbitter delay={'-0.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={hovered ? 'hover-orbitter' : ''} />
                 <Orbitter delay={'-1.0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={hovered ? 'hover-orbitter' : ''} />

@@ -15,6 +15,8 @@ import GildedSword from '../public/QuestStatus/gilded-sword.png';
 import MirrorShield from '../public/QuestStatus/mirror-shield.png';
 import Quiver from '../public/QuestStatus/quiver.png';
 import BombBag from '../public/QuestStatus/bomb-bag.png';
+import InfoBarA from '../public/Interface/info-bar-A.png';
+import { frame } from './styles/colors.js';
 
 const items = {
     odalwa: {
@@ -78,13 +80,12 @@ const items = {
 };
 
 const QuestStatusContainer = styled.div`
-    background-color: wheat;
+    background-color: ${frame};
     display: flex;
     flex-direction: column;    
     h1{
         margin: 0 auto;
-        text-transform: uppercase;
-        padding: 16px 20px;
+        text-transform: uppercase;        
         font-size: 50px;
     }
     button{
@@ -169,6 +170,7 @@ const EquipmentSlot = styled.div`
 
 const questItemWidth = 120;
 const bomberNotebookWidth = 160;
+const bomberNotebookInstructions = <><img src={InfoBarA}/>to View Notebook</>
 
 const QuestStatus = () => {
     const { setDescription } = useContext(MenuContext);        
@@ -178,7 +180,7 @@ const QuestStatus = () => {
             <GridCellNoteBook>
                 <QuestItemWrapper onClick = {() => {}}>
                     <AddHoverEffect>
-                        <QuestItem src={NoteBook} name = {"Bomber's Notebook"} parentWidth={bomberNotebookWidth} />
+                        <QuestItem src={NoteBook} name = {"Bomber's Notebook"} parentWidth={bomberNotebookWidth} instructions={bomberNotebookInstructions}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
             </GridCellNoteBook>

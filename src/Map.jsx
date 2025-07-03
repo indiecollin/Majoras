@@ -1,18 +1,17 @@
 import React, { useState, useContext, useMemo } from 'react';
 import styled from 'styled-components';
 import AddHoverEffectAbsolute from './helpers/AddHoverEffectAbsolute.jsx';
-import MenuContext from './MenuContext.jsx';
 import MapImage from '../public/Map/map.png';
 import Point from '../public/Map/point.png';
+import { frame } from './styles/colors.js';
 
 const MapContainer = styled.div`
-        background-color: wheat;
+        background-color: ${frame};
         display: flex;
         flex-direction: column;    
         h1{
             margin: 0 auto;
-            text-transform: uppercase;
-            padding: 16px 20px;
+            text-transform: uppercase;            
             font-size: 50px;
         }
         /* &>div{        

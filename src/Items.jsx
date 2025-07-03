@@ -28,7 +28,7 @@ import A from '../public/Interface/promptA.png';
 import B from '../public/Interface/promptB.png';
 import C from '../public/Interface/promptC.png';
 import Stick from '../public/Interface/promptStick.png';
-import { strongTextRed } from './styles/colors.js';
+import { frame } from './styles/colors.js';
 
 const InputImage = styled.img`
     height: 22px;
@@ -96,6 +96,7 @@ const items = [
         },
         {
             img: '', 
+            name: '',
             prompts: [<p></p>]
         }
     ],
@@ -138,6 +139,7 @@ const items = [
         },
         {
             img: '', 
+            name: '',
             prompts: [<p></p>]
         }
     ],
@@ -183,6 +185,7 @@ const items = [
         },
         {
             img: '', 
+            name: '',
             prompts: [<p></p>]
         }
     ],
@@ -190,131 +193,168 @@ const items = [
         {
             img: Bottle, 
             name: 'Empty Bottle',
-            prompts: [<>Carry various items in this. Contain or release them with <Input>C</Input>.</>]
+            prompts: [<>Carry various items in this. Contain or release them with <Input>C</Input>.</>],
+            bottle: 1
         },
         {
             img: Bottle, 
             name: 'Empty Bottle',
-            prompts: [<>Carry various items in this. Contain or release them with <Input>C</Input>.</>]
+            prompts: [<>Carry various items in this. Contain or release them with <Input>C</Input>.</>],
+            bottle: 2
         },
         {
             img: Bottle, 
             name: 'Empty Bottle',
-            prompts: [<>Carry various items in this. Contain or release them with <Input>C</Input>.</>]
+            prompts: [<>Carry various items in this. Contain or release them with <Input>C</Input>.</>],
+            bottle: 3
         },
         {
             img: Bottle, 
             name: 'Empty Bottle',
-            prompts: [<>Carry various items in this. Contain or release them with <Input>C</Input>.</>]
+            prompts: [<>Carry various items in this. Contain or release them with <Input>C</Input>.</>],
+            bottle: 4
         },
         {
             img: Bottle, 
             name: 'Empty Bottle',
-            prompts: [<>Carry various items in this. Contain or release them with <Input>C</Input>.</>]
+            prompts: [<>Carry various items in this. Contain or release them with <Input>C</Input>.</>],
+            bottle: 5
         },
         {
             img: Bottle, 
             name: 'Empty Bottle',
-            prompts: [<>Carry various items in this. Contain or release them with <Input>C</Input>.</>]
+            prompts: [<>Carry various items in this. Contain or release them with <Input>C</Input>.</>],
+            bottle: 6
         }
     ]
 ];
 
 const ItemsContainer = styled.div`
-    background-color: wheat;
     display: flex;
-    flex-direction: column;    
+    flex-direction: column;
+    position: relative;
+    
     h1{
-        margin: 0 auto;
-        text-transform: uppercase;
-        padding: 16px 20px;
+        display: flex;
+        justify-content: center;        
+        text-transform: uppercase;        
         font-size: 50px;
+        background-color: ${frame};        
     }
-    &>div{        
-        padding: 0 120px 60px;
+    &>div{                
+        display: flex;
+    } 
+`;
 
-        &>div{
-            background-color: #0B0B0F;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-    }    
+const ItemGrid = styled.div`
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
 `;
 
 const ItemRow = styled.div`
     display: flex;
     justify-content: space-between;              
-      padding: 8px;
-      button{
-        background-color: unset;
-        border: unset;
-      }
+    padding: 8px;      
     img{
         width: 148px;
         z-index: 200;
     }
 `;
+
 const ItemWrapper = styled.button`
     position: relative;
+    background-color: unset;
+    border: 1px solid transparent;
+    border-radius: 5px;
+
+    &.equipped{
+        border: 1px solid black;
+        &:before{
+            position: absolute;
+            display: block;
+            content: '';
+            border: 7px solid black;
+            border-radius: 5px;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+         }
+
+        &:after{
+            position: absolute;
+            display: block;
+            content: '';
+            border: 6px solid white;
+            border-radius: 5px;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+        }
+    }    
 `;
+
 
 const Item = styled.img`
     position: relative;
     top: 0;
     left: 0;
+    ${props => props?.name?.includes('Arrow') ? 'opacity: 0.9;' : ''}
 `;
 
-const ArrowBar = styled.div`
-    position: absolute;
-    background-color: darkgoldenrod;
-    width: 100px;
-    height: 32px;
-    top: 32px;
-    left: 380px;
-    z-index: 100;
-`;
-const BottleBar = styled.span`
-    position: absolute;
-`;
-const QuestBar = styled.span`
-    position: absolute;
+const Frame = styled.div`
+    background-color: ${frame};
+    width: 72px;
 `;
 
-const Items = () => {
+const Base = styled.div`
+    background-color: ${frame};    
+    height: 36px; 
+    z-index: -1;
+`;
+
+const Items = (props) => {
     const itemsRefs = items.reduce((acc, cur)=>{
         cur.forEach(item => {
-            acc[item.name] = useRef(null);
+            let refTag = item.name;
+            if(refTag && item.bottle) refTag += item.bottle;
+            acc[refTag] = useRef(null);
         })
         return acc;
     },{});
-
-
-    const { setDescription } = useContext(MenuContext);    
+    const { setDescription } = useContext(MenuContext);   
+    const { isEquipped, setBowRef, setFireArrowRef, setIceArrowRef, setLightArrowRef } = props;    
+    setBowRef(itemsRefs["Hero's Bow"]);
+    setFireArrowRef(itemsRefs["Fire Arrow"]);
+    setIceArrowRef(itemsRefs["Ice Arrow"]);
+    setLightArrowRef(itemsRefs["Light Arrow"]);
     const parentWidth = 156;    
     const AddHoverEffectWithRef = forwardRef(AddHoverEffect);
     return <ItemsContainer>
         <h1>select item</h1>
         <div>
-            <div>{
+            <Frame/>
+            <ItemGrid>{
                 items.map(row => {
                     return <ItemRow>{
                         row.map(item => {
-                            item.equippable = true;                                                                   
-                            return <ItemWrapper onClick = {() => setDescription(item)}>
-                                <AddHoverEffectWithRef ref={itemsRefs[item.name]}>
-                                    <Item src = {item.img} name = {item.name} parentWidth={parentWidth}/>
-                                </AddHoverEffectWithRef>                               
+                            item.equip = true;                                                                                     
+                            return <ItemWrapper className ={isEquipped(item.name, item.bottle) ? 'equipped' : ''} onClick={() => setDescription(item)} disabled={!item.name} >
+                                <AddHoverEffectWithRef ref={itemsRefs[item.name + (item.bottle ?? '')] }>
+                                    <Item src={item.img} name={item.name} parentWidth={parentWidth} bottle={item.bottle} equip/>
+                                </AddHoverEffectWithRef>                                
                             </ItemWrapper>
                         })
                     }
                     </ItemRow>
                 })}
-                <ArrowBar/>
-                <BottleBar/>
-                <QuestBar/>
-            </div>            
+            </ItemGrid>
+            <Frame/>         
         </div>
+        <Base/>
     </ItemsContainer>
 };
 

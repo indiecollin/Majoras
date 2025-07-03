@@ -16,6 +16,7 @@ const DescriptionModalContainer = styled.div`
 const DescriptionModalWrapper = styled.div`
     position: relative;
     display: flex;
+    z-index: 2000;
     &>img{
         width: 100px;
         height: 100px;
@@ -29,7 +30,7 @@ const TextContainer = styled.div`
     font-size: 20px;
 
     &>p{
-        color: ${props => props.equippable ? strongTextRed : questItemYellow};
+        color: ${props => props.equip ? strongTextRed : questItemYellow};
         font-weight: 700;    
     }
 `;
@@ -62,7 +63,7 @@ const PromptButton = styled.button`
 
 const DescriptionModal = (props) => {
     const [page, setPage] = useState(0);
-    const {img, name, prompts, equippable} = props.description;
+    const {img, name, prompts, equip} = props.description;
     const { setDescription } = useContext(MenuContext);
     const nextPrompt = (prompts) => {
         //if last page
@@ -76,7 +77,7 @@ const DescriptionModal = (props) => {
     return <DescriptionModalContainer>
         <DescriptionModalWrapper>
             <img src={img}/>
-            <TextContainer equippable={equippable}>
+            <TextContainer equip={equip}>
                 <p>{!page ? name : '\u00A0' }</p>
                 <Description>{prompts[page]}</Description>
             </TextContainer>
