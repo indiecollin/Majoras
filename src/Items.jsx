@@ -53,8 +53,8 @@ const ItemWrapper = styled.button`
     background-color: unset;
     border: 1px solid transparent;
     border-radius: 5px;
-    cursor: ${props => props.disabled || props.disableLite ? 'unset' : 'pointer'};
-    pointer-events: ${props => props.disableLite ? 'none' : 'unset'};
+    cursor: ${props => props.disabled || props.disablelite ? 'unset' : 'pointer'};
+    pointer-events: ${props => props.disablelite ? 'none' : 'unset'};
 
     &.equipped{
         border: 1px solid black;
@@ -149,7 +149,7 @@ const Items = (props) => {
                     return <ItemRow key={`item-row-${i}`}>{
                         row.map(item => {
                             item.equip = true;                                                                                     
-                            return <ItemWrapper key={item.name + (item.bottle ?? '')} className ={isEquipped(item.name, item.bottle) ? 'equipped' : ''} onClick={() => setDescription(item)} disabled={!isActive || !item.name} disableLite={description}>
+                            return <ItemWrapper key={item.name + (item.bottle ?? '')} className ={isEquipped(item.name, item.bottle) ? 'equipped' : ''} onClick={() => setDescription(item)} disabled={!isActive || !item.name} disablelite={description}>
                                 <AddHoverEffectWithRef ref={itemsRefs[item.name + (item.bottle ?? '')]} color={itemHover}>
                                     <Item src={item.img} name={item.name} parentWidth={parentWidth} bottle={item.bottle} disabled={!isActive || !item.name || description} equip/>
                                 </AddHoverEffectWithRef>                                

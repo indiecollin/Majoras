@@ -5,6 +5,11 @@ import { strongTextRed, nextPromptBlue, questItemYellow } from './styles/colors.
 import dialogueNext from '../public/Interface/dialogue-next.wav';
 import dialogueDone from '../public/Interface/dialogue-done.wav';
 
+const sounds = {
+    dialogueNext: new Audio(dialogueNext),
+    dialogueDone: new Audio(dialogueDone),
+}
+
 const DescriptionModalContainer = styled.div`
     position: absolute;    
     background-color: #00000080;   
@@ -91,10 +96,12 @@ const DescriptionModal = (props, ref) => {
 
     useEffect(() => {
         if(prompts.length === page + 1){
-            new Audio(dialogueDone).play();
+            sounds['dialogueDone'].load();
+            sounds['dialogueDone'].play();
         }
         else{
-            new Audio(dialogueNext).play();
+            sounds['dialogueNext'].load();
+            sounds['dialogueNext'].play();
         }
     }, [prompts, page]);
     

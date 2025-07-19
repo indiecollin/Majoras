@@ -20,14 +20,6 @@ import Base from './svgs/Base.jsx';
 import DescriptionModal from '../src/DescriptionModal.jsx';
 import { delay, mod } from './helpers/index.js';
 import { rotateButtonInfo } from './data/index.js';
-import getHeart from '../public/Interface/get-heart.wav';
-import fireArrowSelectSound from '../public/Interface/fire-arrow-effect.wav';
-import iceArrowSelectSound from '../public/Interface/ice-arrow-effect.wav';
-import lightArrowSelectSound from '../public/Interface/light-arrow-effect.wav';
-import itemSelectSound from '../public/Interface/item-select.wav';
-import rotateMenuSoundLeft from '../public/Interface/menu-left.wav';
-import rotateMenuSoundRight from '../public/Interface/menu-right.wav';
-
 import {
     buttonYellow,
     buttonYellowBorder,
@@ -39,6 +31,23 @@ import {
     lightArrowYellowPrimary,
     lightArrowYellowSecondary
 } from './styles/colors.js';
+import getHeart from '../public/Interface/get-heart.wav';
+import fireArrowSelect from '../public/Interface/fire-arrow-effect.wav';
+import iceArrowSelect from '../public/Interface/ice-arrow-effect.wav';
+import lightArrowSelect from '../public/Interface/light-arrow-effect.wav';
+import itemSelect from '../public/Interface/item-select.wav';
+import rotateMenuLeft from '../public/Interface/menu-left.wav';
+import rotateMenuRight from '../public/Interface/menu-right.wav';
+
+const sounds = {
+    getHeart: new Audio(getHeart),
+    fireArrowSelect: new Audio(fireArrowSelect),
+    iceArrowSelect: new Audio(iceArrowSelect),
+    lightArrowSelect: new Audio(lightArrowSelect),
+    itemSelect: new Audio(itemSelect),
+    rotateMenuLeft: new Audio(rotateMenuLeft),    
+    rotateMenuRight: new Audio(rotateMenuRight)
+}
 
 const count = 4;
 const menusWidth = 1600;
@@ -304,18 +313,18 @@ const MajorasMenu  = () => {
             name = "Hero's Bow";    
             if(element === 'Fire'){
                 effectImage = FireEffect;
-                selectSound = fireArrowSelectSound;
+                selectSound = sounds['fireArrowSelect'];
             } else if(element === 'Ice'){
                 effectImage = IceEffect;
-                selectSound = iceArrowSelectSound;
+                selectSound = sounds['iceArrowSelect'];
             } else if(element === 'Light'){
                 effectImage = LightEffect;
-                selectSound = lightArrowSelectSound;
+                selectSound = sounds['lightArrowSelect'];
             }
             setArrowAnimate1(true);
             setScrollX(window.scrollX);
             setScrollY(window.scrollY);
-            new Audio(selectSound).play();
+            selectSound.play();
             await delay(1000);            
             setArrowAnimate2(true);
             await delay(500);
@@ -405,7 +414,8 @@ const MajorasMenu  = () => {
             });
             setScrollX(window.scrollX);
             setScrollY(window.scrollY);
-            new Audio(itemSelectSound).play();
+            sounds['itemSelect'].load();
+            sounds['itemSelect'].play();
         }
       
         await delay(0);
@@ -459,7 +469,13 @@ const MajorasMenu  = () => {
         })
         setInfoBar(rotateButtonInfo[mod(nextMenu + (clockwise ? -1 : 1), 4)]);
         setHoveredEquip();
-        clockwise ? new Audio(rotateMenuSoundRight).play() : new Audio(rotateMenuSoundLeft).play();
+        if(clockwise){
+            sounds['rotateMenuRight'].load();
+            sounds['rotateMenuRight'].play();
+        } else {
+            sounds['rotateMenuLeft'].load();
+            sounds['rotateMenuLeft'].play();
+        }        
     }
 
     const increaseHealth = (points) =>{
@@ -471,7 +487,8 @@ const MajorasMenu  = () => {
                     return nextHealth;
                 });
                 if(nextHealth%4 == 0){
-                    new Audio(getHeart).play();
+                    sounds[getHeart].load();
+                    sounds[getHeart].play();
                 }
             }, (i+1) * 150);  
         })

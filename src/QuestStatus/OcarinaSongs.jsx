@@ -26,6 +26,16 @@ import soundUp from '../../public/QuestStatus/sound-up.wav';
 import soundSuccess from '../../public/QuestStatus/success.wav';
 import soundError from '../../public/QuestStatus/error.wav';
 
+const sounds = {
+    soundA: new Audio(soundA),
+    soundDown: new Audio(soundDown),
+    soundRight: new Audio(soundRight),
+    soundLeft: new Audio(soundLeft),
+    soundUp: new Audio(soundUp),
+    soundSuccess: new Audio(soundSuccess),
+    soundError: new Audio(soundError)
+}
+
 const songNotes = {
     white: WhiteNote,
     green: GreenNote,
@@ -59,14 +69,14 @@ const ocarinaInputSettings = {
     }
 };
 
-const sounds = {
-    '↑': soundUp,
-    '←': soundLeft,
-    '→': soundRight,
-    '↓': soundDown,
-    'A': soundA,
-    [true]: soundSuccess,
-    [false]: soundError
+const soundInputs = {
+    '↑': 'soundUp',
+    '←': 'soundLeft',
+    '→': 'soundRight',
+    '↓': 'soundDown',
+    'A': 'soundA',
+    [true]: 'soundSuccess',
+    [false]: 'soundError'
 };
 
 const inputToRowIndex = (input) => {
@@ -162,7 +172,7 @@ const OcarinaInput = styled.img`
     height: 48px;
     background-color: ${props => props.pending && !props.wrong ? 'rgba(128, 128, 128, .75)' : props.color};
     opacity: ${props => props.show ? 1 : 0};
-    transition: opacity .25s ease-in-out; 
+    transition: opacity .25s ease-in-out ${props => !props.show ? ', background-color 1s linear 1s' : ''};
     border-radius: 50%;
 `;
 
@@ -243,7 +253,8 @@ const OcarinaSongsContainer = () => {
                     setDisabled(false);
                     return;
                 }
-                new Audio(sounds[input]).play();
+                sounds[soundInputs[input]].load();
+                sounds[soundInputs[input]].play();
                 setNoteMap(()=>{
                     newNoteMap = newNoteMap.map((row, i)=>{                        
                         const rowInputKey = inputs[i];
@@ -304,23 +315,24 @@ const OcarinaSongsContainer = () => {
         let input;
         if(e.key === 'w'){
             input = '↑'
-            sound = sounds[input];                            
+            sound = soundInputs[input];                            
         } else if(e.key === 'a'){
             input = '←'
-            sound = sounds[input];                
+            sound = soundInputs[input];                
         } else if(e.key === 'd'){
             input = '→'
-            sound = sounds[input];                
+            sound = soundInputs[input];                
         } else if(e.key === 's'){
             input = '↓'
-            sound = sounds[input];                
+            sound = soundInputs[input];                
         } else if(e.key === 'z'){
             input = 'A'
-            sound = sounds[input];                
+            sound = soundInputs[input];                
         } else {
             return;
         }
-        new Audio(sound).play();
+        sounds[sound].load();
+        sounds[sound].play();
         if(input === curSong.sequence[playIndex]){
             setPlayMap(prevState => prevState.map((noteSlot, noteIndex) => noteIndex === playIndex ? false : noteSlot));
             if(playIndex + 1 < curSong.sequence.length){//more notes to play
@@ -329,7 +341,8 @@ const OcarinaSongsContainer = () => {
             else{ // success sound and reset
                 setDisabled(true);
                 setTimeout(() => {
-                    new Audio(soundSuccess).play();                                        
+                    sounds['soundSuccess'].load();
+                    sounds['soundSuccess'].play();                                        
                     setTimeout(() => {
                         resetAll();                        
                         setDisabled(false);
@@ -337,7 +350,8 @@ const OcarinaSongsContainer = () => {
                 }, 1000);
             }
         } else { //wrong note
-            new Audio(soundError).play();
+            sounds['soundError'].load();
+            sounds['soundError'].play();
             setDisabled(true);
             setWrongNote({row: inputToRowIndex(input), col: playIndex});
             setTimeout(() => {

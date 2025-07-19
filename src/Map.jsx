@@ -7,7 +7,11 @@ import { frame } from './styles/colors.js';
 import { mod } from './helpers/index.js';
 import MapImage from '../public/Map/map.png';
 import Point from '../public/Map/point.png';
-import cursorSound from '../public/Interface/cursor.wav';
+import cursor from '../public/Interface/cursor.wav';
+
+const sounds = {
+    cursor: new Audio(cursor),
+}
 
 const MapContainer = styled.div`        
     display: flex;
@@ -48,7 +52,7 @@ const MapPoint = styled.div`
     img{
         position: relative;
     }    
-    pointer-events: ${props => props.disableLite ? 'none' : 'unset'};
+    pointer-events: ${props => props.disablelite ? 'none' : 'unset'};
 `;  
 
 const Map = () => {
@@ -73,8 +77,8 @@ const Map = () => {
                             parentWidth={mapDisplayPadding} 
                             absoluteOffset={rotatorOffset} 
                             positions={positions} 
-                            onHover={() => new Audio(cursorSound).play()}
-                            disableLite={description}
+                            onHover={() => sounds[cursor].play()}
+                            disablelite={description}
                             disabled={!isActive}
                         >                    
                             <img src = {Point} />

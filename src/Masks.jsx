@@ -53,8 +53,8 @@ const MaskWrapper = styled.button`
     background-color: unset;
     border: 1px solid transparent;
     border-radius: 5px;
-    cursor: ${props => props.disabled || props.disableLite ? 'unset' : 'pointer'};
-    pointer-events: ${props => props.disableLite ? 'none' : 'unset'};
+    cursor: ${props => props.disabled || props.disablelite ? 'unset' : 'pointer'};
+    pointer-events: ${props => props.disablelite ? 'none' : 'unset'};
 
     &.equipped{
         border: 1px solid black;
@@ -140,7 +140,7 @@ const Masks = (props) => {
                     return <MaskRow key={`mask-row-${i}`}>{
                         row.map(mask => {
                             mask.equip = true;
-                            return <MaskWrapper key = {mask.name} className ={isEquipped(mask.name) ? 'equipped' : ''} onClick = {() => setDescription(mask)} disableLite={description} disabled={!isActive || !mask.name}>                                
+                            return <MaskWrapper key = {mask.name} className ={isEquipped(mask.name) ? 'equipped' : ''} onClick = {() => setDescription(mask)} disablelite={description} disabled={!isActive || !mask.name}>                                
                                 <AddHoverEffectWithRef ref={masksRefs.current[mask.name]} color={itemHover}>
                                     <Mask src = {mask.img} name={mask.name} parentWidth={parentWidth} disabled={!isActive || !mask.name || description} equip/>
                                 </AddHoverEffectWithRef>
