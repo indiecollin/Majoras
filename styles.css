@@ -3,6 +3,11 @@
   box-sizing: border-box;
 }
 
+/* 1.5 Remove focus outlines*/
+*:focus, *:focus-visible {
+    outline: none;
+}
+
 /* 2. Remove default margin */
 * {
   margin: 0;
@@ -48,7 +53,7 @@ h1, h2, h3, h4, h5, h6 {
 
 body{
     margin: 20px 80px 20px;
-    background-color: #eeeeee;    
+    background-color: #301934;
     margin: 0;
     font-family: sans-serif;
 }
@@ -58,18 +63,69 @@ body{
     flex-direction: column;
 }
 
+#modal-root{
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .hover-orbitter {
-    animation: revolve 2s linear infinite;
+    animation: revolve 2s linear infinite, pulse 2.5s infinite ease-in-out alternate 0s;
     /* TOFIX: having weird issues fixing the specificity for this without desyncing orbitters. 
     might just find a way to move animations into src folder anyways since it's weird to be editing css in 2 places like this   */
     opacity: 1 !important;
 }
   
-  @keyframes revolve {
+@keyframes revolve {
     from {
       transform: rotate(0deg);
     }
     to {
       transform: rotate(360deg);
     }
+}
+
+@keyframes pulse {
+    from {
+        background-color: brightness(100%); /* Original brightness */
+    }
+    to {
+        filter: brightness(500%); /* Back to original */
+    }
+}
+
+@keyframes odalwa {
+  from {
+    filter: unset;
+  }
+  to {
+    filter: opacity(0.666) drop-shadow(0 0 0 #228B22) drop-shadow(0 0 0 #228B22);
+  }
+}
+
+@keyframes goht {
+  from {
+    filter: unset;
+  }
+  to {
+    filter: opacity(0.666) drop-shadow(0 0 0 #C41E3A) drop-shadow(0 0 0 #C41E3A);
+  }
+}
+
+@keyframes gyorg {
+  from {
+    filter: unset;
+  }
+  to {
+    filter: opacity(0.666) drop-shadow(0 0 0 #0437F2) drop-shadow(0 0 0 #0437F2);
+  }
+}
+
+@keyframes twinmold {
+  from {
+    filter: unset;
+  }
+  to {
+    filter: opacity(0.666) drop-shadow(0 0 0 #FFBF00) drop-shadow(0 0 0 #FFBF00);
+  }
 }

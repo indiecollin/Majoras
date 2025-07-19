@@ -1,22 +1,27 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import styled from 'styled-components';
 import MenuContext from './MenuContext.jsx';
 import { strongTextRed, nextPromptBlue, questItemYellow } from './styles/colors.js';
+import dialogueNext from '../public/Interface/dialogue-next.wav';
+import dialogueDone from '../public/Interface/dialogue-done.wav';
 
 const DescriptionModalContainer = styled.div`
     position: absolute;    
     background-color: #00000080;   
     border-radius: 20px;
-    width: 440px;
-    min-width: 0; // 
-    max-width: 440px;
+    width: 480px;
+    min-width: 0;
+    max-width: 480px;
+    height: 132px;    
+    z-index: 2000;
 `;
 
 //used as relative parent to position some elements
 const DescriptionModalWrapper = styled.div`
     position: relative;
     display: flex;
-    z-index: 2000;
+    align-items: center;
+    min-height: 132px;   
     &>img{
         width: 100px;
         height: 100px;
@@ -25,13 +30,16 @@ const DescriptionModalWrapper = styled.div`
 
 const TextContainer = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: column;    
     flex-wrap: wrap;
     font-size: 20px;
+    padding: 8px 20px 20px 8px;
+    margin-bottom: auto;
 
     &>p{
         color: ${props => props.equip ? strongTextRed : questItemYellow};
-        font-weight: 700;    
+        font-weight: 700;
+        margin-right: auto;    
     }
 `;
 
@@ -58,10 +66,16 @@ const PromptButton = styled.button`
     top: 100%;
     width: 32px;
     height: 32px;
+    border: unset;
+    padding: 0;
     background-color: ${nextPromptBlue};
+    border-radius: 2px;
+    filter: blur(2px);
+    cursor: pointer;
+    ${props => !props.last ? 'clip-path: polygon(0% 0%, 0% 15%, 50% 66.6%, 100% 15%, 100% 0%);' : ''}
 `;
 
-const DescriptionModal = (props) => {
+const DescriptionModal = (props, ref) => {
     const [page, setPage] = useState(0);
     const {img, name, prompts, equip} = props.description;
     const { setDescription } = useContext(MenuContext);
@@ -74,14 +88,24 @@ const DescriptionModal = (props) => {
             setPage(1);
         }        
     }
-    return <DescriptionModalContainer>
+
+    useEffect(() => {
+        if(prompts.length === page + 1){
+            new Audio(dialogueDone).play();
+        }
+        else{
+            new Audio(dialogueNext).play();
+        }
+    }, [prompts, page]);
+    
+    return <DescriptionModalContainer ref={ref}>
         <DescriptionModalWrapper>
             <img src={img}/>
             <TextContainer equip={equip}>
                 <p>{!page ? name : '\u00A0' }</p>
                 <Description>{prompts[page]}</Description>
             </TextContainer>
-            <PromptButton onClick = {() => {nextPrompt(prompts)}}/>
+            <PromptButton onClick = {() => {nextPrompt(prompts)}} last={prompts.length === page + 1}/>
         </DescriptionModalWrapper>
     </DescriptionModalContainer>
 }

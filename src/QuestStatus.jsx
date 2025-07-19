@@ -1,88 +1,20 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import MenuContext from './MenuContext.jsx';
-// import BombersNoteBook from './';
+import BombersNotebook from './BombersNotebook.jsx';
 import GridCellHeartContainer from './QuestStatus/HeartContainer.jsx';
 import GridCellOcarinaSongs from './QuestStatus/OcarinaSongs.jsx';
 import AddHoverEffect from './helpers/AddHoverEffect.jsx';
-import Strong from './helpers/StrongText.jsx';
-import NoteBook from '../public/QuestStatus/bombers-notebook.png';
-import Odalwa from '../public/QuestStatus/odalwa.png';
-import Goht from '../public/QuestStatus/goht.png';
-import Gyorg from '../public/QuestStatus/gyorg.png';
-import Twinmold from '../public/QuestStatus/twinmold.png';
-import GildedSword from '../public/QuestStatus/gilded-sword.png';
-import MirrorShield from '../public/QuestStatus/mirror-shield.png';
-import Quiver from '../public/QuestStatus/quiver.png';
-import BombBag from '../public/QuestStatus/bomb-bag.png';
-import InfoBarA from '../public/Interface/info-bar-A.png';
-import { frame } from './styles/colors.js';
-
-const items = {
-    odalwa: {
-        img: Odalwa, 
-        name: "Odalwa's Remains",
-        prompts: [
-            <>The remains of the boss in Woodfall Temple.</>
-        ]  
-    },
-    goht: {
-        img: Goht, 
-        name: "Goht's Remains",
-        prompts: [
-            <>The remains of the boss in Snowhead Temple.</>
-        ]  
-    },
-    gyorg: {
-        img: Gyorg, 
-        name: "Gyorg's Remains",
-        prompts: [
-            <>The remains of the boss in Great Bay Temple.</>
-        ]  
-    },
-    twinmold: {
-        img: Twinmold, 
-        name: "Twinmold's Remains",
-        prompts: [
-            <>The remains of the boss in Stone Tower Temple.</>
-        ]  
-    },
-    sword: {
-        img: GildedSword, 
-        name: 'Gilded Sword',
-        prompts: [
-            <>Forged from gold dust and the Razor Sword, it's <Strong>unbreakable</Strong>.</>
-        ]  
-    },
-    shield: {
-        img: MirrorShield, 
-        name: 'Mirror Shield',
-        prompts: [
-            <>Used like the <Strong>Hero's Shield</Strong>, it can reflect certain rays of <Strong>light</Strong>.</>
-        ]  
-    },
-    quiver: {
-        img: Quiver, 
-        name: 'Biggest Quiver',
-        alternate: 'Quiver (Holds 50)',
-        prompts: [
-            <>This can hold up to a maximum of <Strong>50 arrows</Strong>.</>
-        ]  
-    },
-    bombBag: {
-        img: BombBag, 
-        name: 'Biggest Bomb Bag',
-        alternate: 'Bomb Bag (Holds 40)',
-        prompts: [
-            <>This can hold up to a maximum of <Strong>40 Bombs</Strong>.</>
-        ]  
-    }
-};
+import Modal from './Modal.jsx';
+import { questItems as items } from './data/questItemsData.jsx';
+import { frame, darkFrame, questHover } from './styles/colors.js';
+import { mod } from './helpers/index.js';
 
 const QuestStatusContainer = styled.div`
-    background-color: ${frame};
+    position: relative;
     display: flex;
     flex-direction: column;    
+    background-color: ${frame};
     h1{
         margin: 0 auto;
         text-transform: uppercase;        
@@ -91,6 +23,14 @@ const QuestStatusContainer = styled.div`
     button{
         background-color: unset;
         border: none;
+    }
+
+    &:before{
+        position: absolute;
+        z-index: 0;
+        content: '';
+        inset: 0;
+        filter: url(#grainy);        
     }
 `;
 
@@ -112,15 +52,24 @@ const QuestStatusGrid = styled.div`
 const QuestItemWrapper = styled.button`
     position: relative;
     height: min-content;
+    cursor: ${props => props.disabled || props.disableLite ? 'unset' : 'pointer'};
+    pointer-events: ${props => props.disableLite ? 'none' : 'unset'};
 `;
 
 const QuestItem = styled.img`
     top: 0;
     left: 0;
+    border: 5px inset ${darkFrame};    
 `;
 
-const GridCellNoteBook = styled.div`
-    background-color: pink;
+const BossRemains = styled(QuestItem)`
+    position: relative;
+    animation: ${props => props.boss} 2.5s infinite alternate;
+    border: none;    
+`;
+
+
+const GridCellNotebook = styled.div`    
     position: relative;
     grid-column: 1/2;
     grid-row: 1/4;
@@ -129,8 +78,7 @@ const GridCellNoteBook = styled.div`
     align-items: center;
 `;
 
-const GridCellBossMasks = styled.div`
-    background-color: #ffff008d;
+const GridCellBossMasks = styled.div`    
     grid-column: 3/5;
     grid-row: 1/5;
     display: flex;
@@ -139,14 +87,17 @@ const GridCellBossMasks = styled.div`
         display: flex;
         justify-content: space-around;
     }
+    button > div{
+        border-radius: 50%;
+        box-shadow: 2px 2px 4px 8px rgba(0,0,0,0.2),-2px -2px 4px 8px rgba(0,0,0,0.2);
+    }
     img{ // likely to keep this synced with mask/item dimensions
         width: 120px;
         height: 120px;
     }
 `;
 
-const GridCellEquipment = styled.div`
-    background-color: #0000ff8d;
+const GridCellEquipment = styled.div`    
     grid-column: 3/5;
     grid-row: 4/9;
     display: flex;
@@ -170,77 +121,82 @@ const EquipmentSlot = styled.div`
 
 const questItemWidth = 120;
 const bomberNotebookWidth = 160;
-const bomberNotebookInstructions = <><img src={InfoBarA}/>to View Notebook</>
 
-const QuestStatus = () => {
-    const { setDescription } = useContext(MenuContext);        
+const QuestStatus = (props) => {
+    const { curMenu, description, setDescription } = useContext(MenuContext);
+    const {hearts, setHearts, setHealth} = props;
+    const [notebookOpened, setNotebookOpened] = useState(false);
+    const isActive = mod(curMenu, 4) === 2;
     return <QuestStatusContainer>
         <h1>quest status</h1>
         <QuestStatusGrid>
-            <GridCellNoteBook>
-                <QuestItemWrapper onClick = {() => {}}>
-                    <AddHoverEffect>
-                        <QuestItem src={NoteBook} name = {"Bomber's Notebook"} parentWidth={bomberNotebookWidth} instructions={bomberNotebookInstructions}/>
-                        </AddHoverEffect>
-                    </QuestItemWrapper>
-            </GridCellNoteBook>
-            <GridCellHeartContainer/>
+            <GridCellNotebook>
+                <QuestItemWrapper onClick = {() => {setNotebookOpened(true)}} disableLite={description} disabled={!isActive}>
+                    <AddHoverEffect dims={'28px'} color={questHover}>
+                        <QuestItem src={items.bombersNotebook.img} name={items.bombersNotebook.name} parentWidth={bomberNotebookWidth} instructions={items.bombersNotebook.instructions} disabled={!isActive || description}/>
+                    </AddHoverEffect>
+                </QuestItemWrapper>
+            </GridCellNotebook>
+            <GridCellHeartContainer hearts={hearts} setHealth={setHealth} setHearts={setHearts}/>
             <GridCellOcarinaSongs/>
             <GridCellBossMasks>
-                <div><QuestItemWrapper onClick = {() => setDescription(items.odalwa)}>
+                <div><QuestItemWrapper onClick = {() => setDescription(items.odalwa)} disableLite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <QuestItem src={Odalwa} name={"Odalwa's Remains"} parentWidth={questItemWidth} />
+                            <BossRemains src={items.odalwa.img} name={items.odalwa.name} parentWidth={questItemWidth} boss={items.odalwa.short} disabled={!isActive || description}/>
                         </AddHoverEffect>
                 </QuestItemWrapper></div>
                 <div>
-                    <QuestItemWrapper onClick = {() => setDescription(items.gyorg)}>
+                    <QuestItemWrapper onClick = {() => setDescription(items.gyorg)} disableLite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <QuestItem src={Gyorg} name={"Gyorg's Remains"} parentWidth={questItemWidth} />
+                            <BossRemains src={items.gyorg.img} name={items.gyorg.name} parentWidth={questItemWidth} boss={items.gyorg.short} disabled={!isActive || description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
-                    <QuestItemWrapper onClick = {() => setDescription(items.goht)}>
+                    <QuestItemWrapper onClick = {() => setDescription(items.goht)} disableLite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <QuestItem src={Goht} name={"Goht's Remains"} parentWidth={questItemWidth} />
+                            <BossRemains src={items.goht.img} name={items.goht.name} parentWidth={questItemWidth} boss={items.goht.short} disabled={!isActive || description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
                 </div>
-                <div><QuestItemWrapper onClick = {() => setDescription(items.twinmold)}>
+                <div><QuestItemWrapper onClick = {() => setDescription(items.twinmold)} disableLite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <QuestItem src={Twinmold} name={"Twinmold's Remains"} parentWidth={questItemWidth} />
+                            <BossRemains src={items.twinmold.img} name={items.twinmold.name} parentWidth={questItemWidth} boss={items.twinmold.short} disabled={!isActive || description}/>
                         </AddHoverEffect>
                 </QuestItemWrapper></div>                                
             </GridCellBossMasks>            
             <GridCellEquipment>
                 <EquipmentSlot>
-                    <QuestItemWrapper onClick = {() => setDescription(items.sword)}>
+                    <QuestItemWrapper onClick = {() => setDescription(items.sword)} disableLite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <QuestItem src = {items.sword.img} name={items.sword.name} parentWidth={questItemWidth} />
+                            <QuestItem src = {items.sword.img} name={items.sword.name} parentWidth={questItemWidth} disabled={!isActive || description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
                 </EquipmentSlot>
                 <EquipmentSlot>
-                    <QuestItemWrapper onClick = {() => setDescription(items.shield)}>
+                    <QuestItemWrapper onClick = {() => setDescription(items.shield)} disableLite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <QuestItem src = {items.shield.img} name={items.shield.name} parentWidth={questItemWidth} />
+                            <QuestItem src = {items.shield.img} name={items.shield.name} parentWidth={questItemWidth} disabled={!isActive || description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
                 </EquipmentSlot>
                 <EquipmentSlot>
-                    <QuestItemWrapper onClick = {() => setDescription(items.quiver)}>
+                    <QuestItemWrapper onClick = {() => setDescription(items.quiver)} disableLite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <QuestItem src = {items.quiver.img} name={items.quiver.alternate} parentWidth={questItemWidth} />
+                            <QuestItem src = {items.quiver.img} name={items.quiver.alternate} parentWidth={questItemWidth} disabled={!isActive || description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
                 </EquipmentSlot>
                 <EquipmentSlot>
-                    <QuestItemWrapper onClick = {() => setDescription(items.bombBag)}>
+                    <QuestItemWrapper onClick = {() => setDescription(items.bombBag)} disableLite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <QuestItem src = {items.bombBag.img} name={items.bombBag.alternate} parentWidth={questItemWidth} />
+                            <QuestItem src = {items.bombBag.img} name={items.bombBag.alternate} parentWidth={questItemWidth} disabled={!isActive || description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
                 </EquipmentSlot>
             </GridCellEquipment>
         </QuestStatusGrid>
+        { notebookOpened && <Modal>
+            <BombersNotebook setNotebookOpened={setNotebookOpened}/>
+      </Modal>}
     </QuestStatusContainer>
 }
 

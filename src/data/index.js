@@ -19,3 +19,10 @@ export const bottledItems = [
     'Sea Horse',
     'Chateau Romani',
 ];
+
+export const rotateButtonInfo = [
+    'To Select Item',
+    'To Masks',
+    'To Quest Status',
+    'To Map'
+];

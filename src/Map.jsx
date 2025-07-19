@@ -1,29 +1,30 @@
-import React, { useState, useContext, useMemo } from 'react';
+import React, {useContext} from 'react';
 import styled from 'styled-components';
 import AddHoverEffectAbsolute from './helpers/AddHoverEffectAbsolute.jsx';
+import { mapLegend } from './data/mapsData.jsx';
+import MenuContext from './MenuContext.jsx';
+import { frame } from './styles/colors.js';
+import { mod } from './helpers/index.js';
 import MapImage from '../public/Map/map.png';
 import Point from '../public/Map/point.png';
-import { frame } from './styles/colors.js';
+import cursorSound from '../public/Interface/cursor.wav';
 
-const MapContainer = styled.div`
+const MapContainer = styled.div`        
+    display: flex;
+    flex-direction: column;    
+    h1{
         background-color: ${frame};
-        display: flex;
-        flex-direction: column;    
-        h1{
-            margin: 0 auto;
-            text-transform: uppercase;            
-            font-size: 50px;
+        text-transform: uppercase;
+        text-align: center;         
+        font-size: 50px;
+        &:before{
+            position: absolute;
+            z-index: -1;
+            content: '';
+            inset: 0;
+            filter: url(#grainy);        
         }
-        /* &>div{        
-            padding: 0 120px 60px;
-
-            &>div{
-                background-color: #0B0B0F;
-                display: flex;
-                flex-direction: column;
-                position: relative;
-            }
-        }     */
+    }
 `;
 
 const MapDisplay = styled.div`
@@ -46,26 +47,15 @@ const MapDisplay = styled.div`
 const MapPoint = styled.div`    
     img{
         position: relative;
-    }
+    }    
+    pointer-events: ${props => props.disableLite ? 'none' : 'unset'};
 `;  
 
-const mapLegend = [
-    {x: '51.7%', y: '46.5%', name: 'Clock Town'},
-    {x: '46%', y: '58%', name: 'Romani Ranch'},
-    {x: '51.5%', y: '75%', name: 'Woodfall'},
-    {x: '48.3%', y: '84%', name: 'Deku Palace'},
-    {x: '55.7%', y: '22.8%', name: 'Goron Village'},
-    {x: '49.3%', y: '15.2%', name: 'Snowhead'},
-    {x: '25.1%', y: '59.6%', name: 'Zora Hall'},
-    {x: '29.2%', y: '52.2%', name: 'Great Bay Coast'},
-    {x: '79%', y: '40%', name: 'Ikana Graveyard'},
-    {x: '77.5%', y: '47.5%', name: 'Ikana Valley'},
-    {x: '85%', y: '41.3%', name: 'Stone Tower'},
-]
-
 const Map = () => {
+    const { curMenu, description } = useContext(MenuContext);
     const mapDisplayPadding = 4;
-    const rotatorOffset = 4;        
+    const rotatorOffset = 4;      
+    const isActive = mod(curMenu, 4) === 3;
     
     return <MapContainer>
         <h1>map</h1>
@@ -77,8 +67,16 @@ const Map = () => {
                         left: ${p.x};
                         top: ${p.y};
                     `;  
-                    return <AddHoverEffectAbsolute>
-                        <MapPoint key={p.name} name={p.name} parentWidth={mapDisplayPadding} absoluteOffset={rotatorOffset} positions={positions}>                    
+                    return <AddHoverEffectAbsolute key={p.name} dims={'24px'}>
+                        <MapPoint key={p.name}
+                            name={p.name} 
+                            parentWidth={mapDisplayPadding} 
+                            absoluteOffset={rotatorOffset} 
+                            positions={positions} 
+                            onHover={() => new Audio(cursorSound).play()}
+                            disableLite={description}
+                            disabled={!isActive}
+                        >                    
                             <img src = {Point} />
                         </MapPoint>
                     </AddHoverEffectAbsolute>

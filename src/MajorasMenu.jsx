@@ -1,47 +1,50 @@
-import React, { useState, useRef, useEffect} from 'react';
+import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import styled from 'styled-components';
 import MenuContext from './MenuContext.jsx';
 import Items from './Items.jsx';
 import Masks from './Masks.jsx';
 import QuestStatus from './QuestStatus.jsx';
 import Map from './Map.jsx';
-import EquipButtons from './EquipButtons.jsx';
+import Health from './Health.jsx';
+import Magic from './Magic.jsx';
+import ActionButtons from './ActionButtons.jsx';
+import Triangle from './svgs/Triangle.jsx';
+import InfoBar from './InfoBar.jsx';
 import Rupee from '../public/Interface/rupee.png';
 import FireEffect from '../public/Interface/fire-effect.png';
 import IceEffect from '../public/Interface/ice-effect.png';
 import LightEffect from '../public/Interface/light-effect.png';
-import InfoBarCs from '../public/Interface/info-bar-Cs.png';
 import AddHoverEffect from './helpers/AddHoverEffect.jsx';
-import baseSVG from '../public/Interface/base.svg';
+import onClickOutside from './helpers/onClickOutside.jsx';
+import Base from './svgs/Base.jsx';
 import DescriptionModal from '../src/DescriptionModal.jsx';
-import { delay } from './helpers/index.js';
+import { delay, mod } from './helpers/index.js';
+import { rotateButtonInfo } from './data/index.js';
+import getHeart from '../public/Interface/get-heart.wav';
 import fireArrowSelectSound from '../public/Interface/fire-arrow-effect.wav';
 import iceArrowSelectSound from '../public/Interface/ice-arrow-effect.wav';
 import lightArrowSelectSound from '../public/Interface/light-arrow-effect.wav';
 import itemSelectSound from '../public/Interface/item-select.wav';
+import rotateMenuSoundLeft from '../public/Interface/menu-left.wav';
+import rotateMenuSoundRight from '../public/Interface/menu-right.wav';
 
 import {
-    frame,
+    buttonYellow,
+    buttonYellowBorder,
+    buttonYellowOutline,
     fireArrowRedPrimary,
     fireArrowRedSecondary,    
     iceArrowBluePrimary,
     iceArrowBlueSecondary,
     lightArrowYellowPrimary,
-    lightArrowYellowSecondary 
+    lightArrowYellowSecondary
 } from './styles/colors.js';
-
 
 const count = 4;
 const menusWidth = 1600;
 const menuGap = '0';
 const apothem = menusWidth / (2 * Math.tan(Math.PI/count));
-
-const rotateButtonInfo = [
-    'To Select Item',
-    'To Masks',
-    'To Quest Status',
-    'To Map'
-];
+const menuButtonWidth = 84;
 
 const MenuBox = styled.div`
     width: 100vw;
@@ -50,12 +53,13 @@ const MenuBox = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    perspective: 3200px;
-    background-color: #DCDCDC;
+    perspective: 3200px;    
 
     > * {
          flex: 0 0 auto;
     }
+
+    svg[height='0'] { position: fixed }
 
     figure {
         width: ${props => props.menusWidth + 'px'};
@@ -84,6 +88,15 @@ const MenuBox = styled.div`
             }
         } 
     }
+
+    .nav{        
+        position: absolute;
+        display: flex;        
+        width: ${menuButtonWidth}px;
+        height: ${menuButtonWidth}px;        
+        cursor: ${props => props.navDisabled ? 'unset': 'pointer'};        
+        pointer-events: ${props => props.navDisabled ? 'none' : 'unset'};
+    }
 `;
 
 const transAngle = (n) => {
@@ -96,109 +109,18 @@ const transAngle = (n) => {
     return rules;
 }
 
-const mod = (n, m) => {
-    return ((n % m) + m) % m;
-}
+const SVGFilters = styled.svg`
+    
+`;
 
 const HealthAndMagic = styled.div`
     position: absolute;
     z-index: 1100;
     top: 72px;
     left: 224px;
-    div:first-child{
-        display: flex;
-        flex-wrap: wrap;
-        width: 280px;
-        span{
-            width: 24px;
-            height: 18px;
-            margin: 1px 2px;
-            background-color: red;
-            border-radius: 50%;
-        }
-    }
-    div:last-child{
-        position: relative;
-        border: 2px solid #ffffff;
-        background-color: darkgreen;
-        width: 280px;
-        height: 20px;
-        margin-top: 2px;
-        &:before{
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 75%;
-            height: 100%;
-            background-color: limegreen;
-        }
-    }
 `;
 
-const ActionButtons = styled.div`
-    position: absolute;
-    z-index: 1100;
-    top: 72px;
-    left: 620px;
-    width: 300px;    
-
-    span{
-        position: relative;
-        color: #ffffff;
-        -webkit-text-stroke: 1px black;
-        font-weight: 600;
-        font-family: cursive;
-    }
-
-    span:nth-child(1){
-        &:before{
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            z-index: -1;
-            left: calc((52px/2) - 28px/2);
-            background-color: red;
-            
-        }        
-    }
-
-    span:nth-child(2){
-        margin-left: 10px;
-        &:before{
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            z-index: -1;
-            top: -10px;
-            left: calc((37px/2) - 48px/2);
-            background-color: green;
-        }
-    }
-
-    span:nth-child(3){
-        margin-left: 10px;
-        top: 36px;
-        &:before{
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            z-index: -1;
-            top: -10px;
-            left: calc((52px/2) - 48px/2);
-            background-color: blue;
-            
-        }
-    }
-`;
-
-const ItemButtons = styled.div`
+const EquipButtons = styled.div`
     display: flex;
     position: absolute;
     z-index: 1100;
@@ -207,16 +129,28 @@ const ItemButtons = styled.div`
     width: 300px;    
 
     span{
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border-radius: 50%;
-        width: ${props => props.dims.width}px;
-        height: ${props => props.dims.height}px;
-        background-color: yellow;
+        width: 64px;
+        height: 64px;
+        background-color: ${buttonYellow};
         position: relative;
+        border: 1px solid ${buttonYellowBorder};
+        outline: 3px solid ${buttonYellowOutline};
+        outline-offset: -6px;
+        img{
+            z-index: 1300
+        }
     }
 
     span:nth-child(1){   
         left: -8px;
-        z-index: 1230;  
+        z-index: 1230;
+        svg{
+            transform: rotate(90deg);
+        }
     }
 
     span:nth-child(2){   
@@ -228,6 +162,9 @@ const ItemButtons = styled.div`
     span:nth-child(3){   
         left: -24px;
         z-index: 1210;
+        svg{
+            transform: rotate(-90deg);
+        }
     }
 `;
 
@@ -235,34 +172,17 @@ const EquippedItem = styled.img`
     
 `;
 
-const RotateButtonSVG = styled.svg`
-    background: url(${baseSVG});
-    transform-origin: 50% 50%;
-    ${props => !props.hovered ? props.hoverEffect : ''}
-    transform: ${props => props.left ? 'rotate(90deg)' : 'rotate(-90deg)'};
-`;
-
-const menuButtonWidth = 100;
-
 const RotateMenuLeftButton = styled.button`
     all: unset;
-    position: absolute;
-    display: flex;
-    top: 45%;
     left: 12%;
-    width: 100px;
-    height: 100px;
+    top: 45%;
     z-index: 1100;
 `;
 
 const RotateMenuRightButton = styled.button`
     all: unset;
-    position: absolute;
-    display: flex;
-    width: 100px;
-    height: 100px;
-    top: 45%;
     right: 12%;
+    top: 45%;
     z-index: 1100;
 `;
 
@@ -272,7 +192,7 @@ const Rupees = styled.div`
     justify-content: center;
     align-items: center;
     z-index: 1100;
-    color: #ffffff;
+    color: white;
     -webkit-text-stroke: 1px black;
     font-weight: 600;
     font-family: cursive;
@@ -282,27 +202,6 @@ const Rupees = styled.div`
     img{
         width: 24px;
         margin-right: 4px;
-    }
-`;
-
-const InfoBar = styled.div`
-    position: absolute;
-    z-index: 1000;
-    background-color: ${frame};
-    width: 300px;
-    color: ${props => props.nav ? 'gold' : '#ffffff'};
-    -webkit-text-stroke: 1px black;
-    font-family: cursive;
-    font-weight: 600;
-    font-size: 24px;
-    bottom: 72px;
-    padding: 4px 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    img{
-        height: 36px;
     }
 `;
 
@@ -350,43 +249,23 @@ const ArrowEffect = styled.span`
     }
 `;
 
-const InfoBarX = (props) => {
-    const {name, equippable} = props;
-    let instructions, nav;
-    if(equippable){
-        instructions = <><img src={InfoBarCs}/> to Equip</>
-    }
-    if (rotateButtonInfo.includes(name)){
-        nav = true;
-    }
-    else{
-        instructions = props.instructions;
-    }
-    const [info, setInfo] = useState(name ? <p>{name}</p> : <p>{'\u00A0'}</p>);
-
-    useEffect(()=>{
-        setInfo(<p>{name}</p>);
-        const interval = setInterval(() => {
-            setInfo((prevState) => prevState.props.children === name && instructions ? instructions : <p>{name}</p>);
-        }, 1500);
-        return () => clearInterval(interval);
-    },[name]);
-
-    return <InfoBar nav={nav}>{info}</InfoBar>
-}
-
 const MajorasMenu  = () => {
     const hoveredEquip = useRef({equip:{}}); // Store a mutable object in a ref
     const cLeftRef = useRef();
     const cDownRef = useRef();
     const cRightRef = useRef();
+    const menuBoxRef = useRef();
+    const descriptionRef = useRef();
 
-    const [curMenu, setCurMenu] = useState(0);
+    const [curMenu, setCurMenu] = useState(0);    
     const [infoBar, setInfoBar] = useState('\u00A0');
+    const [hearts, setHearts] = useState(3); // the max capacity of hearts
+    const [health, setHealth] = useState(6); // current value, counted in fourths to work better with quarter hearts
+    const [magic, setMagic] = useState(100);
+    const [defense, setDefense] = useState(false);
     const [instructions, setInstructions] = useState();
     const [description, setDescription] = useState();
     const [equipmentClone, setEquipmentClone] = useState({});
-    const [equipDims, setEquipDims] = useState({width: 64, height: 64});
     const [bowRef, setBowRef] = useState();
     const [fireArrowRef, setFireArrowRef] = useState();
     const [iceArrowRef, setIceArrowRef] = useState();
@@ -399,8 +278,20 @@ const MajorasMenu  = () => {
     const [arrowAnimate2, setArrowAnimate2] = useState(false);
     const [scrollX, setScrollX] = useState(window.scrollX);
     const [scrollY, setScrollY] = useState(window.scrollY);
+
+    const DescriptionModalWithRef = forwardRef(DescriptionModal);
     
-    const test = async (e) => {
+    const menuKeyPress = async (e) => {
+        if(e.key === 'q'){
+            if(description) return;
+            rotatePage();            
+            return;
+        }
+        if(e.key === 'e'){
+            if(description) return;
+            rotatePage(true)            
+            return;
+        }
         if(!'asd'.includes(e.key)) return;
         if(!hoveredEquip.current.equip.name) return;
         setSelecting(true);
@@ -506,7 +397,7 @@ const MajorasMenu  = () => {
                     inUseDown = {};
                 }
             }          
-        } 
+        }
 
         if(!effectImage){ // already set in the elemental arrow logic
             setEquipmentClone({
@@ -558,51 +449,99 @@ const MajorasMenu  = () => {
             return true;
         }
         return false;
-    }    
+    }
+
+    const rotatePage = (clockwise) => {
+        let nextMenu;
+        setCurMenu(prevState => {
+            nextMenu = prevState + (clockwise ? -1 : 1);
+            return nextMenu;
+        })
+        setInfoBar(rotateButtonInfo[mod(nextMenu + (clockwise ? -1 : 1), 4)]);
+        setHoveredEquip();
+        clockwise ? new Audio(rotateMenuSoundRight).play() : new Audio(rotateMenuSoundLeft).play();
+    }
+
+    const increaseHealth = (points) =>{
+        new Array(points).fill().forEach((_,i) => {
+            setTimeout(() => {
+                let nextHealth;
+                setHealth(prevState => {
+                    nextHealth = prevState+1;
+                    return nextHealth;
+                });
+                if(nextHealth%4 == 0){
+                    new Audio(getHeart).play();
+                }
+            }, (i+1) * 150);  
+        })
+    }
+
+    onClickOutside(descriptionRef, () => {
+        setDescription();
+
+    });
+
+    useEffect(()=>{
+        menuBoxRef.current.focus();
+    },[]);
       
-    return <MenuContext.Provider value={{selecting, setInfoBar, setInstructions, setDescription, setHoveredEquip}}>
-    <MenuBox curMenu = {curMenu} menusWidth = {menusWidth} count = {count} menuGap = {menuGap} apothem = {apothem} onKeyDown={test} tabIndex={-1}>
+    return <MenuContext.Provider value={{curMenu, selecting, description, setInfoBar, setInstructions, setDescription, setHoveredEquip}}>
+    <MenuBox 
+        ref={menuBoxRef}
+        curMenu = {curMenu} 
+        menusWidth = {menusWidth} 
+        count = {count} 
+        menuGap = {menuGap} 
+        apothem = {apothem} 
+        onKeyDown={menuKeyPress} 
+        tabIndex={-1} 
+        navDisabled={description}
+    >
+        <SVGFilters width="0" height="0" aria-hidden="true">
+            <filter id="grainy" x="0" y="0" width="100%" height="100%">
+                <feTurbulence type="fractalNoise" baseFrequency=".537"></feTurbulence>
+            </filter>
+            <filter id="stone" x="0" y="0" width="100%" height="100%">
+                <feTurbulence type="fractalNoise" baseFrequency=".4337"></feTurbulence>
+                <feColorMatrix type="saturate" values="0"></feColorMatrix>
+                <feBlend mode="multiply" in="SourceGraphic"></feBlend>
+            </filter>
+        </SVGFilters>
         <HealthAndMagic>
-            <div>
-                {new Array(20).fill().map(h => <span></span>)}
-            </div>
-            <div></div>
+            <Health health={health} hearts={hearts} defense={defense}/>
+            <Magic magic={magic}/>
         </HealthAndMagic>
-        <ActionButtons>
-            <span>Return</span>
-            <span>Save</span>
-            <span>Decide</span>
-        </ActionButtons>
-        {/* <EquipButtons cLeft = {cLeft} cLeftRef={cLeftRef}/> */}
-        <ItemButtons dims={equipDims}>
-            <span ref={cLeftRef}><EquippedItem src={cLeft.image}/></span>
-            <span ref={cDownRef}><EquippedItem src={cDown.image}/></span>
-            <span ref={cRightRef}><EquippedItem src={cRight.image}/></span>
-        </ItemButtons>        
-         <AddHoverEffect>
-            <RotateMenuLeftButton onClick = {() => setCurMenu(prevState => prevState+1)} name={rotateButtonInfo[mod(curMenu + 1, 4)]} parentWidth={menuButtonWidth} nav>
-                <RotateButtonSVG left={true}>Z</RotateButtonSVG>
+        <ActionButtons/>        
+        <EquipButtons>
+            <span ref={cLeftRef}><EquippedItem src={cLeft.image}/><Triangle/></span>
+            <span ref={cDownRef}><EquippedItem src={cDown.image}/><Triangle/></span>
+            <span ref={cRightRef}><EquippedItem src={cRight.image}/><Triangle/></span>
+        </EquipButtons>        
+         <AddHoverEffect dims={'20px'}>
+            <RotateMenuLeftButton onClick = {() => rotatePage()} name={rotateButtonInfo[mod(curMenu + 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav' nav>
+                <Base left={true}/>
             </RotateMenuLeftButton>         
         </AddHoverEffect>
-        <AddHoverEffect>
-            <RotateMenuRightButton onClick = {() => setCurMenu(prevState => prevState-1)} name={rotateButtonInfo[mod(curMenu - 1, 4)]} parentWidth={menuButtonWidth} nav>
-                <RotateButtonSVG left={false}/>
+        <AddHoverEffect dims={'20px'}>
+            <RotateMenuRightButton onClick = {() => rotatePage(true)} name={rotateButtonInfo[mod(curMenu - 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav' nav>
+                <Base left={false}/>
             </RotateMenuRightButton>
         </AddHoverEffect>        
         <Rupees>
             <img src={Rupee}/>500
-        </Rupees>
-        {/* <InfoBar>{infoBar}</InfoBar> */}
-        <InfoBarX name={infoBar} instructions={instructions} equippable={hoveredEquip.current.equip.name}/>
+        </Rupees>        
+        <InfoBar name={infoBar} instructions={instructions} equippable={hoveredEquip.current.equip.name}/>
         <figure>
-            <QuestStatus/>
+            <QuestStatus hearts={hearts} setHealth={setHealth} setHearts={setHearts}/>
             <Map/>
             <Items 
                 isEquipped={isEquipped}
                 setBowRef={setBowRef} 
                 setFireArrowRef={setFireArrowRef}
                 setIceArrowRef={setIceArrowRef} 
-                setLightArrowRef={setLightArrowRef}/>
+                setLightArrowRef={setLightArrowRef}
+            />
             <Masks isEquipped={isEquipped}/>
         </figure>
         {(bowRef?.current) && <>
@@ -611,10 +550,9 @@ const MajorasMenu  = () => {
             <ArrowEffect className = {arrowAnimate1 ? 'arrow-glow' : ''} show = {selecting && hoveredEquip.current.equip.name === 'Light Arrow'} animate1={arrowAnimate1} animate2={arrowAnimate2} color={lightArrowYellowPrimary} color2={lightArrowYellowSecondary} arrow={lightArrowRef.current.getBoundingClientRect().toJSON()} arrowTip={bowRef.current.getBoundingClientRect().toJSON()} scrollX={scrollX} scrollY={scrollY}/>
         </>}
         <EquipmentClone src={equipmentClone.image} clonedInfo={equipmentClone} scrollX={scrollX} scrollY={scrollY}/>
-        {description && <DescriptionModal description={description}/>}
+        {description && <DescriptionModalWithRef description={description} ref={descriptionRef}/>}
     </MenuBox>
     </MenuContext.Provider>
 }
-
 
 export default MajorasMenu;

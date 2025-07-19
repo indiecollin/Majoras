@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import styled from 'styled-components';
+import MenuContext from '../MenuContext.jsx';
 import AddHoverEffectAbsolute from '../helpers/AddHoverEffectAbsolute.jsx';
+import { darkFrame, questHover } from '../styles/colors.js';
+import { mod } from '../helpers/index.js';
 import WhiteNote from '../../public/QuestStatus/white-note.png';
 import GreenNote from '../../public/QuestStatus/green-note.png';
 import RedNote from '../../public/QuestStatus/red-note.png';
@@ -79,7 +82,6 @@ const inputToRowIndex = (input) => {
 const instructions = <><img src={InfoBarA}/>to Play Melody</>
 
 const OcarinaSongs = styled.div`
-    background-color: lightslategray;
     grid-column: 1/3;
     grid-row: 4/9;
 `;
@@ -90,13 +92,15 @@ const SongList = styled.div`
     margin-top: 24px;
 `;
 
-const SongNote = styled.div`
+const SongNote = styled.button`
     flex-grow: 0;
     flex-shrink: 0;
     flex-basis: 20%;
     display: flex;
     margin-top: 12px;
     position: relative;
+    cursor: ${props => props.disabled ? 'unset' : 'pointer'};
+    padding: 0;
 
     img{
         margin: 0 auto;
@@ -126,7 +130,7 @@ const SongMeasures = styled.div`
 
 const SongMeasureLine = styled.span`
     display: flex;
-    border-top: 2px solid #504029;
+    border-top: 2px solid ${darkFrame};
 `;
 
 const songs = [
@@ -158,7 +162,7 @@ const OcarinaInput = styled.img`
     height: 48px;
     background-color: ${props => props.pending && !props.wrong ? 'rgba(128, 128, 128, .75)' : props.color};
     opacity: ${props => props.show ? 1 : 0};
-    transition: opacity .25s ease-in-out;    
+    transition: opacity .25s ease-in-out; 
     border-radius: 50%;
 `;
 
@@ -188,13 +192,13 @@ const NotePlayerContainer = ({noteMap, playMap, wrongNote}) => {
     return <NotePlayer>{
         noteMap.map((row,i) => {
             const inputSetting = ocarinaInputSettings[inputs[i]];            
-            return <NoteRow top={inputSetting.height}>
+            return <NoteRow key={`note-row-${i}`} top={inputSetting.height}>
                 {row.map((n,j) => {
                     const wrongNoteCheck = wrongNote.row === i && wrongNote.col === j;
                     const color = inputs[i] === 'A' ? 'blue' : 'yellow';
                     const show = n || wrongNoteCheck;
                     const pending = playMap[j]
-                    return <OcarinaInput src = {inputSetting.input} show = {show} color={color} pending={pending} wrong={wrongNoteCheck} />
+                    return <OcarinaInput key={`ocarina-input-${j}`} src = {inputSetting.input} show = {show} color={color} pending={pending} wrong={wrongNoteCheck} />
                 })}
             </NoteRow>
         })
@@ -205,33 +209,40 @@ const SongMeasure = ({noteMap, playMap, wrongNote}) => {
     return <SongMeasureContainer>
         <img src = {Clef}/>
         <SongMeasures>
-            <MeasureLines>{[...Array(4)].map(_ => <SongMeasureLine/>)}</MeasureLines>
+            <MeasureLines>{[...Array(4)].map((_,i) => <SongMeasureLine key={`measure-${i}`}/>)}</MeasureLines>
             <NotePlayerContainer noteMap={noteMap} playMap={playMap} wrongNote={wrongNote}></NotePlayerContainer>            
         </SongMeasures>
     </SongMeasureContainer>
 };
 
 const OcarinaSongsContainer = () => {
+    const { curMenu, description, setInfoBar, setInstructions } = useContext(MenuContext);
     const [curSong, setCurSong] = useState();    
     const [noteMap, setNoteMap] = useState(Array.from({length: 5}, () => Array(8).fill(false)));
     const [playMap, setPlayMap] = useState(Array(8).fill(false));
     const [playMode, setPlayMode] = useState(false);
     const [playIndex, setPlayIndex] = useState();
     const [wrongNote, setWrongNote] = useState({});
-    const playModeRef = useRef(playMode);        
+    const [disabled, setDisabled] = useState(false);
 
-    useEffect(() => {         
-        playModeRef.current = playMode; // <-- cache current value
-    }, [playMode]);
+    const containerRef = useRef(null); //  used to check click events on component     
+    const playModeRef = useRef(playMode);// used to keep track of whether the component is in play mode in between async calls
 
-    const setSong = (song, disabled) => {
-        if(disabled) return;
-        setPlayMode(true);  
+    const setSong = (song, passedPlayMode) => {
+        if(passedPlayMode) return;
+        setPlayMode(true);
         setCurSong(song);
+        setDisabled(true);
+        setInfoBar('\u00A0');
+        setInstructions();
         let newNoteMap =  Array.from({length: 5}, () => Array(8).fill(false));
-        let songDelay = 0;
-        song.sequence.split('').forEach((input, seqIndex)=>{ // TODO: Abort functionality            
+        let songDelay = 0;        
+        song.sequence.split('').forEach((input, seqIndex)=>{ // TODO: Abort functionality                
             setTimeout(() => { // make sure this doesn't get expensive
+                if(!playModeRef.current) {
+                    setDisabled(false);
+                    return;
+                }
                 new Audio(sounds[input]).play();
                 setNoteMap(()=>{
                     newNoteMap = newNoteMap.map((row, i)=>{                        
@@ -249,24 +260,19 @@ const OcarinaSongsContainer = () => {
                 });
                 if(song.sequence.length-1 === seqIndex){// if it's the last note switch to play mode
                     setTimeout(() => {
+                        if(!playModeRef.current) {
+                            setDisabled(false);
+                            return;
+                        }
                         setPlayMap(Array(8).fill(true));
                         setPlayIndex(0);
+                        containerRef.current.focus();
+                        setDisabled(false);
                     }, 1000);
                 }
             }, songDelay);
             songDelay+= song.delays[seqIndex]
         })
-    };
-    const ob = (sequence, disabled) => { // i don't remember why I called this function ob. ocarina something?
-        if(disabled) return;
-        let newNoteMap =  Array.from({length: 5}, () => Array(8).fill(false));
-        sequence.split('').forEach((input, seqIndex) => {        
-           const noteRowIndex = inputToRowIndex(input);
-           newNoteMap[noteRowIndex][seqIndex] = true;
-        });
-        if(JSON.stringify(newNoteMap) !== JSON.stringify(noteMap)){
-            setNoteMap(newNoteMap);
-        }      
     };
 
     const resetAll = () => {
@@ -278,23 +284,37 @@ const OcarinaSongsContainer = () => {
         setWrongNote({});
     }
 
+    const ob = (sequence) => { // i don't remember why I called this function ob. ocarina something?      
+        if(playMode){
+            resetAll();
+        }     
+        let newNoteMap =  Array.from({length: 5}, () => Array(8).fill(false));
+        sequence.split('').forEach((input, seqIndex) => {        
+           const noteRowIndex = inputToRowIndex(input);
+           newNoteMap[noteRowIndex][seqIndex] = true;
+        });
+        if(JSON.stringify(newNoteMap) !== JSON.stringify(noteMap)){
+            setNoteMap(newNoteMap);
+        }            
+    };
+
     const playOcarina = (e) => {// if the playMap is all false it either isn't in play mode OR it is in play mode but the song demo has not completed.
-        if(!playModeRef.current || isNaN(playIndex)) return;
+        if(!playModeRef.current || isNaN(playIndex) || disabled) return;
         let sound;
         let input;
-        if(e.key === 'ArrowUp'){
+        if(e.key === 'w'){
             input = '↑'
             sound = sounds[input];                            
-        } else if(e.key === 'ArrowLeft'){
+        } else if(e.key === 'a'){
             input = '←'
             sound = sounds[input];                
-        } else if(e.key === 'ArrowRight'){
+        } else if(e.key === 'd'){
             input = '→'
             sound = sounds[input];                
-        } else if(e.key === 'ArrowDown'){
+        } else if(e.key === 's'){
             input = '↓'
             sound = sounds[input];                
-        } else if(e.key === 'a'){
+        } else if(e.key === 'z'){
             input = 'A'
             sound = sounds[input];                
         } else {
@@ -307,38 +327,47 @@ const OcarinaSongsContainer = () => {
                 setPlayIndex(prevState => prevState + 1);
             }
             else{ // success sound and reset
+                setDisabled(true);
                 setTimeout(() => {
-                    new Audio(soundSuccess).play();
+                    new Audio(soundSuccess).play();                                        
                     setTimeout(() => {
-                        resetAll();
+                        resetAll();                        
+                        setDisabled(false);
                     }, 1000);
                 }, 1000);
             }
         } else { //wrong note
             new Audio(soundError).play();
+            setDisabled(true);
             setWrongNote({row: inputToRowIndex(input), col: playIndex});
             setTimeout(() => {
                 setPlayMap(Array(8).fill(true));
                 setPlayIndex(0);
                 setWrongNote({});
+                setDisabled(false)
             }, 1500);            
         }     
     }
-    
-    return <OcarinaSongs tabIndex={0} onKeyDown={playOcarina} onBlur={resetAll}>
+
+    useEffect(() => {         
+        playModeRef.current = playMode; // <-- cache current value
+    }, [playMode]);
+
+    const isActive = mod(curMenu, 4) === 2;    
+    return <OcarinaSongs ref={containerRef} tabIndex={0} onKeyDown={playOcarina} onMouseLeave={resetAll}>
         <SongList>
-            {songs.map(s=>{
-                return <AddHoverEffectAbsolute>
+            {songs.map((s,i)=>{
+                return <AddHoverEffectAbsolute key={s.name} color={questHover} dims={'24px'}>
                     <SongNote 
                         key={s.name} 
                         onClick={() => setSong(s, playModeRef.current)} 
-                        onHover={()=> ob(s.sequence, playModeRef.current)}
-                        onBlur={resetAll}
-                        disabled={playModeRef.current} 
+                        onHover={()=> ob(s.sequence)}
+                        onBlur={()=>{if(!playModeRef.current) resetAll()}}                        
+                        disabled={!isActive || disabled || description || curSong?.name === s.name} 
                         name={s.name}
                         instructions={instructions}            
                         parentWidth={rotatorOffset}    
-                        absoluteOffset={noteRowPadding}
+                        absoluteOffset={noteRowPadding}                        
                     >
                         <img src = {songNotes[s.note]} />
                     </SongNote>
