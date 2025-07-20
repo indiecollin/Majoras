@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import styled from 'styled-components';
 import MenuContext from './MenuContext.jsx';
-import Items from './Items.jsx';
-import Masks from './Masks.jsx';
-import QuestStatus from './QuestStatus.jsx';
-import Map from './Map.jsx';
-import Health from './Health.jsx';
-import Magic from './Magic.jsx';
-import ActionButtons from './ActionButtons.jsx';
+import Items from './Items/Items.jsx';
+import Masks from './Masks/Masks.jsx';
+import QuestStatus from './QuestStatus/QuestStatus.jsx';
+import Map from './Map/Map.jsx';
+import Health from './Interface/Health.jsx';
+import Magic from './Interface/Magic.jsx';
+import ActionButtons from './Interface/ActionButtons.jsx';
+import InfoBar from './Interface/InfoBar.jsx';
+import DescriptionModal from './Interface/DescriptionModal.jsx';
 import Triangle from './svgs/Triangle.jsx';
-import InfoBar from './InfoBar.jsx';
+import Base from './svgs/Base.jsx';
+import { rotateButtonInfo } from './data/index.js';
+import AddHoverEffect from './helpers/AddHoverEffect.jsx';
+import { delay, mod } from './helpers/index.js';
+import onClickOutside from './helpers/onClickOutside.jsx';
 import Rupee from '../public/Interface/rupee.png';
 import FireEffect from '../public/Interface/fire-effect.png';
 import IceEffect from '../public/Interface/ice-effect.png';
 import LightEffect from '../public/Interface/light-effect.png';
-import AddHoverEffect from './helpers/AddHoverEffect.jsx';
-import onClickOutside from './helpers/onClickOutside.jsx';
-import Base from './svgs/Base.jsx';
-import DescriptionModal from '../src/DescriptionModal.jsx';
-import { delay, mod } from './helpers/index.js';
-import { rotateButtonInfo } from './data/index.js';
 import {
     buttonYellow,
     buttonYellowBorder,
@@ -47,7 +47,7 @@ const sounds = {
     itemSelect: new Audio(itemSelect),
     rotateMenuLeft: new Audio(rotateMenuLeft),    
     rotateMenuRight: new Audio(rotateMenuRight)
-}
+};
 
 const count = 4;
 const menusWidth = 1600;
@@ -126,7 +126,8 @@ const HealthAndMagic = styled.div`
     position: absolute;
     z-index: 1100;
     top: 72px;
-    left: 224px;
+    left: 25%;
+    transform: translateX(-50%);
 `;
 
 const EquipButtons = styled.div`
@@ -134,8 +135,8 @@ const EquipButtons = styled.div`
     position: absolute;
     z-index: 1100;
     top: 62px;
-    left: 1200px;
-    width: 300px;    
+    right: 15%;    
+    width: 300px;
 
     span{
         display: flex;
@@ -414,8 +415,12 @@ const MajorasMenu  = () => {
             });
             setScrollX(window.scrollX);
             setScrollY(window.scrollY);
-            sounds['itemSelect'].load();
-            sounds['itemSelect'].play();
+            try{
+                sounds['itemSelect'].load();
+                sounds['itemSelect'].play();
+            } catch(e){
+                console.error(e.message, 'sound used before last use completed');
+            }
         }
       
         await delay(0);
@@ -469,13 +474,17 @@ const MajorasMenu  = () => {
         })
         setInfoBar(rotateButtonInfo[mod(nextMenu + (clockwise ? -1 : 1), 4)]);
         setHoveredEquip();
-        if(clockwise){
-            sounds['rotateMenuRight'].load();
-            sounds['rotateMenuRight'].play();
-        } else {
-            sounds['rotateMenuLeft'].load();
-            sounds['rotateMenuLeft'].play();
-        }        
+        try{
+            if(clockwise){
+                sounds['rotateMenuRight'].load();
+                sounds['rotateMenuRight'].play();
+            } else {
+                sounds['rotateMenuLeft'].load();
+                sounds['rotateMenuLeft'].play();
+            }
+        } catch(e){
+            console.error(e.message, 'sound used before last use completed');
+        }     
     }
 
     const increaseHealth = (points) =>{
@@ -487,8 +496,12 @@ const MajorasMenu  = () => {
                     return nextHealth;
                 });
                 if(nextHealth%4 == 0){
-                    sounds[getHeart].load();
-                    sounds[getHeart].play();
+                    try{
+                        sounds[getHeart].load();
+                        sounds[getHeart].play();
+                    } catch(e){
+                        console.error(e.message, 'sound used before last use completed');
+                    }
                 }
             }, (i+1) * 150);  
         })

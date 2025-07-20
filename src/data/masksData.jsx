@@ -1,4 +1,5 @@
 import React from 'react';
+import Input from '../Interface/ControllerInput.jsx';
 import Strong from './../helpers/StrongText.jsx';
 import PostmansHat from '../../public/Masks/postman-hat.png';
 import AllNight from '../../public/Masks/all-night.png';
@@ -24,7 +25,6 @@ import Garos from '../../public/Masks/garos.png';
 import CaptainsHat from '../../public/Masks/captains-hat.png';
 import Giants from '../../public/Masks/giants.png';
 import FierceDeitys from '../../public/Masks/fierce-deitys.png';
-import Input from '../../src/ControllerInput.jsx';
 
 export const masks = [
     [

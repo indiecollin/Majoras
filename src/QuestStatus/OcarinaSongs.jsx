@@ -94,6 +94,7 @@ const instructions = <><img src={InfoBarA}/>to Play Melody</>
 const OcarinaSongs = styled.div`
     grid-column: 1/3;
     grid-row: 4/9;
+    margin: auto 0;
 `;
 
 const SongList = styled.div`    
@@ -253,8 +254,12 @@ const OcarinaSongsContainer = () => {
                     setDisabled(false);
                     return;
                 }
-                sounds[soundInputs[input]].load();
-                sounds[soundInputs[input]].play();
+                try{                
+                    sounds[soundInputs[input]].load();
+                    sounds[soundInputs[input]].play();
+                } catch(e){
+                    console.error(e.message, 'sound used before last use completed');
+                }
                 setNoteMap(()=>{
                     newNoteMap = newNoteMap.map((row, i)=>{                        
                         const rowInputKey = inputs[i];
@@ -331,8 +336,12 @@ const OcarinaSongsContainer = () => {
         } else {
             return;
         }
-        sounds[sound].load();
-        sounds[sound].play();
+        try{
+            sounds[sound].load();
+            sounds[sound].play();
+        } catch(e){
+            console.error(e.message, 'sound used before last use completed');
+        }
         if(input === curSong.sequence[playIndex]){
             setPlayMap(prevState => prevState.map((noteSlot, noteIndex) => noteIndex === playIndex ? false : noteSlot));
             if(playIndex + 1 < curSong.sequence.length){//more notes to play
@@ -341,8 +350,12 @@ const OcarinaSongsContainer = () => {
             else{ // success sound and reset
                 setDisabled(true);
                 setTimeout(() => {
-                    sounds['soundSuccess'].load();
-                    sounds['soundSuccess'].play();                                        
+                    try{
+                        sounds['soundSuccess'].load();
+                        sounds['soundSuccess'].play();
+                    } catch(e){
+                        console.error(e.message, 'sound used before last use completed');
+                    }                                       
                     setTimeout(() => {
                         resetAll();                        
                         setDisabled(false);
@@ -350,8 +363,12 @@ const OcarinaSongsContainer = () => {
                 }, 1000);
             }
         } else { //wrong note
-            sounds['soundError'].load();
-            sounds['soundError'].play();
+            try{
+                sounds['soundError'].load();
+                sounds['soundError'].play();
+            } catch(e){
+                console.error(e.message, 'sound used before last use completed');
+            }
             setDisabled(true);
             setWrongNote({row: inputToRowIndex(input), col: playIndex});
             setTimeout(() => {

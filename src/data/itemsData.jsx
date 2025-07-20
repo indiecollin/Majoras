@@ -1,5 +1,6 @@
 import React from 'react';
 import Strong from './../helpers/StrongText.jsx';
+import Input from '../Interface/ControllerInput.jsx';
 import Ocarina from '../../public/Items/ocarina-of-time.png';
 import Bow from '../../public/Items/heros-bow.png';
 import FireArrow from '../../public/Items/fire-arrow.png';
@@ -21,7 +22,6 @@ import BottleFairy from '../../public/Items/bottle3.png';
 import BottleFish from '../../public/Items/bottle4.png';
 import BottleGold from '../../public/Items/bottle5.png';
 import Bottle from '../../public/Items/bottle6.png';
-import Input from '../../src/ControllerInput.jsx';
 
 export const items = [
     [

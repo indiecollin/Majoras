@@ -23,6 +23,7 @@ const HeartContainer = styled.div`
     max-height: 240px;
     justify-self: center;
     align-self: center;
+    margin: auto 0;
 
     img{
         display: flex;
