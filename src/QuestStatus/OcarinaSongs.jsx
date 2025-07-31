@@ -11,11 +11,11 @@ import BlueNote from '../../public/QuestStatus/blue-note.png';
 import OrangeNote from '../../public/QuestStatus/orange-note.png';
 import PurpleNote from '../../public/QuestStatus/purple-note.png';
 import Clef from '../../public/QuestStatus/clef.png';
-import OcarinaA from '../../public/QuestStatus/a.png';
-import OcarinaLeft from '../../public/QuestStatus/left.png';
-import OcarinaUp from '../../public/QuestStatus/up.png';
-import OcarinaRight from '../../public/QuestStatus/right.png';
-import OcarinaDown from '../../public/QuestStatus/down.png';
+import OcarinaA from '../../public/Interface/a.png';
+import OcarinaLeft from '../../public/Interface/left.png';
+import OcarinaUp from '../../public/Interface/up.png';
+import OcarinaRight from '../../public/Interface/right.png';
+import OcarinaDown from '../../public/Interface/down.png';
 import InfoBarA from '../../public/Interface/info-bar-A.png';
 
 import soundA from '../../public/QuestStatus/sound-a.wav';

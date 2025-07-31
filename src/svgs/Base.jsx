@@ -10,7 +10,6 @@ const SVG = styled.svg`
     transform-origin: 50% 50%;    
     transform: ${props => props.left ? 'rotate(90deg)' : 'rotate(-90deg)'};
     clip-path: polygon(100% 0, 100% 50%, 50% 100%, 0 50%, 0 0);
-    filter: url(#stone);
 `;
 
 const BaseIcon = (props) => {

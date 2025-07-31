@@ -69,6 +69,21 @@ body{
   left: 0;
 }
 
+.open-sans {
+    font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+.comic-relief{
+    font-family: "Comic Relief", system-ui;
+  font-weight: 700;
+  font-style: normal;
+}
+
 .hover-orbitter {
     animation: revolve 2s linear infinite, pulse 2.5s infinite ease-in-out alternate 0s;
     /* TOFIX: having weird issues fixing the specificity for this without desyncing orbitters. 

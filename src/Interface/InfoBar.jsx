@@ -11,9 +11,7 @@ const InfoBarWrapper = styled.div`
     background-color: ${frame};
     width: 300px;
     color: ${props => props.nav ? infoBarNav : 'white'};
-    -webkit-text-stroke: 1px black;
-    font-family: cursive;
-    font-weight: 600;
+    -webkit-text-stroke: 1px black;    
     font-size: 24px;
     bottom: 72px;
     padding: 4px 8px;
@@ -62,7 +60,7 @@ const InfoBar = (props) => {
         }        
     },[name, description]);
 
-    return <InfoBarWrapper nav={nav}>{info}</InfoBarWrapper>
+    return <InfoBarWrapper className='open-sans' nav={nav}>{info}</InfoBarWrapper>
 }
 
 export default InfoBar;

@@ -8,6 +8,7 @@ import Map from './Map/Map.jsx';
 import Health from './Interface/Health.jsx';
 import Magic from './Interface/Magic.jsx';
 import ActionButtons from './Interface/ActionButtons.jsx';
+import ControlsTooltip from './Interface/ControlsTooltip.jsx';
 import InfoBar from './Interface/InfoBar.jsx';
 import DescriptionModal from './Interface/DescriptionModal.jsx';
 import Triangle from './svgs/Triangle.jsx';
@@ -16,11 +17,8 @@ import { rotateButtonInfo } from './data/index.js';
 import AddHoverEffect from './helpers/AddHoverEffect.jsx';
 import { delay, mod } from './helpers/index.js';
 import onClickOutside from './helpers/onClickOutside.jsx';
-import Rupee from '../public/Interface/rupee.png';
-import FireEffect from '../public/Interface/fire-effect.png';
-import IceEffect from '../public/Interface/ice-effect.png';
-import LightEffect from '../public/Interface/light-effect.png';
 import {
+    darkFrame,
     buttonYellow,
     buttonYellowBorder,
     buttonYellowOutline,
@@ -31,6 +29,10 @@ import {
     lightArrowYellowPrimary,
     lightArrowYellowSecondary
 } from './styles/colors.js';
+import Rupee from '../public/Interface/rupee.png';
+import FireEffect from '../public/Interface/fire-effect.png';
+import IceEffect from '../public/Interface/ice-effect.png';
+import LightEffect from '../public/Interface/light-effect.png';
 import getHeart from '../public/Interface/get-heart.wav';
 import fireArrowSelect from '../public/Interface/fire-arrow-effect.wav';
 import iceArrowSelect from '../public/Interface/ice-arrow-effect.wav';
@@ -130,52 +132,78 @@ const HealthAndMagic = styled.div`
     transform: translateX(-50%);
 `;
 
-const EquipButtons = styled.div`
+const EquipButtonsWrapper = styled.div`
     display: flex;
     position: absolute;
     z-index: 1100;
     top: 62px;
     right: 15%;    
     width: 300px;
+`;
 
-    span{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        width: 64px;
-        height: 64px;
-        background-color: ${buttonYellow};
-        position: relative;
-        border: 1px solid ${buttonYellowBorder};
-        outline: 3px solid ${buttonYellowOutline};
-        outline-offset: -6px;
-        img{
-            z-index: 1300
-        }
-    }
+const EquipButton = styled.span`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    background-color: ${buttonYellow};
+    position: relative;
+    border: 1px solid ${buttonYellowBorder};
+    outline: 3px solid ${buttonYellowOutline};
+    outline-offset: -6px;
+    img{
+        z-index: 1300
+    } 
+`;
 
-    span:nth-child(1){   
-        left: -8px;
-        z-index: 1230;
-        svg{
-            transform: rotate(90deg);
-        }
+const EquipButtonLeft = styled(EquipButton)`
+    left: -8px;
+    z-index: 1230;
+    svg{
+        transform: rotate(90deg);
     }
+`;
 
-    span:nth-child(2){   
-        top: 32px;
-        left: -16px;
-        z-index: 1220; 
-    }
+const EquipButtonDown = styled(EquipButton)`    
+    top: 32px;
+    left: -16px;
+    z-index: 1220;
+`;
 
-    span:nth-child(3){   
-        left: -24px;
-        z-index: 1210;
-        svg{
-            transform: rotate(-90deg);
-        }
+const EquipButtonRight = styled(EquipButton)`
+    left: -24px;
+    z-index: 1210;
+    svg{
+        transform: rotate(-90deg);
     }
+`;
+
+const NoticeButton = styled(EquipButton)`
+    width: 36px;
+    height: 36px;
+    position: absolute;
+    left: 20.5%;
+    top: -6px;
+    color: white;
+    outline: unset;    
+    -webkit-text-stroke: 1px black;
+    font-weight: 600;
+    animation: flicker 1s steps(1, end) alternate infinite;
+    cursor: pointer;
+    @keyframes flicker {
+    0% {
+      opacity: 1
+    }
+    50% {
+      opacity : 0;
+    }
+    100% {
+      opacity: 1
+    }
+}
+
 `;
 
 const EquippedItem = styled.img`
@@ -187,6 +215,18 @@ const RotateMenuLeftButton = styled.button`
     left: 12%;
     top: 45%;
     z-index: 1100;
+    &:after{
+        position: absolute;
+        z-index: 2000;
+        content: 'Q';
+        font-size: 36px;
+        color: ${darkFrame};
+        top: 17.5%;
+        left: 40%;   
+        font-family: "Libre Caslon Text", serif;
+        font-weight: 700;
+        font-style: normal;   
+    }
 `;
 
 const RotateMenuRightButton = styled.button`
@@ -194,7 +234,21 @@ const RotateMenuRightButton = styled.button`
     right: 12%;
     top: 45%;
     z-index: 1100;
+    &:after{
+        position: absolute;
+        z-index: 2000;
+        content: 'E';
+        font-size: 36px;
+        color: ${darkFrame};
+        top: 17.5%;
+        right: 50%;
+        font-family: "Libre Caslon Text", serif;
+        font-weight: 700;
+        font-style: normal;
+    }
 `;
+
+
 
 const Rupees = styled.div`
     position: absolute;
@@ -203,9 +257,7 @@ const Rupees = styled.div`
     align-items: center;
     z-index: 1100;
     color: white;
-    -webkit-text-stroke: 1px black;
-    font-weight: 600;
-    font-family: cursive;
+    -webkit-text-stroke: 1px black;        
     font-size: 24px;
     bottom: 72px;
     left: 224px;
@@ -284,6 +336,7 @@ const MajorasMenu  = () => {
     const [cDown, setCDown] = useState({});
     const [cRight, setCRight] = useState({});
     const [selecting, setSelecting] = useState(false);
+    const [showControls, setShowControls] = useState(false);
     const [arrowAnimate1, setArrowAnimate1] = useState(false);
     const [arrowAnimate2, setArrowAnimate2] = useState(false);
     const [scrollX, setScrollX] = useState(window.scrollX);
@@ -543,22 +596,26 @@ const MajorasMenu  = () => {
             <Magic magic={magic}/>
         </HealthAndMagic>
         <ActionButtons/>        
-        <EquipButtons>
-            <span ref={cLeftRef}><EquippedItem src={cLeft.image}/><Triangle/></span>
-            <span ref={cDownRef}><EquippedItem src={cDown.image}/><Triangle/></span>
-            <span ref={cRightRef}><EquippedItem src={cRight.image}/><Triangle/></span>
-        </EquipButtons>        
+        <EquipButtonsWrapper>
+            <EquipButtonLeft ref={cLeftRef}><EquippedItem src={cLeft.image}/><Triangle/></EquipButtonLeft>
+            <EquipButtonDown ref={cDownRef}><EquippedItem src={cDown.image}/><Triangle/></EquipButtonDown>
+            <EquipButtonRight ref={cRightRef}><EquippedItem src={cRight.image}/><Triangle/></EquipButtonRight>
+            {!description && <NoticeButton className='comic-relief' onMouseOver={() => setShowControls(true)} onMouseLeave={()=> setShowControls(false)}>
+                Tatl                
+            </NoticeButton>}
+            {showControls && <ControlsTooltip/>}
+        </EquipButtonsWrapper>        
          <AddHoverEffect dims={'20px'}>
-            <RotateMenuLeftButton onClick = {() => rotatePage()} name={rotateButtonInfo[mod(curMenu + 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav' nav>
-                <Base left={true}/>
+            <RotateMenuLeftButton onClick = {() => rotatePage()} name={rotateButtonInfo[mod(curMenu + 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav libre-caslon' nav>
+                <Base left={true}/>                
             </RotateMenuLeftButton>         
         </AddHoverEffect>
         <AddHoverEffect dims={'20px'}>
-            <RotateMenuRightButton onClick = {() => rotatePage(true)} name={rotateButtonInfo[mod(curMenu - 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav' nav>
-                <Base left={false}/>
+            <RotateMenuRightButton  onClick = {() => rotatePage(true)} name={rotateButtonInfo[mod(curMenu - 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav libre-caslon' nav>
+                <Base left={false}/>                
             </RotateMenuRightButton>
         </AddHoverEffect>        
-        <Rupees>
+        <Rupees className='comic-relief'>
             <img src={Rupee}/>500
         </Rupees>        
         <InfoBar name={infoBar} instructions={instructions} equippable={hoveredEquip.current.equip.name}/>

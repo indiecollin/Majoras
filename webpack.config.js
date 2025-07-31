@@ -1,10 +1,12 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+
 module.exports = () => {
     return {
-        mode: 'development',
-        target: 'node',
-        devtool:'inline-source-map',
+        mode: 'production',
+        target: 'node',        
         entry: './src/index.js',
         output: {
             filename: 'bundle.js',
@@ -56,7 +58,12 @@ module.exports = () => {
             ]            
         },
         plugins: [        
-            new MiniCssExtractPlugin({filename: 'styles.css'})
+            new HtmlWebpackPlugin({
+                template: './index.html',
+                filename: 'index.html'
+            }),
+            new MiniCssExtractPlugin({filename: 'styles.css'}),
+            new FaviconsWebpackPlugin('./majoras-favicon.png')
         ]
     }
 };

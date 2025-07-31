@@ -13,9 +13,7 @@ const ActionButtonsContainer = styled.div`
     button{
         position: absolute;
         color: white;
-        -webkit-text-stroke: 1px black;
-        font-weight: 600;
-        font-family: cursive;
+        -webkit-text-stroke: 1px black;        
         border: 2px solid black;
         outline: 3px solid ${buttonOutline};
         outline-offset: -5px;
@@ -66,9 +64,9 @@ const ActionButtonsWrapper = styled.div`
 const ActionButtons = () => {
     return (<ActionButtonsContainer>
         <ActionButtonsWrapper>
-            <button className='start' onClick={()=>{}}>Return</button>
-            <button className='B' onClick={()=>{}}>Save</button>
-            <button className='A' onClick={()=>{}}>Decide</button>
+            <button className='start comic-relief' onClick={()=>{}}>Return</button>
+            <button className='B comic-relief' onClick={()=>{}}>Save</button>
+            <button className='A comic-relief' onClick={()=>{}}>Decide</button>
         </ActionButtonsWrapper>
     </ActionButtonsContainer>)
 };
