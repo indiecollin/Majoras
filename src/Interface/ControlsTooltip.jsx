@@ -16,7 +16,7 @@ const Tooltip = styled.div`
     top: 32px;
     left: -68px;
     background-color: #00000080;
-    border-end-start-radius: 5px;
+    border-radius: 5px;
     color: #FFFFFF;
     width: 300px;
     padding: 12px;

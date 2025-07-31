@@ -63,6 +63,27 @@ module.exports = () => {
                 filename: 'index.html'
             }),
             new MiniCssExtractPlugin({filename: 'styles.css'}),
+            new FaviconsWebpackPlugin({
+                logo: './majoras-favicon.png',
+                mode: 'webapp',
+                favicons: {
+                    appName: 'Majoras',
+                    appDescription: "Recreation of the pause menu from The Legend of Zelda: Majora's Mask",
+                    developerName: 'Collin Cain',
+                    icons: {
+                        android: true,
+                        appleIcon: true,
+                        appleStartup: false,
+                        windows: false,
+                        yandex: false,
+                        coast: false,
+                        firefox: false,
+                        opengraph: false,
+                        twitter: false,
+                        safariPinnedTab: false,                                           
+                    },
+                },
+            }),
             new FaviconsWebpackPlugin('./majoras-favicon.png')
         ]
     }
