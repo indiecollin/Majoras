@@ -145,14 +145,29 @@ const EquipButton = styled.span`
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
     width: 64px;
     height: 64px;
-    background-color: ${buttonYellow};
     position: relative;
-    border: 1px solid ${buttonYellowBorder};
-    outline: 3px solid ${buttonYellowOutline};
-    outline-offset: -6px;
+    &:before{
+        display: flex;
+        content: '';
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 100%;
+        height: 100%;
+        background-color: ${buttonYellow};
+        position: absolute;
+        border: 1px solid ${buttonYellowBorder};
+        outline: 3px solid ${buttonYellowOutline};
+        outline-offset: -6px;
+        clip-path: polygon(50% 0%, 80.9% 9.5%, 97.6% 34.5%, 97.6% 65.5%, 80.9%
+        90.5%, 50% 100%, 19.1% 90.5%, 2.4% 65.5%, 2.4% 34.5%, 19.1% 9.5%, 50% 0%);
+        z-index: -1;
+    }
+    svg{
+        position: absolute;
+    }
     img{
         z-index: 1300
     } 
@@ -167,7 +182,7 @@ const EquipButtonLeft = styled(EquipButton)`
 `;
 
 const EquipButtonDown = styled(EquipButton)`    
-    top: 32px;
+    top: 40px;
     left: -16px;
     z-index: 1220;
 `;
@@ -284,9 +299,9 @@ const ArrowEffect = styled.span`
     background-image: radial-gradient(circle at center, ${props => props.color + ' 50%, ' + props.color2 + ' 66.6%, ' + props.color2} 100%);
     opacity: ${props => props.show && (props.animate1 || props.animate2) ?  1 : 0 };
     ${props => !props.animate2 ? ('top: calc(' + props.arrow.top + 'px + '+ (props.arrow.height/2.3) +'px + ' + (props.scrollY) + 'px);') : '' }
-    ${props => props.animate2 ? ('top: calc(' + props.arrowTip.top + 'px + '+ (props.arrowTip.height/25) +'px + ' + (props.scrollY) + 'px);') : '' }
+    ${props => props.animate2 ? ('top: calc(' + props.arrowTip.top + 'px + '+ (props.arrowTip.height/5) +'px + ' + (props.scrollY) + 'px);') : '' }
     ${props => !props.animate2 ? ('left: calc(' + props.arrow.left + 'px + '+ (props.arrow.width/8) +'px + ' + (props.scrollX) + 'px);') : '' }
-    ${props => props.animate2 ? ('left: calc(' + props.arrowTip.left + 'px + '+ (props.arrowTip.width/1.66) +'px + ' + (props.scrollX) + 'px);') : '' }    
+    ${props => props.animate2 ? ('left: calc(' + props.arrowTip.left + 'px + ' + (props.arrowTip.width/2.5) +'px + ' + (props.scrollX) + 'px);') : '' }    
     ${props => !props.animate2 ? ('width: calc(' + props.arrow.width + 'px/2);') : ''}
     ${props => props.animate2 ? ('width: ' + props.arrowTip.width/3 + 'px;') : ''}
     ${props => !props.animate2 ? ('height: calc(' + props.arrow.height + 'px/2);') : ''}
@@ -605,12 +620,12 @@ const MajorasMenu  = () => {
             </NoticeButton>}
             {showControls && <ControlsTooltip/>}
         </EquipButtonsWrapper>        
-         <AddHoverEffect dims={'20px'}>
+         <AddHoverEffect dims={20} border={3.3}>
             <RotateMenuLeftButton onClick = {() => rotatePage()} name={rotateButtonInfo[mod(curMenu + 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav libre-caslon' nav>
                 <Base left={true}/>                
             </RotateMenuLeftButton>         
         </AddHoverEffect>
-        <AddHoverEffect dims={'20px'}>
+        <AddHoverEffect dims={20} border={3.3}>
             <RotateMenuRightButton  onClick = {() => rotatePage(true)} name={rotateButtonInfo[mod(curMenu - 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav libre-caslon' nav>
                 <Base left={false}/>                
             </RotateMenuRightButton>

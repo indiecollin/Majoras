@@ -100,34 +100,47 @@ const OcarinaSongs = styled.div`
 const SongList = styled.div`    
     display: flex;
     flex-wrap: wrap;
-    margin-top: 24px;
+    margin-top: 12px;
 `;
 
-const SongNote = styled.button`
-    flex-grow: 0;
-    flex-shrink: 0;
+const songNoteWrapperStyles = `
     flex-basis: 20%;
-    display: flex;
-    margin-top: 12px;
-    position: relative;
-    cursor: ${props => props.disabled ? 'unset' : 'pointer'};
-    padding: 0;
-
-    img{
-        margin: 0 auto;
-        width: 48px;
-        height: 72px;
+    margin-bottom: 16px;
+    &:before{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 4px solid ${darkFrame};
+        z-index: 990;
+        width: 80%;
+        height: 100%;
+        margin-left: 16px;
     }
 `;
 
-const noteRowPadding = 68;//clef width + padding
-const rotatorOffset = 32;
+const SongNote = styled.button`
+    display: flex;
+    position: relative;
+    margin-top: 12px;
+    padding: 0;    
+    cursor: ${props => props.disabled ? 'unset' : 'pointer'};
+    z-index: 1000;
+    img{
+        margin: 0 auto;
+        width: 100px;
+        padding: 12px;
+    }
+`;
+
+const noteRowPadding = 74;//clef width + padding
+const rotatorOffset = 54;
 
 const SongMeasureContainer = styled.div`
     display: flex;
     position: relative;
     width: 100%;
-    margin-top: 24px;
+    margin-top: 4px;
     &>img{
         width: 64px;
         height: 96px;
@@ -388,7 +401,7 @@ const OcarinaSongsContainer = () => {
     return <OcarinaSongs ref={containerRef} tabIndex={0} onKeyDown={playOcarina} onMouseLeave={resetAll}>
         <SongList>
             {songs.map((s,i)=>{
-                return <AddHoverEffectAbsolute key={s.name} color={questHover} dims={'24px'}>
+                return <AddHoverEffectAbsolute key={s.name} color={questHover} rules={songNoteWrapperStyles}>
                     <SongNote 
                         key={s.name} 
                         onClick={() => setSong(s, playModeRef.current)} 

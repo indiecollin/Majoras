@@ -10,50 +10,78 @@ const ActionButtonsContainer = styled.div`
     transform: translateX(-50%);
     width: 300px;    
 
-    button{
+    button{     
+        display: flex;
+        align-items: center;
+        justify-content: center;   
         position: absolute;
-        color: white;
-        -webkit-text-stroke: 1px black;        
-        border: 2px solid black;
-        outline: 3px solid ${buttonOutline};
-        outline-offset: -5px;
+        border: none;         
         cursor: pointer;
-
-        &:before {
-            content: "";
-            margin-left: -100%;
+        color: white;
+        -webkit-text-stroke: 1.2px black;
+        background-color: transparent;
+        font-size: 26px;
+        &:before{
+            border-radius: 50%;
+            clip-path: polygon(50% 0%, 80.9% 9.5%, 97.6% 34.5%, 97.6% 65.5%, 80.9%
+            90.5%, 50% 100%, 19.1% 90.5%, 2.4% 65.5%, 2.4% 34.5%, 19.1% 9.5%, 50% 0%);
         }
-        &:after {
-            content: "";
-            margin-right: -100%;
-        }
-
     }
 
-    .start{
-        border-radius: 50%;
-        width: 28px;
-        height: 28px;
-        background-color: ${buttonRed};
+    .start{        
+        width: 52px;
+        height: 52px;        
+        &:before {
+            content: "";
+            display: flex;
+            position: absolute;
+            z-index: -1;
+            width: 52px;
+            height: 52px;         
+            background-color: ${buttonRed};                        
+            border: 1px solid transparent;      
+            outline: 4px solid ${buttonOutline};
+            outline-offset: -6px;
+        }
     }
 
     .B{
-        margin-left: 10px;
-        border-radius: 50%;
-        width: 48px;
-        height: 48px;
-        background-color: ${buttonGreen};
-        left: 40px;
+        width: 64px;
+        height: 64px;
+        left: 80px;
+        margin-left: 10px;        
+        &:before {
+            content: "";
+            display: flex;
+            position: absolute;
+            z-index: -1;
+            width: 64px;
+            height: 64px;        
+            background-color: ${buttonGreen};                        
+            border: 1px solid transparent;            
+            outline: 5px solid ${buttonOutline};
+            outline-offset: -8px;
+        }
     }
 
     .A{
-        margin-left: 10px;
-        border-radius: 50%;
-        width: 48px;
-        height: 48px;        
-        background-color: ${buttonBlue};
-        left: 100px;
+        width: 64px;
+        height: 64px;        
+        left: 180px;
         top: 12px;
+        margin-left: 10px;
+        &:before {
+            content: "";
+            display: flex;
+            position: absolute;
+            z-index: -1;
+            width: 64px;
+            height: 64px;           
+            background-color: ${buttonBlue};                                    
+            border: 1px solid transparent;      
+            outline: 5px solid ${buttonOutline};
+            outline-offset: -8px;
+        }
     }
 `;
 

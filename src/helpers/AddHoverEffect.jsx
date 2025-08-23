@@ -10,19 +10,14 @@ const HoverContainer = styled.div`
     justify-content: center;
 
     *:first-child{
-        z-index: 1010;
+        z-index: 1020;
     }
 `;
 
 const Orbitter = styled.div`
-    background-color: transparent;
-    width: ${props => props.dims ? props.dims : '24px'};
-    height: ${props => props.dims ? props.dims : '24px'};
-    border-radius: 50%;
-    outline-offset: -6px;
-    outline: 2px solid black;
-    border: 6px solid ${props => props.color ? props.color: allHover};
-    box-shadow: 0 0 0 1px black;
+  --b: ${props => props.border ? props.border : 4}px;  /* border thickness */
+  --s: ${props => props.dims ? props.dims : 24}px; /* preferred size shape */
+  --c: ${props => props.color ? props.color: allHover}; 
     animation-delay: ${props => props.delay}, 0s;
     z-index: 1010;
     position: absolute;
@@ -31,6 +26,18 @@ const Orbitter = styled.div`
     transform-origin: ${props => `${props.transformOriginX} ${props.transformOriginY}`};
     opacity: 0;    
     filter: brightness(100%);
+    width: round(var(--s),4*var(--b));
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: 
+        repeating-radial-gradient(calc(2*var(--b)) at top,#0000 -1px,var(--c) 0 calc(50% - 1px),#0000 50% calc(100% - 1px)) calc(50% + var(--b)) 100%, 
+        repeating-radial-gradient(calc(2*var(--b)) at bottom,var(--c) -1px,#0000 0 calc(50% - 1px),var(--c) 50% calc(100% - 1px)) 50% 0;
+    background-size: 150% 50%;
+    background-repeat: no-repeat;
+    mask: 
+        radial-gradient(calc(1.5*var(--b)) at calc(100% - var(--b)/2) 0, #0000 calc(100%/3), #000 calc(100%/3 + 1px) 110%, #0000 0) calc(50% + var(--b)/2) 
+        100%/calc(3*var(--b)) 50% exclude no-repeat, 
+        conic-gradient(#000 0 0);
 `;
 
 const useHover = (props, ref) => {
@@ -69,7 +76,7 @@ const useHover = (props, ref) => {
 
 const AddHoverEffect = ((props, ref) => {
   const { selecting, description } = useContext(MenuContext); 
-  const { color, dims } = props;
+  const { color, dims, border } = props;
   const { parentWidth, disabled } = props.children.props;
   const Component = props.children.type;
   const orbitterRadius = 12;  
@@ -133,10 +140,10 @@ const AddHoverEffect = ((props, ref) => {
           <Component {...props.children.props} {...eventHandlers} {...((ref.current || ref.current === null) ? { ref: ref } : {})}/>
           {
             hovered && !disabled && !selecting && <>
-                <Orbitter delay={'0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={color} dims={dims} />
-                <Orbitter delay={'-0.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={color} dims={dims} />
-                <Orbitter delay={'-1.0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={color} dims={dims} />
-                <Orbitter delay={'-1.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={color} dims={dims} />
+                <Orbitter delay={'0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={color} dims={dims} border={border} />
+                <Orbitter delay={'-0.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={color} dims={dims} border={border} />
+                <Orbitter delay={'-1.0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={color} dims={dims} border={border} />
+                <Orbitter delay={'-1.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={color} dims={dims} border={border} />
             </>
           }           
       </HoverContainer>

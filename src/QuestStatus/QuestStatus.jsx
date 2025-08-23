@@ -54,20 +54,32 @@ const QuestItemWrapper = styled.button`
     height: min-content;
     cursor: ${props => props.disabled || props.disablelite ? 'unset' : 'pointer'};
     pointer-events: ${props => props.disablelite ? 'none' : 'unset'};
+    ${props => !props.remains && 
+        `&:before{
+            display: flex;
+            position: absolute;
+            content: '';
+            z-index: 1000;
+            width: 100%;
+            height: 100%;        
+            border: 5px inset ${darkFrame};
+            background-color: ${darkFrame};      
+        }`
+    }
 `;
 
 const QuestItem = styled.img`
-    top: 0;
-    left: 0;
-    border: 5px inset ${darkFrame};    
-`;
-
-const BossRemains = styled(QuestItem)`
     position: relative;
-    animation: ${props => props.boss} 2.5s infinite alternate;
-    border: none;    
+    top: 0;
+    left: 0;    
 `;
 
+const BossRemains = styled.img`
+    position: relative;
+    top: 0;
+    left: 0;    
+    animation: ${props => props.boss} 2.5s infinite alternate;    
+`;
 
 const GridCellNotebook = styled.div`    
     position: relative;
@@ -92,6 +104,7 @@ const GridCellBossMasks = styled.div`
     }
     button > div{
         border-radius: 50%;
+        background-color: ${darkFrame};
         box-shadow: 2px 2px 4px 8px rgba(0,0,0,0.2),-2px -2px 4px 8px rgba(0,0,0,0.2);
     }
     img{ // likely to keep this synced with mask/item dimensions
@@ -137,7 +150,7 @@ const QuestStatus = (props) => {
         <QuestStatusGrid>
             <GridCellNotebook>
                 <QuestItemWrapper onClick = {() => {setNotebookOpened(true)}} disablelite={description} disabled={!isActive}>
-                    <AddHoverEffect dims={'28px'} color={questHover}>
+                    <AddHoverEffect dims={28} border={4.6} color={questHover}>
                         <QuestItem src={items.bombersNotebook.img} name={items.bombersNotebook.name} parentWidth={bomberNotebookWidth} instructions={items.bombersNotebook.instructions} disabled={!isActive || description}/>
                     </AddHoverEffect>
                 </QuestItemWrapper>
@@ -145,24 +158,24 @@ const QuestStatus = (props) => {
             <GridCellHeartContainer hearts={hearts} setHealth={setHealth} setHearts={setHearts}/>
             <GridCellOcarinaSongs/>
             <GridCellBossMasks>
-                <div><QuestItemWrapper onClick = {() => setDescription(items.odalwa)} disablelite={description} disabled={!isActive}>
+                <div><QuestItemWrapper onClick = {() => setDescription(items.odalwa)} remains={true} disablelite={description} disabled={!isActive}>
                         <AddHoverEffect>
                             <BossRemains src={items.odalwa.img} name={items.odalwa.name} parentWidth={questItemWidth} boss={items.odalwa.short} disabled={!isActive || description}/>
                         </AddHoverEffect>
                 </QuestItemWrapper></div>
                 <div>
-                    <QuestItemWrapper onClick = {() => setDescription(items.gyorg)} disablelite={description} disabled={!isActive}>
+                    <QuestItemWrapper onClick = {() => setDescription(items.gyorg)} remains={true} disablelite={description} disabled={!isActive}>
                         <AddHoverEffect>
                             <BossRemains src={items.gyorg.img} name={items.gyorg.name} parentWidth={questItemWidth} boss={items.gyorg.short} disabled={!isActive || description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
-                    <QuestItemWrapper onClick = {() => setDescription(items.goht)} disablelite={description} disabled={!isActive}>
+                    <QuestItemWrapper onClick = {() => setDescription(items.goht)} remains={true} disablelite={description} disabled={!isActive}>
                         <AddHoverEffect>
                             <BossRemains src={items.goht.img} name={items.goht.name} parentWidth={questItemWidth} boss={items.goht.short} disabled={!isActive || description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
                 </div>
-                <div><QuestItemWrapper onClick = {() => setDescription(items.twinmold)} disablelite={description} disabled={!isActive}>
+                <div><QuestItemWrapper onClick = {() => setDescription(items.twinmold)} remains={true} disablelite={description} disabled={!isActive}>
                         <AddHoverEffect>
                             <BossRemains src={items.twinmold.img} name={items.twinmold.name} parentWidth={questItemWidth} boss={items.twinmold.short} disabled={!isActive || description}/>
                         </AddHoverEffect>

@@ -49,10 +49,10 @@ const MapDisplay = styled.div`
 `;
 
 const MapPoint = styled.div`    
+    pointer-events: ${props => props.disablelite ? 'none' : 'unset'};
     img{
         position: relative;
     }    
-    pointer-events: ${props => props.disablelite ? 'none' : 'unset'};
 `;  
 
 const Map = () => {
@@ -71,11 +71,11 @@ const Map = () => {
                         left: ${p.x};
                         top: ${p.y};
                     `;  
-                    return <AddHoverEffectAbsolute key={p.name} dims={'24px'}>
+                    return <AddHoverEffectAbsolute key={p.name}>
                         <MapPoint key={p.name}
                             name={p.name} 
                             parentWidth={mapDisplayPadding} 
-                            absoluteOffset={rotatorOffset} 
+                            absoluteOffset={rotatorOffset}
                             positions={positions} 
                             onHover={() => sounds['cursor'].play()}
                             disablelite={description}

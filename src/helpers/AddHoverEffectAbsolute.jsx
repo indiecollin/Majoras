@@ -5,29 +5,25 @@ import { allHover } from '../styles/colors.js';
 
 const HoverContainer = styled.div`
     ${props => props.positionRules }
-    ${props => props.flexRules }
+    ${props => props.passedRules}
+    display: flex;
     position: relative;
     align-items: center;
     justify-content: center;
     
     *:first-child{        
-        z-index: 1010;
+        z-index: 1020;
     }
 `;
 
 const Orbitter = styled.div`
-    background-color: transparent;
+    --b: ${props => props.border ? props.border : 4}px;  /* border thickness */
+    --s: ${props => props.dims ? props.dims : 24}px; /* preferred size shape */
+    --c: ${props => props.color ? props.color: allHover};
     ${props => props.top ? 'top: 0;' : '' }
     ${props => props.bottom ? 'bottom: 0;' : '' }
     ${props => props.left ? 'left: ' + (props.absoluteOffset-props.parentWidth) + 'px;' : '' }
     ${props => props.right ? 'right: ' + (props.absoluteOffset-props.parentWidth) + 'px;' : '' }
-    width: ${props => props.dims ? props.dims : '24px'};
-    height: ${props => props.dims ? props.dims : '24px'};
-    border-radius: 50%;
-    outline-offset: -6px;
-    outline: 2px solid black;
-    border: 6px solid ${props => props.color ? props.color : allHover};
-    box-shadow: 0 0 0 1px black;
     animation-delay: ${props => props.delay}, 0s;
     z-index: 1000;
     position: absolute;
@@ -40,6 +36,18 @@ const Orbitter = styled.div`
     ${props => (props.bottom && props.right) ? `transform-origin: -75% -75%;` : ''}
     opacity: 0;
     filter: brightness(100%);
+    width: round(var(--s),4*var(--b));
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: 
+        repeating-radial-gradient(calc(2*var(--b)) at top,#0000 -1px,var(--c) 0 calc(50% - 1px),#0000 50% calc(100% - 1px)) calc(50% + var(--b)) 100%, 
+        repeating-radial-gradient(calc(2*var(--b)) at bottom,var(--c) -1px,#0000 0 calc(50% - 1px),var(--c) 50% calc(100% - 1px)) 50% 0;
+    background-size: 150% 50%;
+    background-repeat: no-repeat;
+    mask: 
+        radial-gradient(calc(1.5*var(--b)) at calc(100% - var(--b)/2) 0, #0000 calc(100%/3), #000 calc(100%/3 + 1px) 110%, #0000 0) calc(50% + var(--b)/2) 
+        100%/calc(3*var(--b)) 50% exclude no-repeat, 
+        conic-gradient(#000 0 0);
 `;
 
 const useHover = (props) => {
@@ -67,31 +75,13 @@ const useHover = (props) => {
 
 const AddHoverEffectAbsolute = ((props, ref) => {
     const { selecting } = useContext(MenuContext);
-    const { color, dims} = props;
+    const { color, dims, border, rules} = props;
     const { parentWidth, absoluteOffset, positions, disabled} = props.children.props;
     const Component = props.children.type;
 
     const positionRules = [
         'top', 'right', 'left', 'bottom'
     ];
-
-    const flexRules = [
-        'flex-grow',
-        'flex-shrink',
-        'flex-basis',
-        'display'
-    ];
-
-    const flexStyles = Component.componentStyle.rules[0]
-    .split('\n')
-    .map(rule => rule.trim())
-    .filter(rule => rule.includes(':'))
-    .reduce((acc, cur)=>{
-        if(flexRules.includes(cur.split(':')[0])){
-            acc += `${cur} `
-        }
-        return acc;
-    }, '');
 
     const mirrorStyles = Component.componentStyle.rules[0]
     .split('\n')
@@ -108,14 +98,14 @@ const AddHoverEffectAbsolute = ((props, ref) => {
     useEffect(()=>{
         setHovered(false);
     },[disabled])
-    return <HoverContainer positionRules = {positions} flexRules={ flexStyles }>            
+    return <HoverContainer positionRules = {positions} passedRules={rules}>            
         <Component {...props.children.props} {...eventHandlers} {...((ref.current || ref.current === null) ? { ref: ref } : {})} />
         {
           hovered &&  !disabled && !selecting && <>
-          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={color} dims={dims} top left/>
-          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={color} dims={dims} top right/>
-          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={color} dims={dims} bottom left/>
-          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={color} dims={dims} bottom right/>
+          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={color} dims={dims} border={border} top left/>
+          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={color} dims={dims} border={border} top right/>
+          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={color} dims={dims} border={border} bottom left/>
+          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={color} dims={dims} border={border} bottom right/>
         </>
         }
     </HoverContainer>
