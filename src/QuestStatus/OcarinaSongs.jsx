@@ -257,7 +257,6 @@ const OcarinaSongsContainer = () => {
         setPlayMode(true);
         setCurSong(song);
         setDisabled(true);
-        setInfoBar('\u00A0');
         setInstructions();
         let newNoteMap =  Array.from({length: 5}, () => Array(8).fill(false));
         let songDelay = 0;        
@@ -406,10 +405,11 @@ const OcarinaSongsContainer = () => {
                         key={s.name} 
                         onClick={() => setSong(s, playModeRef.current)} 
                         onHover={()=> ob(s.sequence)}
-                        onBlur={()=>{if(!playModeRef.current) resetAll()}}                        
-                        disabled={!isActive || disabled || description || curSong?.name === s.name} 
+                        onBlur={()=>{if(!playModeRef.current) resetAll()}}
+                        selected={curSong?.name === s.name}                      
+                        disabled={!isActive || disabled || description}
                         name={s.name}
-                        instructions={instructions}            
+                        instructions={instructions}
                         parentWidth={rotatorOffset}    
                         absoluteOffset={noteRowPadding}                        
                     >

@@ -21,14 +21,12 @@ const MapContainer = styled.div`
         text-transform: uppercase;
         text-align: center;         
         font-size: 50px;
-        &:before{
-            position: absolute;
-            z-index: -1;
-            content: '';
-            inset: 0;
-            filter: url(#grainy);        
-        }
     }
+`;
+
+const MapWrapper = styled.div`
+    height: 100%;
+    display: flex;
 `;
 
 const MapDisplay = styled.div`
@@ -55,6 +53,18 @@ const MapPoint = styled.div`
     }    
 `;  
 
+const Frame = styled.div`
+    background-color: ${frame};
+    position: relative;
+    width: 72px;
+`;
+
+const Base = styled.div`
+    background-color: ${frame};    
+    height: 36px; 
+    z-index: -1;
+`;
+
 const Map = () => {
     const { curMenu, description } = useContext(MenuContext);
     const mapDisplayPadding = 4;
@@ -62,31 +72,36 @@ const Map = () => {
     const isActive = mod(curMenu, 4) === 3;
     
     return <MapContainer>
-        <h1>map</h1>
-        <MapDisplay>
-            <img src={MapImage}/>
-            {
-                mapLegend.map(p => {
-                    const positions = `
-                        left: ${p.x};
-                        top: ${p.y};
-                    `;  
-                    return <AddHoverEffectAbsolute key={p.name}>
-                        <MapPoint key={p.name}
-                            name={p.name} 
-                            parentWidth={mapDisplayPadding} 
-                            absoluteOffset={rotatorOffset}
-                            positions={positions} 
-                            onHover={() => sounds['cursor'].play()}
-                            disablelite={description}
-                            disabled={!isActive}
-                        >                    
-                            <img src = {Point} />
-                        </MapPoint>
-                    </AddHoverEffectAbsolute>
-                })
-            }            
-        </MapDisplay>
+        <h1 className='wendy-one-regular'>map</h1>
+        <MapWrapper>
+            <Frame/>
+            <MapDisplay>
+                <img src={MapImage}/>
+                {
+                    mapLegend.map(p => {
+                        const positions = `
+                            left: ${p.x};
+                            top: ${p.y};
+                        `;  
+                        return <AddHoverEffectAbsolute key={p.name}>
+                            <MapPoint key={p.name}
+                                name={p.name} 
+                                parentWidth={mapDisplayPadding} 
+                                absoluteOffset={rotatorOffset}
+                                positions={positions} 
+                                onHover={() => sounds['cursor'].play()}
+                                disablelite={description}
+                                disabled={!isActive}
+                            >                    
+                                <img src = {Point} />
+                            </MapPoint>
+                        </AddHoverEffectAbsolute>
+                    })
+                }            
+            </MapDisplay>
+            <Frame/>
+        </MapWrapper>
+        <Base/>
     </MapContainer>
 }
 

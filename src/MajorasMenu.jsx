@@ -17,7 +17,8 @@ import { rotateButtonInfo } from './data/index.js';
 import AddHoverEffect from './helpers/AddHoverEffect.jsx';
 import { delay, mod } from './helpers/index.js';
 import onClickOutside from './helpers/onClickOutside.jsx';
-import {
+import {    
+    frame,
     darkFrame,
     buttonYellow,
     buttonYellowBorder,
@@ -70,8 +71,6 @@ const MenuBox = styled.div`
          flex: 0 0 auto;
     }
 
-    svg[height='0'] { position: fixed }
-
     figure {
         width: ${props => props.menusWidth + 'px'};
         transform-origin: 50% 50% ${props => -props.apothem + 'px'};
@@ -97,6 +96,13 @@ const MenuBox = styled.div`
             &>*{
                 transform: rotateY(180deg);
             }
+            h1{
+                color: ${frame};
+                -webkit-text-stroke: 5px ${darkFrame};
+                letter-spacing: 4px;
+                line-height: 75px;
+                font-size: 64px;
+            }
         } 
     }
 
@@ -110,6 +116,12 @@ const MenuBox = styled.div`
     }
 `;
 
+const FontPreload = styled.span`
+    position: absolute;
+    visibility: hidden;
+    z-index: -1;
+`;
+
 const transAngle = (n) => {
     let rules = '';
     for(let i = 2; i<=n; i++){
@@ -119,10 +131,6 @@ const transAngle = (n) => {
     }
     return rules;
 }
-
-const SVGFilters = styled.svg`
-    
-`;
 
 const HealthAndMagic = styled.div`
     position: absolute;
@@ -235,12 +243,13 @@ const RotateMenuLeftButton = styled.button`
         z-index: 2000;
         content: 'Q';
         font-size: 36px;
-        color: ${darkFrame};
-        top: 17.5%;
+        color: ${frame};
+        -webkit-text-stroke: 2.5px ${darkFrame};
+        top: 15%;
         left: 40%;   
-        font-family: "Libre Caslon Text", serif;
-        font-weight: 700;
-        font-style: normal;   
+        font-family: "Aoboshi One", serif;
+        font-weight: 400;
+        font-style: normal; 
     }
 `;
 
@@ -254,11 +263,12 @@ const RotateMenuRightButton = styled.button`
         z-index: 2000;
         content: 'E';
         font-size: 36px;
-        color: ${darkFrame};
-        top: 17.5%;
+        color: ${frame};
+        -webkit-text-stroke: 2.5px ${darkFrame};
+        top: 15%;
         right: 50%;
-        font-family: "Libre Caslon Text", serif;
-        font-weight: 700;
+        font-family: "Aoboshi One", serif;
+        font-weight: 400;
         font-style: normal;
     }
 `;
@@ -295,7 +305,7 @@ const EquipmentClone = styled.img`
 const ArrowEffect = styled.span`
     position: absolute;
     border-radius: 50%;
-    z-index: 900;    
+    z-index: 900;
     background-image: radial-gradient(circle at center, ${props => props.color + ' 50%, ' + props.color2 + ' 66.6%, ' + props.color2} 100%);
     opacity: ${props => props.show && (props.animate1 || props.animate2) ?  1 : 0 };
     ${props => !props.animate2 ? ('top: calc(' + props.arrow.top + 'px + '+ (props.arrow.height/2.3) +'px + ' + (props.scrollY) + 'px);') : '' }
@@ -596,16 +606,11 @@ const MajorasMenu  = () => {
         tabIndex={-1} 
         navDisabled={description}
     >
-        <SVGFilters width="0" height="0" aria-hidden="true">
-            <filter id="grainy" x="0" y="0" width="100%" height="100%">
-                <feTurbulence type="fractalNoise" baseFrequency=".537"></feTurbulence>
-            </filter>
-            <filter id="stone" x="0" y="0" width="100%" height="100%">
-                <feTurbulence type="fractalNoise" baseFrequency=".4337"></feTurbulence>
-                <feColorMatrix type="saturate" values="0"></feColorMatrix>
-                <feBlend mode="multiply" in="SourceGraphic"></feBlend>
-            </filter>
-        </SVGFilters>
+        {/* preloading fonts */}
+        <FontPreload className='wendy-one-regular'>|</FontPreload>
+        <FontPreload className='comic-relief'>|</FontPreload>
+        <FontPreload className='aoboshi-one-regular'>|</FontPreload>
+        <FontPreload className='nanum-pen-script-regular'>|</FontPreload>
         <HealthAndMagic>
             <Health health={health} hearts={hearts} defense={defense}/>
             <Magic magic={magic}/>
@@ -621,12 +626,12 @@ const MajorasMenu  = () => {
             {showControls && <ControlsTooltip/>}
         </EquipButtonsWrapper>        
          <AddHoverEffect dims={20} border={3.3}>
-            <RotateMenuLeftButton onClick = {() => rotatePage()} name={rotateButtonInfo[mod(curMenu + 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav libre-caslon' nav>
+            <RotateMenuLeftButton onClick = {() => rotatePage()} name={rotateButtonInfo[mod(curMenu + 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav' nav>
                 <Base left={true}/>                
             </RotateMenuLeftButton>         
         </AddHoverEffect>
         <AddHoverEffect dims={20} border={3.3}>
-            <RotateMenuRightButton  onClick = {() => rotatePage(true)} name={rotateButtonInfo[mod(curMenu - 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav libre-caslon' nav>
+            <RotateMenuRightButton  onClick = {() => rotatePage(true)} name={rotateButtonInfo[mod(curMenu - 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav' nav>
                 <Base left={false}/>                
             </RotateMenuRightButton>
         </AddHoverEffect>        

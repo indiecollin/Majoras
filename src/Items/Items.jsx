@@ -18,13 +18,6 @@ const ItemsContainer = styled.div`
         text-transform: uppercase;        
         font-size: 50px;
         background-color: ${frame};
-        &:before{
-            position: absolute;
-            z-index: -1;
-            content: '';
-            inset: 0;
-            filter: url(#grainy);        
-        }      
     }
     &>div{                
         display: flex;
@@ -48,8 +41,7 @@ const ItemRow = styled.div`
     justify-content: space-between;              
     padding: 8px;      
     img{
-        width: 148px;
-        z-index: 200;
+        width: 148px;          
     }
 `;
 
@@ -60,6 +52,7 @@ const ItemWrapper = styled.button`
     border-radius: 5px;
     cursor: ${props => props.disabled || props.disablelite ? 'unset' : 'pointer'};
     pointer-events: ${props => props.disablelite ? 'none' : 'unset'};
+    z-index: 1000;
 
     &.equipped{
         border: 1px solid black;
@@ -94,33 +87,52 @@ const Item = styled.img`
     position: relative;
     top: 0;
     left: 0;
-    ${props => props?.name?.includes('Arrow') ? 'opacity: 0.9;' : ''}
+    ${props => props?.name?.includes('Arrow') ? 'opacity: 0.9;' : ''}    
 `;
 
 const Frame = styled.div`
     background-color: ${frame};
     position: relative;
     width: 72px;
-    &:before{
-        position: absolute;
-        z-index: 0;
-        content: '';
-        inset: 0;
-        filter: url(#grainy);        
-    }
 `;
 
 const Base = styled.div`
     background-color: ${frame};    
     height: 36px; 
     z-index: -1;
-    &:before{
-        position: absolute;
-        z-index: 0;
-        content: '';
-        inset: 0;
-        filter: url(#grainy);        
-    }
+`;
+
+const BowBar = styled.div`
+    position: absolute;
+    left: 280px;    
+    top: 58px;
+    height: 54px;
+    width: 60%;
+    background-color: ${frame};
+    opacity: 0.5;
+    z-index: -1;
+`;
+
+const QuestBar = styled.div`
+    position: absolute;
+    right: 58px;
+    top: 40px;
+    height: 64%;
+    width: 54px;
+    background-color: ${frame};
+    opacity: 0.5; 
+    z-index: -1;
+`;
+
+const BottleBar = styled.div`
+    position: absolute;
+    left: 2.5%;
+    bottom: 58px;
+    height: 54px;
+    width: 95%;
+    background-color: ${frame};
+    opacity: 0.5; 
+    z-index: -1;
 `;
 
 const Items = (props) => {
@@ -146,23 +158,27 @@ const Items = (props) => {
     },[]);
 
     return <ItemsContainer>
-        <h1>select item</h1>
+        <h1 className='wendy-one-regular'>select item</h1>
         <ItemGridWrapper>
             <Frame/>
             <ItemGrid>{
                 items.map((row,i) => {
                     return <ItemRow key={`item-row-${i}`}>{
                         row.map(item => {
-                            item.equip = true;                                                                                     
+                            const selected = description?.name === item.name && description?.bottle === item.bottle;
+                            item.equip = true;                                                                               
                             return <ItemWrapper key={item.name + (item.bottle ?? '')} className ={isEquipped(item.name, item.bottle) ? 'equipped' : ''} onClick={() => setDescription(item)} disabled={!isActive || !item.name} disablelite={description}>
                                 <AddHoverEffectWithRef ref={itemsRefs[item.name + (item.bottle ?? '')]} color={itemHover}>
-                                    <Item src={item.img} name={item.name} parentWidth={parentWidth} bottle={item.bottle} disabled={!isActive || !item.name || description} equip/>
-                                </AddHoverEffectWithRef>                                
+                                    <Item src={item.img} name={item.name} parentWidth={parentWidth} bottle={item.bottle} selected={selected} disabled={!isActive || !item.name || description} equip/>
+                                </AddHoverEffectWithRef>                             
                             </ItemWrapper>
                         })
                     }
                     </ItemRow>
                 })}
+                <BowBar/>
+                <QuestBar/>
+                <BottleBar/>
             </ItemGrid>
             <Frame/>         
         </ItemGridWrapper>

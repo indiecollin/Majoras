@@ -195,7 +195,7 @@ export const people = [
                 title: "Pendant of Memories",
                 location: "Backroom",
                 description: "Promised to deliver it to Anju",
-                type: 'mask', 
+                type: 'quest', 
                 start: 1100,//guess
                 end: 1550
             }],
@@ -204,7 +204,7 @@ export const people = [
                 title: "Escaped from Sakon's Hideout",
                 location: "Ikana",
                 description: "Helped Kafei recover stolen mask",
-                type: 'mask', 
+                type: 'quest', 
                 start: 1200,
                 end: 1225
             },

@@ -76,7 +76,7 @@ const useHover = (props) => {
 const AddHoverEffectAbsolute = ((props, ref) => {
     const { selecting } = useContext(MenuContext);
     const { color, dims, border, rules} = props;
-    const { parentWidth, absoluteOffset, positions, disabled} = props.children.props;
+    const { parentWidth, absoluteOffset, positions, selected, disabled} = props.children.props;
     const Component = props.children.type;
 
     const positionRules = [
@@ -101,11 +101,11 @@ const AddHoverEffectAbsolute = ((props, ref) => {
     return <HoverContainer positionRules = {positions} passedRules={rules}>            
         <Component {...props.children.props} {...eventHandlers} {...((ref.current || ref.current === null) ? { ref: ref } : {})} />
         {
-          hovered &&  !disabled && !selecting && <>
-          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={color} dims={dims} border={border} top left/>
-          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={color} dims={dims} border={border} top right/>
-          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={color} dims={dims} border={border} bottom left/>
-          <Orbitter positionRules = {mirrorStyles} className={hovered ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={color} dims={dims} border={border} bottom right/>
+          ((hovered && !disabled && !selecting) || selected) && <>
+          <Orbitter positionRules = {mirrorStyles} className={hovered || selected ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={selected ? allHover : color} dims={dims} border={border} top left/>
+          <Orbitter positionRules = {mirrorStyles} className={hovered || selected ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={selected ? allHover : color} dims={dims} border={border} top right/>
+          <Orbitter positionRules = {mirrorStyles} className={hovered || selected ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={selected ? allHover : color} dims={dims} border={border} bottom left/>
+          <Orbitter positionRules = {mirrorStyles} className={hovered || selected ? 'hover-orbitter' : ''} parentWidth={parentWidth} absoluteOffset={absoluteOffset} color={selected ? allHover : color} dims={dims} border={border} bottom right/>
         </>
         }
     </HoverContainer>

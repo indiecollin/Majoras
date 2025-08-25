@@ -77,7 +77,7 @@ const useHover = (props, ref) => {
 const AddHoverEffect = ((props, ref) => {
   const { selecting, description } = useContext(MenuContext); 
   const { color, dims, border } = props;
-  const { parentWidth, disabled } = props.children.props;
+  const { selected, parentWidth, disabled } = props.children.props;
   const Component = props.children.type;
   const orbitterRadius = 12;  
   const positionRules = [
@@ -130,7 +130,7 @@ const AddHoverEffect = ((props, ref) => {
       transformOriginY = '50%'
   }
       const [hovered, setHovered, eventHandlers] = useHover(props.children.props, ref);
-      const className = hovered ? 'hover-orbitter' : '';
+      const className = hovered || selected ? 'hover-orbitter' : '';
       useEffect(()=>{
         if(description || disabled){
             setHovered(false);
@@ -139,11 +139,11 @@ const AddHoverEffect = ((props, ref) => {
        return <HoverContainer positionRules = {mirrorStyles} flexRules={ flexStyles }>
           <Component {...props.children.props} {...eventHandlers} {...((ref.current || ref.current === null) ? { ref: ref } : {})}/>
           {
-            hovered && !disabled && !selecting && <>
-                <Orbitter delay={'0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={color} dims={dims} border={border} />
-                <Orbitter delay={'-0.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={color} dims={dims} border={border} />
-                <Orbitter delay={'-1.0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={color} dims={dims} border={border} />
-                <Orbitter delay={'-1.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={color} dims={dims} border={border} />
+            ((hovered && !disabled && !selecting) || selected) && <>
+                <Orbitter delay={'0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={selected ? allHover : color} dims={dims} border={border} />
+                <Orbitter delay={'-0.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={selected ? allHover : color} dims={dims} border={border} />
+                <Orbitter delay={'-1.0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={selected ? allHover : color} dims={dims} border={border} />
+                <Orbitter delay={'-1.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={selected ? allHover : color} dims={dims} border={border} />
             </>
           }           
       </HoverContainer>

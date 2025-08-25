@@ -19,14 +19,6 @@ const InfoBarWrapper = styled.div`
     align-items: center;
     justify-content: center;
 
-    &:before{
-        position: absolute;
-        z-index: -1;
-        content: '';
-        inset: 0;
-        filter: url(#grainy);        
-    }
-
     img{
         height: 36px;
     }
@@ -58,9 +50,9 @@ const InfoBar = (props) => {
             }, 1500);
             return () => clearInterval(interval);
         }        
-    },[name, description]);
+    },[name, props.instructions, description]);
 
-    return <InfoBarWrapper className='open-sans' nav={nav}>{info}</InfoBarWrapper>
+    return <InfoBarWrapper className='comic-relief' nav={nav}>{info}</InfoBarWrapper>
 }
 
 export default InfoBar;

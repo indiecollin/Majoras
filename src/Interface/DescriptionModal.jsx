@@ -17,7 +17,7 @@ const DescriptionModalContainer = styled.div`
     width: 480px;
     min-width: 0;
     max-width: 480px;
-    height: 132px;    
+    height: 154px;    
     z-index: 2000;
 `;
 
@@ -26,7 +26,7 @@ const DescriptionModalWrapper = styled.div`
     position: relative;
     display: flex;
     align-items: center;
-    min-height: 132px;   
+    min-height: 154px;   
     &>img{
         width: 100px;
         height: 100px;
@@ -37,12 +37,16 @@ const TextContainer = styled.div`
     display: flex;
     flex-direction: column;    
     flex-wrap: wrap;
-    font-size: 20px;
+    font-size: 26px;
     padding: 8px 20px 20px 8px;
     margin-bottom: auto;
+    font-family: "Nanum Pen Script", cursive;
+    font-weight: 400;
+    font-style: normal;
 
     &>p{
         color: ${props => props.equip ? strongTextRed : questItemYellow};
+        font-size: 32px;
         font-weight: 700;
         margin-right: auto;    
     }
@@ -52,7 +56,7 @@ const Description = styled.div`
     display: inline;
     color: white;
     align-items: center;
-    font-size: 20px;
+    font-size: 26px;
     
     img{
         margin: 0 4px;

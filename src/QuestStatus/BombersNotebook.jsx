@@ -5,7 +5,7 @@ import BackArrow from '../../public/QuestStatus/BombersNotebook/back-arrow.png';
 import MidDay from '../../public/QuestStatus/BombersNotebook/mid-day.png';
 import MedalIcon from '../../public/QuestStatus/BombersNotebook/medal.png';
 // import IncompleteIcon from '../../public/QuestStatus/BombersNotebook/incomplete-quest-icon.png';
-import Quest from '../../public/QuestStatus/BombersNotebook/completed-quest-icon.png';
+import Quest from '../../public/QuestStatus/BombersNotebook/completed-quest.png';
 import Mask from '../../public/QuestStatus/BombersNotebook/mask-icon.png';
 import Gift from '../../public/QuestStatus/BombersNotebook/ribbon-icon.png';
 import { people } from '../data/bombersNotebookData.jsx';
@@ -78,10 +78,11 @@ const DayHeader = styled.div`
     align-items: center;
     z-index: 2100;
     opacity: .8;
-    font-size: 24px;     
+    font-family: "Comic Relief", system-ui;
+    font-size: 24px;  
     font-weight: bold;
     color: white;
-    letter-spacing: -3px; 
+    letter-spacing: -1px; 
     -webkit-text-stroke: black 2px;    
     text-shadow:
         -3px -3px 4px #000,
@@ -217,7 +218,8 @@ const DescriptionContainer = styled.div`
 const DescriptionTextWrapper = styled.div`
     display: inline;
     width: 100%;
-    font-size: 24px;
+    font-size: 32px;
+    font-family: "Nanum Pen Script", cursive;
     line-height: 64px;
     margin-left: 32px;
     padding: 0 8px;

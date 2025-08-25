@@ -1,3 +1,6 @@
+//background
+export const background = '#301934';
+
 // interface colors
 export const heartRed = '#FF2400';
 export const partialPurple = '#663399';

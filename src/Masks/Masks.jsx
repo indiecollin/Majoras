@@ -16,14 +16,7 @@ const MasksContainer = styled.div`
         justify-content: center;        
         text-transform: uppercase;        
         font-size: 50px;
-        background-color: ${frame};
-        &:before{
-            position: absolute;
-            z-index: -1;
-            content: '';
-            inset: 0;
-            filter: url(#grainy);        
-        }      
+        background-color: ${frame};     
     }
 
     &>div{        
@@ -101,28 +94,34 @@ const Frame = styled.div`
     position: relative;
     background-color: ${frame};
     width: 72px;
-
-    &:before{
-        position: absolute;
-        z-index: 0;
-        content: '';
-        inset: 0;
-        filter: url(#grainy);        
-    }
 `;
 
 const Base = styled.div`
     background-color: ${frame};    
-    height: 36px; 
+    height: 36px;
     z-index: -1;
+`;
 
-    &:before{
-        position: absolute;
-        z-index: 0;
-        content: '';
-        inset: 0;
-        filter: url(#grainy);        
-    }
+const TransfromBar = styled.div`
+    position: absolute;
+    right: 58px;
+    top: 40px;
+    height: 64%;
+    width: 54px;
+    background-color: ${frame};
+    opacity: 0.5;    
+    z-index: -1;
+`;
+
+const FierceBar = styled.div`
+    position: absolute;
+    right: 58px;
+    bottom : 58px;
+    width: 54px;
+    height: 54px;
+    background-color: ${frame};
+    opacity: 0.5;   
+    z-index: -1;
 `;
 
 const Masks = (props) => {
@@ -139,7 +138,7 @@ const Masks = (props) => {
     const isActive = mod(curMenu, 4) === 1;
     const AddHoverEffectWithRef = forwardRef(AddHoverEffect);
     return <MasksContainer>
-        <h1>masks</h1>
+        <h1 className='wendy-one-regular'>masks</h1>
         <MaskGridWrapper>
             <Frame/>
             <MaskGrid>{
@@ -147,15 +146,18 @@ const Masks = (props) => {
                     return <MaskRow key={`mask-row-${i}`}>{
                         row.map(mask => {
                             mask.equip = true;
+                            const selected = description?.name === mask.name;
                             return <MaskWrapper key = {mask.name} className ={isEquipped(mask.name) ? 'equipped' : ''} onClick = {() => setDescription(mask)} disablelite={description} disabled={!isActive || !mask.name}>                                
                                 <AddHoverEffectWithRef ref={masksRefs.current[mask.name]} color={itemHover}>
-                                    <Mask src = {mask.img} name={mask.name} parentWidth={parentWidth} disabled={!isActive || !mask.name || description} equip/>
+                                    <Mask src = {mask.img} name={mask.name} parentWidth={parentWidth} selected={selected} disabled={!isActive || !mask.name || description} equip/>
                                 </AddHoverEffectWithRef>
                             </MaskWrapper>
                         })
                     }
                     </MaskRow>
-                })}               
+                })}    
+                <TransfromBar/>
+                <FierceBar/>           
             </MaskGrid>
             <Frame/>          
         </MaskGridWrapper>
