@@ -143,7 +143,7 @@ const QuestStatus = (props) => {
             <GridCellNotebook>
                 <QuestItemWrapper onClick = {() => {setNotebookOpened(true)}} disablelite={description} disabled={!isActive}>
                     <AddHoverEffect dims={28} border={4.6} color={questHover}>
-                        <QuestItem src={items.bombersNotebook.img} name={items.bombersNotebook.name} parentWidth={bomberNotebookWidth} instructions={items.bombersNotebook.instructions} disabled={!isActive || description}/>
+                        <QuestItem src={items.bombersNotebook.img} name={items.bombersNotebook.name} parentWidth={bomberNotebookWidth} instructions={items.bombersNotebook.instructions} disabled={!isActive || !!description}/>
                     </AddHoverEffect>
                 </QuestItemWrapper>
             </GridCellNotebook>
@@ -152,24 +152,24 @@ const QuestStatus = (props) => {
             <GridCellBossMasks>
                 <div><QuestItemWrapper onClick = {() => setDescription(items.odalwa)} remains={true} disablelite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <BossRemains src={items.odalwa.img} name={items.odalwa.name} selected={description?.name == items.odalwa.name} parentWidth={questItemWidth} boss={items.odalwa.short} disabled={!isActive || description}/>
+                            <BossRemains src={items.odalwa.img} name={items.odalwa.name} selected={description?.name == items.odalwa.name} parentWidth={questItemWidth} boss={items.odalwa.short} disabled={!isActive || !!description}/>
                         </AddHoverEffect>
                 </QuestItemWrapper></div>
                 <div>
                     <QuestItemWrapper onClick = {() => setDescription(items.gyorg)} remains={true} disablelite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <BossRemains src={items.gyorg.img} name={items.gyorg.name} selected={description?.name == items.gyorg.name} parentWidth={questItemWidth} boss={items.gyorg.short} disabled={!isActive || description}/>
+                            <BossRemains src={items.gyorg.img} name={items.gyorg.name} selected={description?.name == items.gyorg.name} parentWidth={questItemWidth} boss={items.gyorg.short} disabled={!isActive || !!description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
                     <QuestItemWrapper onClick = {() => setDescription(items.goht)} remains={true} disablelite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <BossRemains src={items.goht.img} name={items.goht.name} selected={description?.name == items.goht.name} parentWidth={questItemWidth} boss={items.goht.short} disabled={!isActive || description}/>
+                            <BossRemains src={items.goht.img} name={items.goht.name} selected={description?.name == items.goht.name} parentWidth={questItemWidth} boss={items.goht.short} disabled={!isActive || !!description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
                 </div>
                 <div><QuestItemWrapper onClick = {() => setDescription(items.twinmold)} remains={true} disablelite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <BossRemains src={items.twinmold.img} name={items.twinmold.name} selected={description?.name == items.twinmold.name} parentWidth={questItemWidth} boss={items.twinmold.short} disabled={!isActive || description}/>
+                            <BossRemains src={items.twinmold.img} name={items.twinmold.name} selected={description?.name == items.twinmold.name} parentWidth={questItemWidth} boss={items.twinmold.short} disabled={!isActive || !!description}/>
                         </AddHoverEffect>
                 </QuestItemWrapper></div>                                
             </GridCellBossMasks>            
@@ -177,28 +177,28 @@ const QuestStatus = (props) => {
                 <EquipmentSlot>
                     <QuestItemWrapper onClick = {() => setDescription(items.sword)} disablelite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <QuestItem src = {items.sword.img} name={items.sword.name} selected={description?.name == items.sword.name} parentWidth={questItemWidth} disabled={!isActive || description}/>
+                            <QuestItem src = {items.sword.img} name={items.sword.name} selected={description?.name == items.sword.name} parentWidth={questItemWidth} disabled={!isActive || !!description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
                 </EquipmentSlot>
                 <EquipmentSlot>
                     <QuestItemWrapper onClick = {() => setDescription(items.shield)} disablelite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <QuestItem src = {items.shield.img} name={items.shield.name} selected={description?.name == items.shield.name} parentWidth={questItemWidth} disabled={!isActive || description}/>
+                            <QuestItem src = {items.shield.img} name={items.shield.name} selected={description?.name == items.shield.name} parentWidth={questItemWidth} disabled={!isActive || !!description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
                 </EquipmentSlot>
                 <EquipmentSlot>
                     <QuestItemWrapper onClick = {() => setDescription(items.quiver)} disablelite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <QuestItem src = {items.quiver.img} name={items.quiver.alternate} selected={description?.name == items.quiver.name} parentWidth={questItemWidth} disabled={!isActive || description}/>
+                            <QuestItem src = {items.quiver.img} name={items.quiver.alternate} selected={description?.name == items.quiver.name} parentWidth={questItemWidth} disabled={!isActive || !!description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
                 </EquipmentSlot>
                 <EquipmentSlot>
                     <QuestItemWrapper onClick = {() => setDescription(items.bombBag)} disablelite={description} disabled={!isActive}>
                         <AddHoverEffect>
-                            <QuestItem src = {items.bombBag.img} name={items.bombBag.alternate} selected={description?.name == items.bombBag.name} parentWidth={questItemWidth} disabled={!isActive || description}/>
+                            <QuestItem src = {items.bombBag.img} name={items.bombBag.alternate} selected={description?.name == items.bombBag.name} parentWidth={questItemWidth} disabled={!isActive || !!description}/>
                         </AddHoverEffect>
                     </QuestItemWrapper>
                 </EquipmentSlot>

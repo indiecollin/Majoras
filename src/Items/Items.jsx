@@ -165,8 +165,8 @@ const Items = (props) => {
                 items.map((row,i) => {
                     return <ItemRow key={`item-row-${i}`}>{
                         row.map(item => {
+                            item.equip = true;                                                                              
                             const selected = description?.name === item.name && description?.bottle === item.bottle;
-                            item.equip = true;                                                                               
                             return <ItemWrapper key={item.name + (item.bottle ?? '')} className ={isEquipped(item.name, item.bottle) ? 'equipped' : ''} onClick={() => setDescription(item)} disabled={!isActive || !item.name} disablelite={description}>
                                 <AddHoverEffectWithRef ref={itemsRefs[item.name + (item.bottle ?? '')]} color={itemHover}>
                                     <Item src={item.img} name={item.name} parentWidth={parentWidth} bottle={item.bottle} selected={selected} disabled={!isActive || !item.name || description} equip/>

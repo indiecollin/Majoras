@@ -120,11 +120,11 @@ const HeartContainerContainer = (props) => { //it's actually called a heart cont
     return <HeartContainer>        
             <HeartImage src = {Hearts}/>            
             <AddHoverEffect color={questHover} dims={28} border={4.6}>
-                <HeartPiecesContainer name={heartItem.name} selected={selected} parentWidth={imgWidth} disabled={!isActive || description}>
-                    <button onClick={()=>{ obtainHeartPiece(heart1, setHeart1)}} disablelite={description} disabled={!isActive || description || maxedHearts}><img src={heart1 ? Heart1 : Heart0}/></button>
-                    <button onClick={()=>{ obtainHeartPiece(heart2, setHeart2)}} disablelite={description} disabled={!isActive || description || maxedHearts}><img src={heart2 ? Heart2 : Heart0}/></button>
-                    <button onClick={()=>{ obtainHeartPiece(heart3, setHeart3)}} disablelite={description} disabled={!isActive || description || maxedHearts}><img src={heart3 ? Heart3 : Heart0}/></button>
-                    <button onClick={()=>{ obtainHeartPiece(heart4, setHeart4)}} disablelite={description} disabled={!isActive || description || maxedHearts}><img src={heart4 ? Heart4 : Heart0}/></button>
+                <HeartPiecesContainer name={heartItem.name} selected={selected} parentWidth={imgWidth} disabled={!isActive || !!description}>
+                    <button onClick={()=>{ obtainHeartPiece(heart1, setHeart1)}} disablelite={description} disabled={!isActive || !!description || maxedHearts}><img src={heart1 ? Heart1 : Heart0}/></button>
+                    <button onClick={()=>{ obtainHeartPiece(heart2, setHeart2)}} disablelite={description} disabled={!isActive || !!description || maxedHearts}><img src={heart2 ? Heart2 : Heart0}/></button>
+                    <button onClick={()=>{ obtainHeartPiece(heart3, setHeart3)}} disablelite={description} disabled={!isActive || !!description || maxedHearts}><img src={heart3 ? Heart3 : Heart0}/></button>
+                    <button onClick={()=>{ obtainHeartPiece(heart4, setHeart4)}} disablelite={description} disabled={!isActive || !!description || maxedHearts}><img src={heart4 ? Heart4 : Heart0}/></button>
                 </HeartPiecesContainer>
             </AddHoverEffect>                    
     </HeartContainer>

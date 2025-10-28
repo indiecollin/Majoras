@@ -407,7 +407,7 @@ const OcarinaSongsContainer = () => {
                         onHover={()=> ob(s.sequence)}
                         onBlur={()=>{if(!playModeRef.current) resetAll()}}
                         selected={curSong?.name === s.name}                      
-                        disabled={!isActive || disabled || description}
+                        disabled={!isActive || disabled || !!description}
                         name={s.name}
                         instructions={instructions}
                         parentWidth={rotatorOffset}    

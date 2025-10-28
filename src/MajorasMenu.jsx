@@ -78,11 +78,13 @@ const MenuBox = styled.div`
         transform: rotateY(${props => props.curMenu * -2*Math.PI/props.count}rad);
         transition: all 0.5s linear;
         z-index: 1000;
+        pointer-events: none;
         
         &>div {
             padding: 0 ${props => props.menuGap / 2}px;
             width: 100%;
-            height: 100vh;                  
+            height: 100vh; 
+            pointer-events: all;                 
             &:nth-child(${props => mod(props.curMenu, 4) + 1}){
                 visibility: hidden;
             }

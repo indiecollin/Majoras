@@ -147,9 +147,9 @@ const Masks = (props) => {
                         row.map(mask => {
                             mask.equip = true;
                             const selected = description?.name === mask.name;
-                            return <MaskWrapper key = {mask.name} className ={isEquipped(mask.name) ? 'equipped' : ''} onClick = {() => setDescription(mask)} disablelite={description} disabled={!isActive || !mask.name}>                                
+                            return <MaskWrapper key = {mask.name} className ={isEquipped(mask.name) ? 'equipped' : ''} onClick = {() => setDescription(mask)} disabled={!isActive || !mask.name} disablelite={!!description}>                                
                                 <AddHoverEffectWithRef ref={masksRefs.current[mask.name]} color={itemHover}>
-                                    <Mask src = {mask.img} name={mask.name} parentWidth={parentWidth} selected={selected} disabled={!isActive || !mask.name || description} equip/>
+                                    <Mask src = {mask.img} name={mask.name} parentWidth={parentWidth} selected={selected} disabled={!isActive || !mask.name || !!description} equip/>
                                 </AddHoverEffectWithRef>
                             </MaskWrapper>
                         })
