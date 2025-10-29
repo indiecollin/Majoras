@@ -8,6 +8,7 @@ import Map from './Map/Map.jsx';
 import Health from './Interface/Health.jsx';
 import Magic from './Interface/Magic.jsx';
 import ActionButtons from './Interface/ActionButtons.jsx';
+import AboutModal from './Interface/AboutModal.jsx';
 import ControlsTooltip from './Interface/ControlsTooltip.jsx';
 import InfoBar from './Interface/InfoBar.jsx';
 import DescriptionModal from './Interface/DescriptionModal.jsx';
@@ -351,6 +352,7 @@ const MajorasMenu  = () => {
     const [hearts, setHearts] = useState(3); // the max capacity of hearts
     const [health, setHealth] = useState(6); // current value, counted in fourths to work better with quarter hearts
     const [magic, setMagic] = useState(100);
+    const [showAbout, setShowAbout] = useState(false);
     const [defense, setDefense] = useState(false);
     const [instructions, setInstructions] = useState();
     const [description, setDescription] = useState();
@@ -617,7 +619,7 @@ const MajorasMenu  = () => {
             <Health health={health} hearts={hearts} defense={defense}/>
             <Magic magic={magic}/>
         </HealthAndMagic>
-        <ActionButtons/>        
+        <ActionButtons setShowAbout={setShowAbout}/>        
         <EquipButtonsWrapper>
             <EquipButtonLeft ref={cLeftRef}><EquippedItem src={cLeft.image}/><Triangle/></EquipButtonLeft>
             <EquipButtonDown ref={cDownRef}><EquippedItem src={cDown.image}/><Triangle/></EquipButtonDown>
@@ -660,6 +662,7 @@ const MajorasMenu  = () => {
         </>}
         <EquipmentClone src={equipmentClone.image} clonedInfo={equipmentClone} scrollX={scrollX} scrollY={scrollY}/>
         {description && <DescriptionModalWithRef description={description} ref={descriptionRef}/>}
+        {showAbout && <AboutModal setShowAbout={setShowAbout}/>}
     </MenuBox>
     </MenuContext.Provider>
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { frame, darkFrame } from '../styles/colors';
 
@@ -27,5 +27,3 @@ const BaseIcon = (props) => {
 };
 
 export default BaseIcon;
-
-//style="fill:none;stroke:#000000;stroke-width:0.52916664;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1;stroke-dasharray:none"

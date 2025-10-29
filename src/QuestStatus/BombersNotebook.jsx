@@ -192,7 +192,7 @@ const Medal = styled.div`
     z-index: 1200;
     img{
         margin-left: 16px;
-        height: 30%;
+        height: 50%;
     }
 `;
 
