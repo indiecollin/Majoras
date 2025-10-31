@@ -12,6 +12,7 @@ import AboutModal from './Interface/AboutModal.jsx';
 import ControlsTooltip from './Interface/ControlsTooltip.jsx';
 import InfoBar from './Interface/InfoBar.jsx';
 import DescriptionModal from './Interface/DescriptionModal.jsx';
+import MobileNotice from './Interface/MobileNotice.jsx';
 import Triangle from './svgs/Triangle.jsx';
 import Base from './svgs/Base.jsx';
 import { rotateButtonInfo } from './data/index.js';
@@ -615,6 +616,7 @@ const MajorasMenu  = () => {
         <FontPreload className='comic-relief'>|</FontPreload>
         <FontPreload className='aoboshi-one-regular'>|</FontPreload>
         <FontPreload className='nanum-pen-script-regular'>|</FontPreload>
+        <MobileNotice/>
         <HealthAndMagic>
             <Health health={health} hearts={hearts} defense={defense}/>
             <Magic magic={magic}/>

@@ -2,10 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import XIcon from '../svgs/X.jsx';
 import Collin from '../../public/Interface/collin.jpg';
-import Hypatia from '../../public/Interface/hypatia.jpg';
 import GitHub from '../../public/Interface/github.png';
 import LinkedIn from '../../public/Interface/linkedin.png';
-import Tumblr from '../../public/Interface/tumblr.png';
 
 const AboutModalContainer = styled.div`
     position: absolute;    
@@ -88,20 +86,6 @@ const AboutModal = (props) => {
                 <Socials>
                     <a href='https://github.com/indiecollin' target="_blank" rel="noopener noreferrer"><img src={GitHub}></img></a>
                     <a href='https://www.linkedin.com/in/collin-cain-5349a98a' target="_blank" rel="noopener noreferrer"><img src={LinkedIn}></img></a>
-                </Socials>
-            </Profile>
-            <Profile>
-                <h4>Hypatia - Artist</h4>
-                <Description>
-                    <img src={Hypatia}></img>
-                    <p> Hypatia I don't really know enough about you unfortunately, but I would like to change that. In the meantime I'll
-                        write some stuff here so you can see what this might look like. I hope you're willing to give me some kind of excerpt
-                        about yourself so I can post it up here on the website. Your art invigorated this project so much I think it's fair
-                        to consider you the co-creator of whatever we want to call this :).
-                    </p>
-                </Description>
-                <Socials>
-                    <a href='https://onthegreatsea.tumblr.com' target="_blank" rel="noopener noreferrer"><img src={Tumblr}></img></a>
                 </Socials>
             </Profile>
         </AboutModalWrapper>
