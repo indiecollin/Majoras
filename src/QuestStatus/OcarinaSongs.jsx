@@ -49,23 +49,28 @@ const inputs = '↑←→↓A';// dirty
 const ocarinaInputSettings = {
     '↑': {
         input: OcarinaUp,
-        height: -20
+        height: -20,
+        mobile: -10
     },
     '←': {
         input: OcarinaLeft,
-        height: 5
+        height: 5,
+        mobile: 8
     },
     '→': {
         input: OcarinaRight,
-        height: 30
+        height: 30,
+        mobile: 24
     },
     '↓': {
         input: OcarinaDown,
-        height: 55
+        height: 55,
+        mobile: 48
     },
     'A': {
         input: OcarinaA,
-        height: 80
+        height: 80,
+        mobile: 64
     }
 };
 
@@ -95,27 +100,37 @@ const OcarinaSongs = styled.div`
     grid-column: 1/3;
     grid-row: 4/9;
     margin: auto 0;
+
+    @media only screen and (max-width: 1600px) {
+        grid-row: 2/3;
+        margin: auto 0 5%;
+        position: relative;        
+    }
 `;
 
 const SongList = styled.div`    
     display: flex;
     flex-wrap: wrap;
     margin-top: 12px;
+    @media only screen and (max-width: 1600px) {            
+        margin-top: 4px;
+    }        
 `;
 
 const songNoteWrapperStyles = `
     flex-basis: 20%;
-    margin-bottom: 16px;
+    margin-bottom: 16px;    
     &:before{
         content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
+        position: absolute;        
         border: 4px solid ${darkFrame};
         z-index: 990;
         width: 80%;
-        height: 100%;
-        margin-left: 16px;
+        height: 100%;        
+    }
+
+    @media only screen and (max-width: 1600px) {
+        margin-bottom: 4px;        
     }
 `;
 
@@ -130,11 +145,17 @@ const SongNote = styled.button`
         margin: 0 auto;
         width: 100px;
         padding: 12px;
+
+        @media only screen and (max-width: 1600px) {
+            width: 48px;
+            height: 56px;
+            padding: 0;
+        }
     }
 `;
 
-const noteRowPadding = 74;//clef width + padding
-const rotatorOffset = 54;
+const parentWidth = 100;
+const offset = 20;
 
 const SongMeasureContainer = styled.div`
     display: flex;
@@ -142,8 +163,8 @@ const SongMeasureContainer = styled.div`
     width: 100%;
     margin-top: 4px;
     &>img{
-        width: 64px;
-        height: 96px;
+        width: 53px;
+        height: 80px;
     }
 `;
 
@@ -188,6 +209,10 @@ const OcarinaInput = styled.img`
     opacity: ${props => props.show ? 1 : 0};
     transition: opacity .25s ease-in-out ${props => !props.show ? ', background-color 1s linear 1s' : ''};
     border-radius: 50%;
+    @media only screen and (max-width: 1600px) {
+        width: 36px;
+        height: 36px;
+    }
 `;
 
 const NotePlayer = styled.div`
@@ -203,8 +228,12 @@ const NoteRow = styled.div`
     top: ${props => props.top ? props.top : '0'}px;
     width: 100%;
     left: 0;
-    padding-left: ${noteRowPadding}px;
+    padding-left: 10%;
     box-sizing: border-box;
+
+    @media only screen and (max-width: 1600px) {
+        top: ${props => props.mobile ? props.mobile : '0'}px;
+    }
 
     span{
         width: 48px;
@@ -216,7 +245,7 @@ const NotePlayerContainer = ({noteMap, playMap, wrongNote}) => {
     return <NotePlayer>{
         noteMap.map((row,i) => {
             const inputSetting = ocarinaInputSettings[inputs[i]];            
-            return <NoteRow key={`note-row-${i}`} top={inputSetting.height}>
+            return <NoteRow key={`note-row-${i}`} top={inputSetting.height} mobile={inputSetting.mobile}>
                 {row.map((n,j) => {
                     const wrongNoteCheck = wrongNote.row === i && wrongNote.col === j;
                     const color = inputs[i] === 'A' ? 'blue' : 'yellow';
@@ -360,7 +389,7 @@ const OcarinaSongsContainer = () => {
                 setPlayIndex(prevState => prevState + 1);
             }
             else{ // success sound and reset
-                setDisabled(true);
+                setDisabled(true);                
                 setTimeout(() => {
                     try{
                         sounds['soundSuccess'].load();
@@ -369,7 +398,8 @@ const OcarinaSongsContainer = () => {
                         console.error(e.message, 'sound used before last use completed');
                     }                                       
                     setTimeout(() => {
-                        resetAll();                        
+                        resetAll();
+                        setInfoBar('\u00A0');
                         setDisabled(false);
                     }, 1000);
                 }, 1000);
@@ -410,8 +440,8 @@ const OcarinaSongsContainer = () => {
                         disabled={!isActive || disabled || !!description}
                         name={s.name}
                         instructions={instructions}
-                        parentWidth={rotatorOffset}    
-                        absoluteOffset={noteRowPadding}                        
+                        parentWidth={parentWidth}    
+                        absoluteOffset={parentWidth+offset}
                     >
                         <img src = {songNotes[s.note]} />
                     </SongNote>

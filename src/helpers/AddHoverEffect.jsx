@@ -43,9 +43,10 @@ const Orbitter = styled.div`
 const useHover = (props, ref) => {
   const [hovered, setHovered] = useState(false);
   const { setInfoBar, setInstructions, setHoveredEquip } = useContext(MenuContext);
+  const isTouchDevice = window?.matchMedia("(pointer:coarse)").matches;
   const eventHandlers = useMemo(() => ({    
     onMouseOver() {    
-        if(props.disabled) return;    
+        if(props.disabled || isTouchDevice) return;    
         setHovered(true); 
         setInfoBar(props.name);
         if(props.equip){
@@ -77,7 +78,16 @@ const useHover = (props, ref) => {
 const AddHoverEffect = ((props, ref) => {
   const { selecting, description } = useContext(MenuContext); 
   const { color, dims, border } = props;
-  const { selected, parentWidth, disabled } = props.children.props;
+  const { selected, disabled, hoverDisabled } = props.children.props;
+  let { parentWidth } = props.children.props;
+  if(ref && ref.current){ // hacky fix for variable parent widths
+    const element = ref.current.parentElement.parentElement.getBoundingClientRect();
+    const parent = ref.current.parentElement.getBoundingClientRect();
+    if(element.width ==! parent.width){
+        parentWidth = parent.parentElement.getBoundingClientRect().width;
+    }
+
+  }
   const Component = props.children.type;
   const orbitterRadius = 12;  
   const positionRules = [
@@ -139,7 +149,7 @@ const AddHoverEffect = ((props, ref) => {
        return <HoverContainer positionRules = {mirrorStyles} flexRules={ flexStyles }>
           <Component {...props.children.props} {...eventHandlers} {...((ref.current || ref.current === null) ? { ref: ref } : {})}/>
           {
-            ((hovered && !disabled && !selecting) || selected) && <>
+            ((hovered && !disabled && !hoverDisabled && !selecting) || selected) && <>
                 <Orbitter delay={'0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={selected ? allHover : color} dims={dims} border={border} />
                 <Orbitter delay={'-0.5s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={selected ? allHover : color} dims={dims} border={border} />
                 <Orbitter delay={'-1.0s'} positionRules = {mirrorStyles} transformOriginX = {transformOriginX} transformOriginY = {transformOriginY} className={className} color={selected ? allHover : color} dims={dims} border={border} />

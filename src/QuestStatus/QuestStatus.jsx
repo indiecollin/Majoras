@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import MenuContext from '../MenuContext.jsx';
 import BombersNotebook from './BombersNotebook.jsx';
@@ -10,16 +10,32 @@ import { questItems as items } from '../data/questItemsData.jsx';
 import { frame, darkFrame, questHover } from '../styles/colors.js';
 import { mod } from '../helpers/index.js';
 
-const QuestStatusContainer = styled.div`
-    position: relative;
+const QuestStatusContainer = styled.div`    
     display: flex;
     flex-direction: column;    
+    position: relative;
     background-color: ${frame};
+    width: 100%;
+    padding: 0;
+
+    @media (720px < width <= 1600px) {
+        padding: 0 40px 40px;                
+    }
+
+    @media only screen and (max-width: 720px) {            
+        width: 125%;
+        left: -12.5%;        
+    }
+
     h1{
-        margin: 0 auto;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%) scaleX(-1);
         text-transform: uppercase;        
         font-size: 50px;
+        width: max-content;
     }
+
     button{
         background-color: unset;
         border: none;
@@ -31,14 +47,8 @@ const QuestStatusGrid = styled.div`
     width: 100%;
     height: 100%;
     grid-template-columns: 3fr 3fr 3fr 3fr;
-    /* grid-template-columns: repeat(4, 3fr) */
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;;
-    /* grid-template-rows: repeat(8, 1fr); */
+    grid-template-rows: 1fr 1fr;
 
-    /* img{ // likely to keep this synced with mask/item dimensions
-        width: 120px;
-        height: 120px;
-    } */
 `;
 
 const QuestItemWrapper = styled.button`
@@ -80,7 +90,22 @@ const GridCellNotebook = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: auto 0;
+    margin: 54px auto 0;
+
+    @media only screen and (max-width: 1600px) {
+        grid-row: 1/2;
+        justify-content: left;
+        margin-left: 7.5%;
+        position: relative;        
+        img{
+            width: 120px;
+        }
+    }
+
+    @media only screen and (max-width: 720px) {            
+        margin-left: 2.5%;
+    }
+
 `;
 
 const GridCellBossMasks = styled.div`    
@@ -90,18 +115,31 @@ const GridCellBossMasks = styled.div`
     flex-direction: column;
     margin: auto 0;
 
+    @media only screen and (max-width: 1600px) {
+        position: relative;        
+        grid-row: 1/2;
+        top: 10%;
+
+        div img{
+            width: 100px;
+            height: 100px;
+        }  
+    }    
+
     div{
         display: flex;
         justify-content: space-around;
     }
+
     button > div{
         border-radius: 50%;
         background-color: ${darkFrame};
         box-shadow: 2px 2px 4px 8px rgba(0,0,0,0.2),-2px -2px 4px 8px rgba(0,0,0,0.2);
     }
+
     img{ // likely to keep this synced with mask/item dimensions
         width: 120px;
-        height: 120px;
+        height: 120px;        
     }
 `;
 
@@ -109,10 +147,19 @@ const GridCellEquipment = styled.div`
     grid-column: 3/5;
     grid-row: 4/9;
     display: flex;
-    flex-wrap: wrap;
-    padding-top: 40px;
+    flex-wrap: wrap;    
     margin: auto 0;
     min-height: 400px;
+
+    @media only screen and (max-width: 1600px) {
+        position: relative;                
+        min-height: 240px;
+        grid-row: 2/3;
+    }
+
+    @media only screen and (max-width: 720px) {
+        top: 10%;
+    }
 `;
 
 const EquipmentSlot = styled.div`
@@ -126,17 +173,25 @@ const EquipmentSlot = styled.div`
         margin: 0 auto;
         width: 120px;
         height: 120px;
+        @media only screen and (max-width: 1600px) {
+            width: 100px;
+            height: 100px;
+        }
     }
 `;
 
-const questItemWidth = 120;
-const bomberNotebookWidth = 160;
-
 const QuestStatus = (props) => {
     const { curMenu, description, setDescription } = useContext(MenuContext);
-    const {hearts, setHearts, setHealth} = props;
-    const [notebookOpened, setNotebookOpened] = useState(false);
+    const {hearts, setHearts, setHealth, notebookOpened, setNotebookOpened} = props;    
+    const [questItemWidth, setQuestItemWidth] = useState(120);
+    const [bomberNotebookWidth, setBomberNotebookWidth] = useState(160);
     const isActive = mod(curMenu, 4) === 2;
+    useEffect(()=>{
+        if(window.outerWidth<1600){
+            setQuestItemWidth(100);
+            setBomberNotebookWidth(120);
+        }
+    }, []);
     return <QuestStatusContainer>
         <h1 className='wendy-one-regular'>quest status</h1>
         <QuestStatusGrid>

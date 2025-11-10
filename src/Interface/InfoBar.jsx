@@ -2,22 +2,27 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import MenuContext from '../MenuContext.jsx';
 import { rotateButtonInfo } from '../data/index.js';
-import { frame, infoBarNav } from '../styles/colors.js';
+import { darkFrame, frame, infoBarNav } from '../styles/colors.js';
 import InfoBarCs from '../../public/Interface/info-bar-Cs.png';
 
 const InfoBarWrapper = styled.div`
-    position: absolute;
-    z-index: 1000;
-    background-color: ${frame};
+    display: flex;
+    align-items: center;    
+    justify-content: center;
+    position: fixed;
+    z-index: 1100;
     width: 300px;
+    bottom: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 4px 8px;
+    background-color: ${frame}BF;
+    border: 1px solid ${darkFrame};
     color: ${props => props.nav ? infoBarNav : 'white'};
     -webkit-text-stroke: 1px black;    
-    font-size: 24px;
-    bottom: 72px;
-    padding: 4px 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 24px;    
+    pointer-events: none;
+    opacity: 0.75;
 
     img{
         height: 36px;
@@ -26,7 +31,7 @@ const InfoBarWrapper = styled.div`
 
 const InfoBar = (props) => {
     const { description, setInfoBar } = useContext(MenuContext);
-    const {name, equippable} = props;
+    const {name, equippable, notebookOpened} = props;
     let instructions, nav;
     if (rotateButtonInfo.includes(name)){
         nav = true;
@@ -52,7 +57,8 @@ const InfoBar = (props) => {
         }        
     },[name, props.instructions, description]);
 
-    return <InfoBarWrapper className='comic-relief' nav={nav}>{info}</InfoBarWrapper>
+    return !notebookOpened && <InfoBarWrapper className='comic-relief' nav={nav}>{info}</InfoBarWrapper>;     
+    // return name.trim().length > 0 && <InfoBarWrapper className='comic-relief' nav={nav}>{info}</InfoBarWrapper>;     
 }
 
 export default InfoBar;

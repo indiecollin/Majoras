@@ -11,7 +11,7 @@ const HoverContainer = styled.div`
     align-items: center;
     justify-content: center;
     
-    *:first-child{        
+    *:first-child{
         z-index: 1020;
     }
 `;
@@ -25,7 +25,7 @@ const Orbitter = styled.div`
     ${props => props.left ? 'left: ' + (props.absoluteOffset-props.parentWidth) + 'px;' : '' }
     ${props => props.right ? 'right: ' + (props.absoluteOffset-props.parentWidth) + 'px;' : '' }
     animation-delay: ${props => props.delay}, 0s;
-    z-index: 1000;
+    z-index: 1010;
     position: absolute;
     ${props => props.positionRules}
     transition: transform 2s;
@@ -48,6 +48,13 @@ const Orbitter = styled.div`
         radial-gradient(calc(1.5*var(--b)) at calc(100% - var(--b)/2) 0, #0000 calc(100%/3), #000 calc(100%/3 + 1px) 110%, #0000 0) calc(50% + var(--b)/2) 
         100%/calc(3*var(--b)) 50% exclude no-repeat, 
         conic-gradient(#000 0 0);
+
+    @media only screen and (max-width: 1600px) {                  
+        ${props => props.parentWidth!=props.absoluteOffset && props.left ?
+            'left: calc('  + (props.absoluteOffset-props.parentWidth) + 'px + 1 / 22 * 100vw - 580px / 11);' : '' }
+        ${props => props.parentWidth!=props.absoluteOffset && props.right ?
+            'right: calc('  + (props.absoluteOffset-props.parentWidth) + 'px + 1 / 22 * 100vw - 580px / 11);' : '' }
+    }
 `;
 
 const useHover = (props) => {

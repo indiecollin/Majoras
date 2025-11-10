@@ -16,11 +16,22 @@ const sounds = {
 const MapContainer = styled.div`        
     display: flex;
     flex-direction: column;    
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    padding: 0;
+
+    @media only screen and (max-width: 720px) {            
+        width: 150%;
+    }
+    
     h1{
         background-color: ${frame};
         text-transform: uppercase;
         text-align: center;         
         font-size: 50px;
+        transform: scaleX(-1);
     }
 `;
 
@@ -48,9 +59,13 @@ const MapDisplay = styled.div`
 
 const MapPoint = styled.div`    
     pointer-events: ${props => props.disablelite ? 'none' : 'unset'};
+    @media only screen and (max-width: 960px) {
+        width: 28px;
+        height: 28px;
+    }        
     img{
         position: relative;
-    }    
+    }
 `;  
 
 const Frame = styled.div`
@@ -67,8 +82,7 @@ const Base = styled.div`
 
 const Map = () => {
     const { curMenu, description } = useContext(MenuContext);
-    const mapDisplayPadding = 4;
-    const rotatorOffset = 4;      
+    const parentWidth = 4;    
     const isActive = mod(curMenu, 4) === 3;
     
     return <MapContainer>
@@ -86,8 +100,8 @@ const Map = () => {
                         return <AddHoverEffectAbsolute key={p.name}>
                             <MapPoint key={p.name}
                                 name={p.name} 
-                                parentWidth={mapDisplayPadding} 
-                                absoluteOffset={rotatorOffset}
+                                parentWidth={parentWidth} 
+                                absoluteOffset={parentWidth}
                                 positions={positions} 
                                 onHover={() => sounds['cursor'].play()}
                                 disablelite={description}

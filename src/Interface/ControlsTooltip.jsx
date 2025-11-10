@@ -14,7 +14,7 @@ import ControlDown from '../../public/Interface/down.png';
 const Tooltip = styled.div`
     position: absolute;
     top: 32px;
-    left: -68px;
+    right: 25%;
     background-color: #00000080;
     border-radius: 5px;
     color: #FFFFFF;
@@ -22,6 +22,10 @@ const Tooltip = styled.div`
     padding: 12px;
     z-index: 2000;
     text-align: center;
+
+    @media only screen and (max-width: 1600px) {
+        right: 48%;
+    }  
 `;
 
 const LegendEntryWrapper = styled.div`

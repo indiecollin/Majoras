@@ -1,4 +1,4 @@
-import React, { useContext, useRef, forwardRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, forwardRef } from 'react';
 import styled from 'styled-components';
 import AddHoverEffect from '../helpers/AddHoverEffect.jsx';
 import MenuContext from '../MenuContext.jsx';
@@ -9,14 +9,24 @@ import { frame, itemHover } from '../styles/colors.js';
 const MasksContainer = styled.div`    
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    padding: 0;
+
+    @media only screen and (max-width: 720px) {            
+        width: 125%;
+        left: -12.5%;
+    }
 
     h1{
         display: flex;
         justify-content: center;        
         text-transform: uppercase;        
         font-size: 50px;
-        background-color: ${frame};     
+        background-color: ${frame};
+        transform: scaleX(-1);
     }
 
     &>div{        
@@ -45,6 +55,9 @@ const MaskRow = styled.div`
     img{
         width: 148px;
         z-index: 200;
+        @media only screen and (max-width: 1600px) {
+            width: 88px;
+        } 
     }
 `;
 
@@ -94,6 +107,10 @@ const Frame = styled.div`
     position: relative;
     background-color: ${frame};
     width: 72px;
+
+    @media only screen and (max-width: 960px) {            
+        width: 36px;
+    }
 `;
 
 const Base = styled.div`
@@ -104,24 +121,48 @@ const Base = styled.div`
 
 const TransfromBar = styled.div`
     position: absolute;
-    right: 58px;
-    top: 40px;
+    right: 4%;
+    top: 8.5%;
     height: 64%;
-    width: 54px;
+    width: 4%;
+    min-width: 32px;
     background-color: ${frame};
     opacity: 0.5;    
     z-index: -1;
+    @media only screen and (max-width: 1600px) {
+        right: 2.5%;
+        width: 3%;
+    }
+    @media only screen and (max-width: 1200px) {
+        right: 4%;
+    }
+    @media only screen and (max-width: 720px) {
+        right: 6%;
+    }
 `;
 
 const FierceBar = styled.div`
     position: absolute;
-    right: 58px;
-    bottom : 58px;
-    width: 54px;
-    height: 54px;
+    right: 4%;
+    bottom: 8.5%;
+    width: 4%;
+    height: 8%;
+    min-width: 32px;
     background-color: ${frame};
     opacity: 0.5;   
     z-index: -1;
+    @media only screen and (max-width: 1600px) {
+        right: 2.5%;
+        bottom: 10.5%;
+        width: 3%;
+        height: 7%;
+    }
+    @media only screen and (max-width: 1200px) {
+        right: 4%;
+    }
+    @media only screen and (max-width: 720px) {
+        right: 6%;
+    }
 `;
 
 const Masks = (props) => {
@@ -132,11 +173,20 @@ const Masks = (props) => {
         })
         return acc;
     },{});
+    const [isMobile, setIsMobile] = useState(false);
     const {isEquipped} = props;
     const { curMenu, description, setDescription } = useContext(MenuContext);  
-    const parentWidth = 156;
+    const fullWidth = 156;
+    const mobileWidth = 88;
     const isActive = mod(curMenu, 4) === 1;
     const AddHoverEffectWithRef = forwardRef(AddHoverEffect);
+
+    useEffect(()=>{
+        if(window.outerWidth<1600){
+            setIsMobile(true);
+        }
+    },[])
+
     return <MasksContainer>
         <h1 className='wendy-one-regular'>masks</h1>
         <MaskGridWrapper>
@@ -149,7 +199,7 @@ const Masks = (props) => {
                             const selected = description?.name === mask.name;
                             return <MaskWrapper key = {mask.name} className ={isEquipped(mask.name) ? 'equipped' : ''} onClick = {() => setDescription(mask)} disabled={!isActive || !mask.name} disablelite={!!description}>                                
                                 <AddHoverEffectWithRef ref={masksRefs.current[mask.name]} color={itemHover}>
-                                    <Mask src = {mask.img} name={mask.name} parentWidth={parentWidth} selected={selected} disabled={!isActive || !mask.name || !!description} equip/>
+                                    <Mask src = {mask.img} name={mask.name} parentWidth={isMobile ? mobileWidth : fullWidth} selected={selected} disabled={!isActive || !mask.name || !!description} equip/>
                                 </AddHoverEffectWithRef>
                             </MaskWrapper>
                         })

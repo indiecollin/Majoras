@@ -90,11 +90,24 @@ const DayHeader = styled.div`
         -3px 3px 4px #000,
         3px 3px 4px #000;
     padding-left: 8px;
+
+    @media only screen and (max-width: 720px) {
+        justify-content: center;
+    }
+
     img{
         height: 20px;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
+
+        @media only screen and (max-width: 960px) {            
+            left: 75%;
+        }
+
+        @media only screen and (max-width: 720px) {            
+            display: none;
+        }
     }
 `;
 
@@ -122,6 +135,10 @@ const Profile = styled.button`
     grid-row: ${props => `${props.i+2}/${props.i+3}`};
     z-index: 1200;
     cursor: pointer;
+    @media only screen and (max-width: 1600px) {
+        width: 108px;
+        height: 108px;        
+    }
 
     img{
         padding: 8px;    
@@ -172,6 +189,11 @@ const Event = styled.button`
         width: 32px;
         height: 32px;
         position: absolute;
+
+        @media only screen and (max-width: 720px){
+            width: 28px;
+            height: 28px;
+        }
     }
 `;
 
@@ -192,8 +214,12 @@ const Medal = styled.div`
     z-index: 1200;
     img{
         margin-left: 16px;
-        height: 50%;
+        
+        @media only screen and (max-width: 720px){
+            height: 35%;
+        }
     }
+    
 `;
 
 const DescriptionContainer = styled.div`
@@ -204,14 +230,22 @@ const DescriptionContainer = styled.div`
     background: white;
     border-radius: 5px;
     z-index: 1300;
-    width: 720px;
+    max-width: 720px;
+    width: 95%;
     height: 160px;    
     display: flex;
-    padding: 8px 64px 24px 24px;
+    font-family: "Nanum Pen Script", cursive;
+
     img{
         width: 100px;
         height: 100px;
         margin-top: 12px;
+
+        @media only screen and (max-width: 720px){
+            width: 80px;
+            height: 80px;
+            margin-top: 5%;
+        }
     }
 `;
 
@@ -223,6 +257,11 @@ const DescriptionTextWrapper = styled.div`
     line-height: 64px;
     margin-left: 32px;
     padding: 0 8px;
+
+    @media only screen and (max-width: 720px){
+        font-size: 24px;
+        margin-left: 16px;
+    }
 
     .name{        
         color: ${strongTextRed};

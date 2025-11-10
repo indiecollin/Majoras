@@ -1,29 +1,44 @@
 import React from 'react';
 import styled from 'styled-components';
+import HappyMaskSalesman from '../../public/Interface/happy-mask-salesman.png';
+import Rotate from '../../public/Interface/rotate.png';
+import { background } from '../styles/colors';
 
 const MobileNoticeContainer = styled.div`
   display: flex;
   flex-direction: column;
-  z-index: 99999;
+  align-items: center;
+  z-index: 30000;
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: firebrick;
+  background-color: ${background};
   color: #ffffff;
+  padding: 16px;
 
-  @media only screen and (min-width: 501px) {
+  h1{
+    text-align: center;
+  }
+
+  @media only screen and (min-width: 480px) {
     display: none;
   }
 `;
 
+const RotateIcon = styled.img`
+  margin-top: 12px;
+  width: 100px;
+  height: 100px;
+`;
+
 const MobileNotice = () => {
     return <MobileNoticeContainer>
-      <h1>Woops! This experience won't fit on your screen.</h1>
-      <p>
-        Please rotate your device.
-      </p>
+      <h1>Sorry! This experience won't fit on your screen.</h1>      
+      <img src={HappyMaskSalesman}/>
+      <h1>Please rotate your device.</h1>
+      <RotateIcon src={Rotate}></RotateIcon>
     </MobileNoticeContainer>
 }
 

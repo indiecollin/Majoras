@@ -13,6 +13,7 @@ import ControlsTooltip from './Interface/ControlsTooltip.jsx';
 import InfoBar from './Interface/InfoBar.jsx';
 import DescriptionModal from './Interface/DescriptionModal.jsx';
 import MobileNotice from './Interface/MobileNotice.jsx';
+import TouchDeviceNotice from './Interface/TouchDeviceNotice.jsx';
 import Triangle from './svgs/Triangle.jsx';
 import Base from './svgs/Base.jsx';
 import { rotateButtonInfo } from './data/index.js';
@@ -36,7 +37,6 @@ import Rupee from '../public/Interface/rupee.png';
 import FireEffect from '../public/Interface/fire-effect.png';
 import IceEffect from '../public/Interface/ice-effect.png';
 import LightEffect from '../public/Interface/light-effect.png';
-import getHeart from '../public/Interface/get-heart.wav';
 import fireArrowSelect from '../public/Interface/fire-arrow-effect.wav';
 import iceArrowSelect from '../public/Interface/ice-arrow-effect.wav';
 import lightArrowSelect from '../public/Interface/light-arrow-effect.wav';
@@ -44,8 +44,7 @@ import itemSelect from '../public/Interface/item-select.wav';
 import rotateMenuLeft from '../public/Interface/menu-left.wav';
 import rotateMenuRight from '../public/Interface/menu-right.wav';
 
-const sounds = {
-    getHeart: new Audio(getHeart),
+const sounds = {    
     fireArrowSelect: new Audio(fireArrowSelect),
     iceArrowSelect: new Audio(iceArrowSelect),
     lightArrowSelect: new Audio(lightArrowSelect),
@@ -55,49 +54,56 @@ const sounds = {
 };
 
 const count = 4;
-const menusWidth = 1600;
-const menuGap = '0';
-const apothem = menusWidth / (2 * Math.tan(Math.PI/count));
 const menuButtonWidth = 84;
+const fullMenuWidth = 1600;
 
 const MenuBox = styled.div`
-    width: 100vw;
-    height: 100vh;
+    /* width: 100vw; */
+    /* height: 100vh; */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    perspective: 3200px;    
+    perspective: 3200px;   
+    @media only screen and (max-width: 1600px) {
+        perspective: 5000px;
+        margin-top: 20px;
+    } 
 
     > * {
          flex: 0 0 auto;
     }
 
     figure {
-        width: ${props => props.menusWidth + 'px'};
+        width: 100%;
+        max-width: ${props => props.menusWidth + 'px'};        
         transform-origin: 50% 50% ${props => -props.apothem + 'px'};
         transform-style: preserve-3d;
         transform: rotateY(${props => props.curMenu * -2*Math.PI/props.count}rad);
         transition: all 0.5s linear;
         z-index: 1000;
         pointer-events: none;
+
+        @media only screen and (max-width: 720px) {            
+            margin-top: -12.5%;
+        }
+
+        @media (width < 480px) {
+            display: none;
+        }
         
-        &>div {
-            padding: 0 ${props => props.menuGap / 2}px;
-            width: 100%;
-            height: 100vh; 
-            pointer-events: all;                 
+        &>div {            
+            pointer-events: all;                        
+
             &:nth-child(${props => mod(props.curMenu, 4) + 1}){
                 visibility: hidden;
             }
             ${props => transAngle(props.count)}
             &:not(:first-of-type) {
-                position: absolute;
-                left: 0;
-                top: 0;
+                position: absolute;                
                 transform-origin: 50% 50% ${props => -props.apothem + 'px'};
             }
-            &>*{
+            &>div{
                 transform: rotateY(180deg);
             }
             h1{
@@ -106,6 +112,10 @@ const MenuBox = styled.div`
                 letter-spacing: 4px;
                 line-height: 75px;
                 font-size: 64px;
+                @media only screen and (max-width: 1600px) {
+                    line-height: 50px;
+                    font-size: 48px;
+                }                 
             }
         } 
     }
@@ -142,6 +152,16 @@ const HealthAndMagic = styled.div`
     top: 72px;
     left: 25%;
     transform: translateX(-50%);
+
+    @media only screen and (max-width: 1600px) {
+        top: 0;
+        left: 20%;
+    }
+
+    @media only screen and (max-width: 720px) {
+        top: 0;
+        left: 30%;
+    }
 `;
 
 const EquipButtonsWrapper = styled.div`
@@ -151,6 +171,15 @@ const EquipButtonsWrapper = styled.div`
     top: 62px;
     right: 15%;    
     width: 300px;
+
+    @media only screen and (max-width: 1600px) {
+        top: 2.5%;
+        right: -9%;
+    }
+
+    @media only screen and (max-width: 720px) {
+        display: none;
+    }
 `;
 
 const EquipButton = styled.span`
@@ -220,28 +249,31 @@ const NoticeButton = styled(EquipButton)`
     animation: flicker 1s steps(1, end) alternate infinite;
     cursor: pointer;
     @keyframes flicker {
-    0% {
-      opacity: 1
+        0% {
+        opacity: 1
+        }
+        50% {
+        opacity : 0;
+        }
+        100% {
+        opacity: 1
+        }
     }
-    50% {
-      opacity : 0;
-    }
-    100% {
-      opacity: 1
-    }
-}
-
 `;
 
-const EquippedItem = styled.img`
-    
-`;
+const EquippedItem = styled.img``;
 
 const RotateMenuLeftButton = styled.button`
+
+    @media only screen and (max-width: 720px) {            
+        left: 0;
+    }
+
     all: unset;
-    left: 12%;
-    top: 45%;
+    left: 20%;
+    top: 40%;
     z-index: 1100;
+
     &:after{
         position: absolute;
         z-index: 2000;
@@ -258,10 +290,16 @@ const RotateMenuLeftButton = styled.button`
 `;
 
 const RotateMenuRightButton = styled.button`
+
+    @media only screen and (max-width: 720px) {            
+        right: 0;
+    }
+
     all: unset;
-    right: 12%;
-    top: 45%;
+    right: 20%;
+    top: 40%;
     z-index: 1100;
+
     &:after{
         position: absolute;
         z-index: 2000;
@@ -277,8 +315,6 @@ const RotateMenuRightButton = styled.button`
     }
 `;
 
-
-
 const Rupees = styled.div`
     position: absolute;
     display: flex;
@@ -290,6 +326,10 @@ const Rupees = styled.div`
     font-size: 24px;
     bottom: 72px;
     left: 224px;
+    @media only screen and (max-width: 1600px) {
+        bottom: 5%;
+        left: 2.5%;
+    }
     img{
         width: 24px;
         margin-right: 4px;
@@ -350,10 +390,10 @@ const MajorasMenu  = () => {
 
     const [curMenu, setCurMenu] = useState(0);    
     const [infoBar, setInfoBar] = useState('\u00A0');
-    const [hearts, setHearts] = useState(3); // the max capacity of hearts
-    const [health, setHealth] = useState(6); // current value, counted in fourths to work better with quarter hearts
+    const [hearts, setHearts] = useState(11); // the max capacity of hearts
+    const [health, setHealth] = useState(40); // current value, counted in fourths to work better with quarter hearts
     const [magic, setMagic] = useState(100);
-    const [showAbout, setShowAbout] = useState(false);
+    const [showAbout, setShowAbout] = useState(false);    
     const [defense, setDefense] = useState(false);
     const [instructions, setInstructions] = useState();
     const [description, setDescription] = useState();
@@ -371,6 +411,13 @@ const MajorasMenu  = () => {
     const [arrowAnimate2, setArrowAnimate2] = useState(false);
     const [scrollX, setScrollX] = useState(window.scrollX);
     const [scrollY, setScrollY] = useState(window.scrollY);
+    const [menusWidth, setMenusWidth] = useState(fullMenuWidth);// can probably get rid of this
+    const [apothem, setApothem] = useState(fullMenuWidth / (2 * Math.tan(Math.PI/count)));// can probably get rid of this
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+    const [notebookOpened, setNotebookOpened] = useState(false);
+
+
 
     const DescriptionModalWithRef = forwardRef(DescriptionModal);
     
@@ -549,123 +596,133 @@ const MajorasMenu  = () => {
         return false;
     }
 
-    const rotatePage = (clockwise) => {
+    const rotatePage = async (clockwise) => {        
         let nextMenu;
         setCurMenu(prevState => {
             nextMenu = prevState + (clockwise ? -1 : 1);
             return nextMenu;
         })
-        setInfoBar(rotateButtonInfo[mod(nextMenu + (clockwise ? -1 : 1), 4)]);
-        setHoveredEquip();
+        if(!isTouchDevice){
+            setInfoBar(rotateButtonInfo[mod(nextMenu + (clockwise ? -1 : 1), 4)]);
+        }        
+        setHoveredEquip();        
+
         try{
             if(clockwise){
                 sounds['rotateMenuRight'].load();
-                sounds['rotateMenuRight'].play();
+                sounds['rotateMenuRight'].play();                
             } else {
                 sounds['rotateMenuLeft'].load();
-                sounds['rotateMenuLeft'].play();
+                sounds['rotateMenuLeft'].play();                
             }
-        } catch(e){
+        } catch(e){            
             console.error(e.message, 'sound used before last use completed');
         }     
     }
 
-    const increaseHealth = (points) =>{
-        new Array(points).fill().forEach((_,i) => {
-            setTimeout(() => {
-                let nextHealth;
-                setHealth(prevState => {
-                    nextHealth = prevState+1;
-                    return nextHealth;
-                });
-                if(nextHealth%4 == 0){
-                    try{
-                        sounds[getHeart].load();
-                        sounds[getHeart].play();
-                    } catch(e){
-                        console.error(e.message, 'sound used before last use completed');
-                    }
-                }
-            }, (i+1) * 150);  
-        })
-    }
-
     onClickOutside(descriptionRef, () => {
         setDescription();
-
     });
 
-    useEffect(()=>{
+    useEffect(()=>{                       
+        if(window.outerWidth<=720){
+            setIsSmallScreen(true);
+        }         
+        if (window?.matchMedia("(pointer:coarse)").matches){
+            setIsTouchDevice(true);
+        }        
         menuBoxRef.current.focus();
     },[]);
       
     return <MenuContext.Provider value={{curMenu, selecting, description, setInfoBar, setInstructions, setDescription, setHoveredEquip}}>
-    <MenuBox 
-        ref={menuBoxRef}
-        curMenu = {curMenu} 
-        menusWidth = {menusWidth} 
-        count = {count} 
-        menuGap = {menuGap} 
-        apothem = {apothem} 
-        onKeyDown={menuKeyPress} 
-        tabIndex={-1} 
-        navDisabled={description}
-    >
-        {/* preloading fonts */}
-        <FontPreload className='wendy-one-regular'>|</FontPreload>
-        <FontPreload className='comic-relief'>|</FontPreload>
-        <FontPreload className='aoboshi-one-regular'>|</FontPreload>
-        <FontPreload className='nanum-pen-script-regular'>|</FontPreload>
-        <MobileNotice/>
-        <HealthAndMagic>
-            <Health health={health} hearts={hearts} defense={defense}/>
-            <Magic magic={magic}/>
-        </HealthAndMagic>
-        <ActionButtons setShowAbout={setShowAbout}/>        
-        <EquipButtonsWrapper>
-            <EquipButtonLeft ref={cLeftRef}><EquippedItem src={cLeft.image}/><Triangle/></EquipButtonLeft>
-            <EquipButtonDown ref={cDownRef}><EquippedItem src={cDown.image}/><Triangle/></EquipButtonDown>
-            <EquipButtonRight ref={cRightRef}><EquippedItem src={cRight.image}/><Triangle/></EquipButtonRight>
-            {!description && <NoticeButton className='comic-relief' onMouseOver={() => setShowControls(true)} onMouseLeave={()=> setShowControls(false)}>
-                Tatl                
-            </NoticeButton>}
-            {showControls && <ControlsTooltip/>}
-        </EquipButtonsWrapper>        
-         <AddHoverEffect dims={20} border={3.3}>
-            <RotateMenuLeftButton onClick = {() => rotatePage()} name={rotateButtonInfo[mod(curMenu + 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav' nav>
-                <Base left={true}/>                
-            </RotateMenuLeftButton>         
-        </AddHoverEffect>
-        <AddHoverEffect dims={20} border={3.3}>
-            <RotateMenuRightButton  onClick = {() => rotatePage(true)} name={rotateButtonInfo[mod(curMenu - 1, 4)]} parentWidth={menuButtonWidth} disabled={description} className='nav' nav>
-                <Base left={false}/>                
-            </RotateMenuRightButton>
-        </AddHoverEffect>        
-        <Rupees className='comic-relief'>
-            <img src={Rupee}/>500
-        </Rupees>        
-        <InfoBar name={infoBar} instructions={instructions} equippable={hoveredEquip.current.equip.name}/>
-        <figure>
-            <QuestStatus hearts={hearts} setHealth={setHealth} setHearts={setHearts}/>
-            <Map/>
-            <Items 
-                isEquipped={isEquipped}
-                setBowRef={setBowRef} 
-                setFireArrowRef={setFireArrowRef}
-                setIceArrowRef={setIceArrowRef} 
-                setLightArrowRef={setLightArrowRef}
-            />
-            <Masks isEquipped={isEquipped}/>
-        </figure>
-        {(bowRef?.current) && <>
-            <ArrowEffect className = {arrowAnimate1 ? 'arrow-glow' : ''} show = {selecting && hoveredEquip.current.equip.name === 'Fire Arrow'} animate1={arrowAnimate1} animate2={arrowAnimate2} color={fireArrowRedPrimary} color2={fireArrowRedSecondary} arrow={fireArrowRef.current.getBoundingClientRect().toJSON()} arrowTip={bowRef.current.getBoundingClientRect().toJSON()} scrollX={scrollX} scrollY={scrollY}/> 
-            <ArrowEffect className = {arrowAnimate1 ? 'arrow-glow' : ''} show = {selecting && hoveredEquip.current.equip.name === 'Ice Arrow'} animate1={arrowAnimate1} animate2={arrowAnimate2} color={iceArrowBluePrimary} color2={iceArrowBlueSecondary} arrow={iceArrowRef.current.getBoundingClientRect().toJSON()} arrowTip={bowRef.current.getBoundingClientRect().toJSON()} scrollX={scrollX} scrollY={scrollY}/>
-            <ArrowEffect className = {arrowAnimate1 ? 'arrow-glow' : ''} show = {selecting && hoveredEquip.current.equip.name === 'Light Arrow'} animate1={arrowAnimate1} animate2={arrowAnimate2} color={lightArrowYellowPrimary} color2={lightArrowYellowSecondary} arrow={lightArrowRef.current.getBoundingClientRect().toJSON()} arrowTip={bowRef.current.getBoundingClientRect().toJSON()} scrollX={scrollX} scrollY={scrollY}/>
-        </>}
-        <EquipmentClone src={equipmentClone.image} clonedInfo={equipmentClone} scrollX={scrollX} scrollY={scrollY}/>
-        {description && <DescriptionModalWithRef description={description} ref={descriptionRef}/>}
-        {showAbout && <AboutModal setShowAbout={setShowAbout}/>}
-    </MenuBox>
+    <>
+        <MenuBox 
+            ref={menuBoxRef}
+            curMenu = {curMenu} 
+            menusWidth = {menusWidth} 
+            count = {count}             
+            apothem = {apothem} 
+            onKeyDown={menuKeyPress} 
+            tabIndex={-1} 
+            navDisabled={description}
+        >
+            {/* preloading fonts */}
+            <FontPreload className='wendy-one-regular'>|</FontPreload>
+            <FontPreload className='comic-relief'>|</FontPreload>
+            <FontPreload className='aoboshi-one-regular'>|</FontPreload>
+            <FontPreload className='nanum-pen-script-regular'>|</FontPreload>
+            <MobileNotice/>
+            <TouchDeviceNotice/>
+            <HealthAndMagic>
+                <Health health={health} hearts={hearts} defense={defense}/>
+                <Magic magic={magic}/>
+            </HealthAndMagic>
+            <ActionButtons setShowAbout={setShowAbout}/>        
+            <EquipButtonsWrapper>
+                <EquipButtonLeft ref={cLeftRef}><EquippedItem src={cLeft.image}/><Triangle/></EquipButtonLeft>
+                <EquipButtonDown ref={cDownRef}><EquippedItem src={cDown.image}/><Triangle/></EquipButtonDown>
+                <EquipButtonRight ref={cRightRef}><EquippedItem src={cRight.image}/><Triangle/></EquipButtonRight>
+                {!description && <NoticeButton className='comic-relief' onMouseOver={() => setShowControls(true)} onMouseLeave={()=> setShowControls(false)}>
+                    Tatl                
+                </NoticeButton>}
+                {showControls && <ControlsTooltip/>}
+            </EquipButtonsWrapper>        
+            <AddHoverEffect dims={20} border={3.3}>
+                <RotateMenuLeftButton 
+                    onClick = {() => rotatePage()} 
+                    name={rotateButtonInfo[mod(curMenu + 1, 4)]} 
+                    parentWidth={menuButtonWidth} 
+                    disabled={description} 
+                    hoverDisabled={isSmallScreen} 
+                    className='nav' nav
+                >
+                    <Base left={true}/>                
+                </RotateMenuLeftButton>         
+            </AddHoverEffect>
+            <AddHoverEffect dims={20} border={3.3}>
+                <RotateMenuRightButton  
+                    onClick = {() => rotatePage(true)} 
+                    name={rotateButtonInfo[mod(curMenu - 1, 4)]} 
+                    parentWidth={menuButtonWidth} 
+                    disabled={description} 
+                    hoverDisabled={isSmallScreen} 
+                    className='nav' nav
+                >
+                    <Base left={false}/>                
+                </RotateMenuRightButton>
+            </AddHoverEffect>        
+            <Rupees className='comic-relief'>
+                <img src={Rupee}/>500
+            </Rupees>                    
+            <figure>
+                <QuestStatus 
+                    hearts={hearts} 
+                    setHealth={setHealth} 
+                    setHearts={setHearts} 
+                    notebookOpened={notebookOpened} 
+                    setNotebookOpened={setNotebookOpened}
+                />
+                <Map/>
+                <Items 
+                    isEquipped={isEquipped}
+                    setBowRef={setBowRef} 
+                    setFireArrowRef={setFireArrowRef}
+                    setIceArrowRef={setIceArrowRef} 
+                    setLightArrowRef={setLightArrowRef}
+                />
+                <Masks isEquipped={isEquipped}/>
+            </figure>
+            {(bowRef?.current) && <>
+                <ArrowEffect className = {arrowAnimate1 ? 'arrow-glow' : ''} show = {selecting && hoveredEquip.current.equip.name === 'Fire Arrow'} animate1={arrowAnimate1} animate2={arrowAnimate2} color={fireArrowRedPrimary} color2={fireArrowRedSecondary} arrow={fireArrowRef.current.getBoundingClientRect().toJSON()} arrowTip={bowRef.current.getBoundingClientRect().toJSON()} scrollX={scrollX} scrollY={scrollY}/> 
+                <ArrowEffect className = {arrowAnimate1 ? 'arrow-glow' : ''} show = {selecting && hoveredEquip.current.equip.name === 'Ice Arrow'} animate1={arrowAnimate1} animate2={arrowAnimate2} color={iceArrowBluePrimary} color2={iceArrowBlueSecondary} arrow={iceArrowRef.current.getBoundingClientRect().toJSON()} arrowTip={bowRef.current.getBoundingClientRect().toJSON()} scrollX={scrollX} scrollY={scrollY}/>
+                <ArrowEffect className = {arrowAnimate1 ? 'arrow-glow' : ''} show = {selecting && hoveredEquip.current.equip.name === 'Light Arrow'} animate1={arrowAnimate1} animate2={arrowAnimate2} color={lightArrowYellowPrimary} color2={lightArrowYellowSecondary} arrow={lightArrowRef.current.getBoundingClientRect().toJSON()} arrowTip={bowRef.current.getBoundingClientRect().toJSON()} scrollX={scrollX} scrollY={scrollY}/>
+            </>}
+            <EquipmentClone src={equipmentClone.image} clonedInfo={equipmentClone} scrollX={scrollX} scrollY={scrollY}/>
+            {description && <DescriptionModalWithRef description={description} ref={descriptionRef}/>}
+            {showAbout && <AboutModal setShowAbout={setShowAbout}/>}
+        </MenuBox>
+        <InfoBar name={infoBar} instructions={instructions} equippable={hoveredEquip.current.equip.name} notebookOpened={notebookOpened}/>
+    </>
     </MenuContext.Provider>
 }
 

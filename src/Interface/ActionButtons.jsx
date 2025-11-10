@@ -8,11 +8,36 @@ const ActionButtonsContainer = styled.div`
     top: 72px;
     left: 50%;
     transform: translateX(-50%);
-    width: 300px;    
+    width: 300px;
+
+    @media only screen and (max-width: 1600px) {
+        top: 0;
+        left: 60%;
+    }
+
+    @media only screen and (max-width: 720px) {        
+        left: 90%;
+    } 
 `;
 
 const ActionButtonsWrapper = styled.div`
     position: relative;
+    a{
+        position: absolute;
+        width: 64px;
+        height: 64px;
+        left: 20%;
+        margin-left: 10px;
+
+        @media only screen and (max-width: 1600px) {
+            width: 56px;
+            height: 56px;  
+            &:before {
+                width: 56px;
+                height: 56px;
+            }
+        }
+    }
 `;
 
 const ActionButton = styled.button`
@@ -32,6 +57,10 @@ const ActionButton = styled.button`
         90.5%, 50% 100%, 19.1% 90.5%, 2.4% 65.5%, 2.4% 34.5%, 19.1% 9.5%, 50% 0%);
     }
 
+    @media only screen and (max-width: 1600px) {
+        font-size: 20px;
+    }
+
     &.start{        
         width: 52px;
         height: 52px;        
@@ -47,31 +76,48 @@ const ActionButton = styled.button`
             outline: 4px solid ${buttonOutline};
             outline-offset: -6px;
         }
+
+        @media only screen and (max-width: 1600px) {
+            width: 40px;
+            height: 40px;  
+            &:before {
+                width: 40px;
+                height: 40px;
+            }
+        }
     }
 
     &.B{
-        width: 64px;
-        height: 64px;
-        left: 80px;
-        margin-left: 10px;        
+        width: 100%;
+        height: 100%;                
         &:before {
             content: "";
             display: flex;
             position: absolute;
             z-index: -1;
-            width: 64px;
-            height: 64px;        
+            width: 100%;
+            height: 100%;        
             background-color: ${buttonGreen};                        
             border: 1px solid transparent;            
             outline: 5px solid ${buttonOutline};
             outline-offset: -8px;
         }
+
+        /* @media only screen and (max-width: 1600px) {
+            width: 56px;
+            height: 56px;  
+            &:before {
+                width: 56px;
+                height: 56px;
+            }
+        } */
+
     }
 
     &.A{
         width: 64px;
         height: 64px;        
-        left: 180px;
+        left: 45%;
         top: 12px;
         margin-left: 10px;
         &:before {
@@ -80,11 +126,19 @@ const ActionButton = styled.button`
             position: absolute;
             z-index: -1;
             width: 64px;
-            height: 64px;           
+            height: 64px;        
             background-color: ${buttonBlue};                                    
             border: 1px solid transparent;      
             outline: 5px solid ${buttonOutline};
             outline-offset: -8px;
+        }
+        @media only screen and (max-width: 1600px) {
+            width: 40px;
+            height: 40px;  
+            &:before {
+                width: 40px;
+                height: 40px;
+            }
         }
     }
 `;

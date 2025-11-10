@@ -11,6 +11,11 @@ import Heart2 from '../../public/QuestStatus/heart2.png';
 import Heart3 from '../../public/QuestStatus/heart3.png';
 import Heart4 from '../../public/QuestStatus/heart4.png';
 import HeartPiece from '../../public/QuestStatus/heart-piece.png';
+import getHeart from '../../public/Interface/get-heart.wav';
+
+const sounds = {    
+    getHeart: new Audio(getHeart)
+};
 
 const HeartContainer = styled.div`
     position: relative;    
@@ -23,7 +28,14 @@ const HeartContainer = styled.div`
     max-height: 240px;
     justify-self: center;
     align-self: center;
-    margin: auto 0;
+    margin: 80px auto 0;
+
+    @media only screen and (max-width: 1600px) {
+    grid-row: 1 / 2;
+        width: 160px;
+        height: 160px;
+        top: 16px;
+    }
 
     img{
         display: flex;
@@ -90,6 +102,7 @@ const HeartContainerContainer = (props) => { //it's actually called a heart cont
     const [heart2, setHeart2] = useState(false);    
     const [heart3, setHeart3] = useState(false);    
     const [heart4, setHeart4] = useState(false); 
+    const [imgWidth, setImgWidth] = useState(220);
 
     const obtainHeartPiece = (heart, setHeart) => {
         if(heart){
@@ -111,8 +124,20 @@ const HeartContainerContainer = (props) => { //it's actually called a heart cont
                 return heartCount;
             });
             setHealth(heartCount*4);
+            try{
+                sounds['getHeart'].load();
+                sounds['getHeart'].play();
+            } catch(e){
+                console.error(e.message, 'sound used before last use completed');
+            }
         }
-    }, [heart1, heart2, heart3, heart4, setHearts, setHealth]);    
+    }, [heart1, heart2, heart3, heart4, setHearts, setHealth]);   
+    
+    useEffect(()=>{
+        if(window.outerWidth<1600){
+            setImgWidth(160);            
+        }
+    }, []);
 
     const isActive = mod(curMenu, 4) === 2;
     const maxedHearts = hearts>=20;
