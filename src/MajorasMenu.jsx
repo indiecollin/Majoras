@@ -713,7 +713,7 @@ const MajorasMenu  = () => {
             {description && <DescriptionModalWithRef description={description} ref={descriptionRef}/>}
             {showAbout && <AboutModal setShowAbout={setShowAbout}/>}
         </MenuBox>
-        <InfoBar name={infoBar} instructions={instructions} equippable={hoveredEquip.current.equip.name}/>
+        {!description && <InfoBar name={infoBar} instructions={instructions} equippable={hoveredEquip.current.equip.name}/>}
         <MobileNotice/>
         <TouchDeviceNotice/>
     </>
