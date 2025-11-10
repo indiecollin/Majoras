@@ -5,9 +5,8 @@ const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 module.exports = () => {
     return {
-        mode: 'development',
-        target: 'node',        
-        devtool:'inline-source-map',
+        mode: 'production',
+        target: 'node',                
         entry: './src/index.js',
         output: {
             filename: 'bundle.js',
