@@ -35,10 +35,10 @@ const RotateIcon = styled.img`
 
 const MobileNotice = () => {
     return <MobileNoticeContainer>
-      <h1>Sorry! This experience won't fit on your screen.</h1>      
-      <img src={HappyMaskSalesman}/>
       <h1>Please rotate your device.</h1>
       <RotateIcon src={Rotate}></RotateIcon>
+      {/* <h1>Sorry! This experience won't fit on your screen.</h1>       */}
+      <img src={HappyMaskSalesman}/>
     </MobileNoticeContainer>
 }
 
