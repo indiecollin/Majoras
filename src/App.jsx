@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import styles from '../styles.css';
 import MajorasMenu from './MajorasMenu.jsx';
+import useOrientationReset from './hooks/useOrientationReset.jsx';
 
 
-class App extends Component{
-    constructor(props){
-        super(props);
-        this.state = {};        
-    }    
-
-    render(){        
-        return <MajorasMenu/>
-    }
+const App = () => {
+    useOrientationReset(); 
+    return <MajorasMenu/>
 }
 
 export default App;
