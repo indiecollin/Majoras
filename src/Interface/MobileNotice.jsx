@@ -22,26 +22,26 @@ const MobileNoticeContainer = styled.div`
     text-align: center;
   }
 
-  img{
-    width: 66%;
-  }
-
   @media only screen and (min-width: 480px) {
     display: none;
   }
 `;
 
+const HappyMaskSalesmanImage = styled.img`
+  width: 66%;
+`;
+
 const RotateIcon = styled.img`
   margin-top: 12px;
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
 `;
 
 const MobileNotice = () => {
     return <MobileNoticeContainer>
       <h1>Please rotate your device.</h1>
       {/* <h1>Sorry! This experience won't fit on your screen.</h1>       */}
-      <img src={HappyMaskSalesman}/>
+      <HappyMaskSalesmanImage src={HappyMaskSalesman}/>
       <RotateIcon src={Rotate}></RotateIcon>
     </MobileNoticeContainer>
 }
