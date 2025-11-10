@@ -43,16 +43,10 @@ const TouchDeviceNotice = () => {
     useEffect(()=>{
         if (!window.matchMedia) return;
         setIsTouchDevice(window.matchMedia("(pointer:coarse)").matches);
-    },[])
-
-    const showApp = () => {
-        const viewportMeta = document.querySelector('meta[name="viewport"]');
-        viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-        setShowNotice(false);
-    }
+    },[]);
 
     return isTouchDevice && showNotice && <TouchDeviceNoticeContainer>
-        <XIcon onClick = {() => { showApp() }}/>
+        <XIcon onClick = {() => { setShowNotice(false) }}/>
         <div>
             <h1>Attention!</h1>
             <h2>While this app functions for touchscreen devices like phones and tablets, mouse and keyboard are recommended for the best user experience.</h2>      
