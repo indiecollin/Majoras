@@ -48,7 +48,6 @@ const QuestStatusGrid = styled.div`
     height: 100%;
     grid-template-columns: 3fr 3fr 3fr 3fr;
     grid-template-rows: 1fr 1fr;
-
 `;
 
 const QuestItemWrapper = styled.button`
@@ -182,7 +181,8 @@ const EquipmentSlot = styled.div`
 
 const QuestStatus = (props) => {
     const { curMenu, description, setDescription } = useContext(MenuContext);
-    const {hearts, setHearts, setHealth, notebookOpened, setNotebookOpened} = props;    
+    const {hearts, setHearts, setHealth} = props;
+    const [notebookOpened, setNotebookOpened] = useState(false);
     const [questItemWidth, setQuestItemWidth] = useState(120);
     const [bomberNotebookWidth, setBomberNotebookWidth] = useState(160);
     const isActive = mod(curMenu, 4) === 2;

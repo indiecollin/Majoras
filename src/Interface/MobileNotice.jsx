@@ -13,7 +13,7 @@ const MobileNoticeContainer = styled.div`
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 120vh;
   background-color: ${background};
   color: #ffffff;
   padding: 16px;

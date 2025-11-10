@@ -31,7 +31,7 @@ const InfoBarWrapper = styled.div`
 
 const InfoBar = (props) => {
     const { description, setInfoBar } = useContext(MenuContext);
-    const {name, equippable, notebookOpened} = props;
+    const {name, equippable} = props;
     let instructions, nav;
     if (rotateButtonInfo.includes(name)){
         nav = true;
@@ -57,7 +57,7 @@ const InfoBar = (props) => {
         }        
     },[name, props.instructions, description]);
 
-    return !notebookOpened && <InfoBarWrapper className='comic-relief' nav={nav}>{info}</InfoBarWrapper>;     
+    return <InfoBarWrapper className='comic-relief' nav={nav}>{info}</InfoBarWrapper>;     
     // return name.trim().length > 0 && <InfoBarWrapper className='comic-relief' nav={nav}>{info}</InfoBarWrapper>;     
 }
 

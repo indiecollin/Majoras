@@ -58,16 +58,13 @@ const menuButtonWidth = 84;
 const fullMenuWidth = 1600;
 
 const MenuBox = styled.div`
-    /* width: 100vw; */
-    /* height: 100vh; */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    perspective: 3200px;   
+    perspective: 3200px; 
     @media only screen and (max-width: 1600px) {
         perspective: 5000px;
-        margin-top: 20px;
     } 
 
     > * {
@@ -83,6 +80,10 @@ const MenuBox = styled.div`
         transition: all 0.5s linear;
         z-index: 1000;
         pointer-events: none;
+        
+        @media only screen and (max-width: 1600px) {            
+            margin-top: -2.5%;
+        }
 
         @media only screen and (max-width: 720px) {            
             margin-top: -12.5%;
@@ -390,8 +391,8 @@ const MajorasMenu  = () => {
 
     const [curMenu, setCurMenu] = useState(0);    
     const [infoBar, setInfoBar] = useState('\u00A0');
-    const [hearts, setHearts] = useState(11); // the max capacity of hearts
-    const [health, setHealth] = useState(40); // current value, counted in fourths to work better with quarter hearts
+    const [hearts, setHearts] = useState(4); // the max capacity of hearts
+    const [health, setHealth] = useState(10); // current value, counted in fourths to work better with quarter hearts
     const [magic, setMagic] = useState(100);
     const [showAbout, setShowAbout] = useState(false);    
     const [defense, setDefense] = useState(false);
@@ -414,8 +415,7 @@ const MajorasMenu  = () => {
     const [menusWidth, setMenusWidth] = useState(fullMenuWidth);// can probably get rid of this
     const [apothem, setApothem] = useState(fullMenuWidth / (2 * Math.tan(Math.PI/count)));// can probably get rid of this
     const [isTouchDevice, setIsTouchDevice] = useState(false);
-    const [isSmallScreen, setIsSmallScreen] = useState(false);
-    const [notebookOpened, setNotebookOpened] = useState(false);
+    const [isSmallScreen, setIsSmallScreen] = useState(false);    
 
 
 
@@ -650,9 +650,7 @@ const MajorasMenu  = () => {
             <FontPreload className='wendy-one-regular'>|</FontPreload>
             <FontPreload className='comic-relief'>|</FontPreload>
             <FontPreload className='aoboshi-one-regular'>|</FontPreload>
-            <FontPreload className='nanum-pen-script-regular'>|</FontPreload>
-            <MobileNotice/>
-            <TouchDeviceNotice/>
+            <FontPreload className='nanum-pen-script-regular'>|</FontPreload>            
             <HealthAndMagic>
                 <Health health={health} hearts={hearts} defense={defense}/>
                 <Magic magic={magic}/>
@@ -695,13 +693,7 @@ const MajorasMenu  = () => {
                 <img src={Rupee}/>500
             </Rupees>                    
             <figure>
-                <QuestStatus 
-                    hearts={hearts} 
-                    setHealth={setHealth} 
-                    setHearts={setHearts} 
-                    notebookOpened={notebookOpened} 
-                    setNotebookOpened={setNotebookOpened}
-                />
+                <QuestStatus hearts={hearts} setHealth={setHealth} setHearts={setHearts} />
                 <Map/>
                 <Items 
                     isEquipped={isEquipped}
@@ -721,7 +713,9 @@ const MajorasMenu  = () => {
             {description && <DescriptionModalWithRef description={description} ref={descriptionRef}/>}
             {showAbout && <AboutModal setShowAbout={setShowAbout}/>}
         </MenuBox>
-        <InfoBar name={infoBar} instructions={instructions} equippable={hoveredEquip.current.equip.name} notebookOpened={notebookOpened}/>
+        <InfoBar name={infoBar} instructions={instructions} equippable={hoveredEquip.current.equip.name}/>
+        <MobileNotice/>
+        <TouchDeviceNotice/>
     </>
     </MenuContext.Provider>
 }
