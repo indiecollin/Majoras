@@ -34,6 +34,10 @@ const TouchDeviceNoticeContainer = styled.div`
     h1{
         text-align: center;
     }
+
+    img{
+        pointer-events: none;
+    }
 `;
 
 const TouchDeviceNotice = () => {

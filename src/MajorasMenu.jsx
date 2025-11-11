@@ -90,7 +90,7 @@ const MenuBox = styled.div`
         }
 
         @media (width < 480px) {
-            display: none;
+            opacity: 0;
         }
         
         &>div {            
