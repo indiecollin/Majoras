@@ -81,6 +81,7 @@ const PromptButton = styled.button`
     border-radius: 2px;
     filter: blur(2px);
     cursor: pointer;
+    touch-action: manipulation;
     ${props => !props.last ? 'clip-path: polygon(0% 0%, 0% 15%, 50% 66.6%, 100% 15%, 100% 0%);' : ''}
 `;
 
