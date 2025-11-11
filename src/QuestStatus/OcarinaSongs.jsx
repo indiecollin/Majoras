@@ -288,7 +288,7 @@ const OcarinaSongsContainer = () => {
         setDisabled(true);
         setInstructions();
         let newNoteMap =  Array.from({length: 5}, () => Array(8).fill(false));
-        let songDelay = 0;        
+        let songDelay = 100;        
         song.sequence.split('').forEach((input, seqIndex)=>{ // TODO: Abort functionality                
             setTimeout(() => { // make sure this doesn't get expensive
                 if(!playModeRef.current) {

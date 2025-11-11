@@ -127,6 +127,10 @@ const Timeline = styled.span`
     border-top: 2px solid black;
     z-index: 1050;
     margin-left: 32px;
+    @media only screen and (max-width: 1600px) {
+        margin-top: 54px;
+        top: 0;
+    }    
 `;
 
 const Profile = styled.button`
