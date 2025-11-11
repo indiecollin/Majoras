@@ -274,7 +274,6 @@ const RotateMenuLeftButton = styled.button`
     left: 20%;
     top: 40%;
     z-index: 1100;
-    touch-action: manipulation;
 
     &:after{
         position: absolute;
@@ -301,7 +300,6 @@ const RotateMenuRightButton = styled.button`
     right: 20%;
     top: 40%;
     z-index: 1100;
-    touch-action: manipulation;
 
     &:after{
         position: absolute;
