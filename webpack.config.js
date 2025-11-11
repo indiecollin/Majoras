@@ -7,9 +7,12 @@ module.exports = () => {
     return {
         mode: 'production',
         target: 'node',                
-        entry: './src/index.js',
+        entry: {
+            main: './src/index.js',
+            iosOrientationFix: './src/helpers/ios-orientationchange-fix.js'
+        },
         output: {
-            filename: 'bundle.js',
+            filename: '[name].bundle.js',
             path: path.join(__dirname, 'build/public'),
             publicPath: '/'
         },
