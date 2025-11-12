@@ -31,7 +31,7 @@ const InfoBarWrapper = styled.div`
 
 const InfoBar = (props) => {
     const { description, setInfoBar } = useContext(MenuContext);
-    const {name, equippable} = props;
+    const {name, equippable, isTouchDevice} = props;
     let instructions, nav;
     if (rotateButtonInfo.includes(name)){
         nav = true;
@@ -57,8 +57,7 @@ const InfoBar = (props) => {
         }        
     },[name, props.instructions, description]);
 
-    return <InfoBarWrapper className='comic-relief' nav={nav}>{info}</InfoBarWrapper>;     
-    // return name.trim().length > 0 && <InfoBarWrapper className='comic-relief' nav={nav}>{info}</InfoBarWrapper>;     
+    return (name.trim().length > 0 || !isTouchDevice) && <InfoBarWrapper className='comic-relief' nav={nav}>{info}</InfoBarWrapper>;     
 }
 
 export default InfoBar;

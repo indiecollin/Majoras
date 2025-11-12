@@ -11,7 +11,7 @@ const ActionButtonsContainer = styled.div`
     width: 300px;
 
     @media only screen and (max-width: 1600px) {
-        top: 0;
+        top: 20px;
         left: 60%;
     }
 
@@ -145,7 +145,7 @@ const ActionButton = styled.button`
 
 const ActionButtons = (props) => {
     const { setShowAbout } = props;
-    return (<ActionButtonsContainer>
+    return <ActionButtonsContainer>
         <ActionButtonsWrapper>
             <ActionButton className='start comic-relief' onClick={()=>{setShowAbout(true)}} >About</ActionButton>
             <a href='https://github.com/indiecollin/Majoras' target="_blank" rel="noopener noreferrer">
@@ -153,7 +153,7 @@ const ActionButtons = (props) => {
             </a>
             <ActionButton className='A comic-relief' disabled>More</ActionButton>
         </ActionButtonsWrapper>
-    </ActionButtonsContainer>)
+    </ActionButtonsContainer>
 };  
 
 export default ActionButtons;

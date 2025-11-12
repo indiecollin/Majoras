@@ -63,9 +63,14 @@ const MenuBox = styled.div`
     align-items: center;
     justify-content: center;
     perspective: 3200px; 
+
     @media only screen and (max-width: 1600px) {
         perspective: 5000px;
     } 
+
+    @media (width < 480px) {
+        opacity: 0;
+    }
 
     > * {
          flex: 0 0 auto;
@@ -81,16 +86,8 @@ const MenuBox = styled.div`
         z-index: 1000;
         pointer-events: none;
         
-        @media only screen and (max-width: 1600px) {            
-            margin-top: -2.5%;
-        }
-
         @media only screen and (max-width: 720px) {            
             margin-top: -12.5%;
-        }
-
-        @media (width < 480px) {
-            opacity: 0;
         }
         
         &>div {            
@@ -155,7 +152,7 @@ const HealthAndMagic = styled.div`
     transform: translateX(-50%);
 
     @media only screen and (max-width: 1600px) {
-        top: 0;
+        top: 20px;
         left: 20%;
     }
 
@@ -174,7 +171,7 @@ const EquipButtonsWrapper = styled.div`
     width: 300px;
 
     @media only screen and (max-width: 1600px) {
-        top: 2.5%;
+        top: 20px;
         right: -9%;
     }
 
@@ -416,8 +413,6 @@ const MajorasMenu  = () => {
     const [apothem, setApothem] = useState(fullMenuWidth / (2 * Math.tan(Math.PI/count)));// can probably get rid of this
     const [isTouchDevice, setIsTouchDevice] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState(false);    
-
-
 
     const DescriptionModalWithRef = forwardRef(DescriptionModal);
     
@@ -713,9 +708,7 @@ const MajorasMenu  = () => {
             {description && <DescriptionModalWithRef description={description} ref={descriptionRef}/>}
             {showAbout && <AboutModal setShowAbout={setShowAbout}/>}
         </MenuBox>
-        {!description && <InfoBar name={infoBar} instructions={instructions} equippable={hoveredEquip.current.equip.name}/>}
-        <MobileNotice/>
-        <TouchDeviceNotice/>
+        {!description && <InfoBar name={infoBar} instructions={instructions} equippable={hoveredEquip.current.equip.name} isTouchDevice={isTouchDevice}/>}
     </>
     </MenuContext.Provider>
 }

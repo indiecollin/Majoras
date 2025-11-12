@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react';
 import styled from 'styled-components';
-
+import select from '../../public/QuestStatus/BombersNotebook/select.wav';
 import BackArrow from '../../public/QuestStatus/BombersNotebook/back-arrow.png';
 import MidDay from '../../public/QuestStatus/BombersNotebook/mid-day.png';
 import MedalIcon from '../../public/QuestStatus/BombersNotebook/medal.png';
@@ -26,6 +26,10 @@ import {
     locationTextBlue,
     eventBlue
 } from '../styles/colors';
+
+const sounds = {    
+    select: new Audio(select)
+};
 
 const gridSize = 80;
 const granularity = 4;
@@ -307,7 +311,7 @@ const PromptButton = styled.button`
 `;
 
 const EventRows = (props) => {
-    const {events, setDescription} = props;
+    const {events, selectEvent} = props;
     return <EventRowsContainer>
         {
             events.map((event, i) => {
@@ -330,7 +334,7 @@ const EventRows = (props) => {
                 return <Event 
                     event={event} 
                     top={top}
-                    onClick={()=>setDescription({type: 'event', image: event.image, name: event.title, location: event.location, text: event.description})}
+                    onClick={()=>selectEvent({type: 'event', image: event.image, name: event.title, location: event.location, text: event.description})}
                     key={event.title}
                 >
                     <EventIconWrapper>
@@ -372,6 +376,15 @@ const Description = (props) => {
 const BombersNotebook = (props) => {
     const {setNotebookOpened} = props;
     const [description, setDescription] = useState();
+    const selectEvent = (event) =>{
+        setDescription(event);
+        try{
+            sounds['select'].load();
+            sounds['select'].play();
+        } catch(e){
+            console.error(e.message, 'sound used before last use completed');
+        }
+    }
     return <NotebookContainer>
             <NotebookGrid>
                 <CloseButton onClick = {() => setNotebookOpened(false)}><img src={BackArrow}/></CloseButton>                
@@ -387,20 +400,20 @@ const BombersNotebook = (props) => {
                 {people.map((p,i) => {
                  return <Fragment key={p.name}>
                     <Profile i={i} 
-                        onClick={()=>setDescription({
+                        onClick={()=>selectEvent({
                             type: p.type, image: p.image, name: p.name, text: p.description,
                         })}                         
                     >
                         <img src={p.image}></img>
                     </Profile>                    
                     <Day columns='2/4' i={i}>
-                        <EventRows events={p.events.first} setDescription={setDescription}/>
+                        <EventRows events={p.events.first} selectEvent={selectEvent}/>
                     </Day>
                     <Day columns='4/6' i={i}>
-                        <EventRows events={p.events.second} setDescription={setDescription}/>
+                        <EventRows events={p.events.second} selectEvent={selectEvent}/>
                     </Day>
                     <Day columns='6/8' i={i}>
-                        <EventRows events={p.events.final} setDescription={setDescription}/>
+                        <EventRows events={p.events.final} selectEvent={selectEvent}/>
                     </Day>
                     <Medal i={i}><img src={MedalIcon}/></Medal>
                     <Timeline i={i}/>
